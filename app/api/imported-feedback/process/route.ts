@@ -2,6 +2,7 @@ import { type NextRequest, NextResponse } from "next/server"
 import { createClient } from "@/lib/supabase/server"
 import { generateText } from "ai"
 import { LOCKED_TRAITS } from "@/lib/imported-feedback-traits"
+import { redactSensitiveData } from "@/lib/redact-sensitive-data"
 
 // OCR function using AI SDK for text extraction
 async function extractTextFromImage(imageUrl: string): Promise<{ text: string; confidence: number }> {
@@ -173,17 +174,28 @@ export async function POST(request: NextRequest) {
 
       console.log("[v0] OCR extraction complete. Text length:", ocrText.length, "Confidence:", ocrConfidence)
 
+      const redactedOcrText = redactSensitiveData(ocrText)
+      console.log("[v0] OCR text redacted for privacy")
+
       // Step 2: AI structured extraction
       console.log("[v0] Starting AI structured extraction")
-      const extracted = await extractStructuredFeedback(ocrText)
+      const extracted = await extractStructuredFeedback(redactedOcrText)
 
       console.log("[v0] AI extraction complete. Confidence:", extracted.confidence, "Traits:", extracted.traits)
+
+      // Criteria: confidence >= 0.6, text length >= 50 chars, has excerpt
+      const shouldIncludeInAnalysis =
+        extracted.confidence >= 0.6 && redactedOcrText.length >= 50 && extracted.excerpt !== null
+
+      console.log("[v0] Include in analysis:", shouldIncludeInAnalysis)
 
       // Step 3: Update database record with extracted data
       const { error } = await supabase
         .from("imported_feedback")
         .update({
-          ocr_text: ocrText,
+          ocr_text: redactedOcrText, // Store redacted text
+          ocr_confidence: ocrConfidence,
+          included_in_analysis: shouldIncludeInAnalysis,
           ai_extracted_excerpt: extracted.excerpt,
           giver_name: extracted.giverName,
           giver_company: extracted.giverCompany,

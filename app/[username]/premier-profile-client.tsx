@@ -52,7 +52,14 @@ export function PremierProfileClient({
     return true
   })
 
-  const voiceContributions = contributions.filter((c) => c.voice_url)
+  const voiceContributions = contributions.filter((c) => c.audio_url && c.audio_url.trim() !== "")
+
+  console.log("[v0] rawImportedFeedback:", rawImportedFeedback)
+  const analyzableUploads = rawImportedFeedback.filter((u) => u.included_in_analysis && u.ocr_text)
+  console.log("[v0] analyzableUploads after filtering:", analyzableUploads)
+  console.log("[v0] analyzableUploads.length:", analyzableUploads.length)
+
+  const unanalyzableUploads = rawImportedFeedback.filter((u) => !u.included_in_analysis)
 
   const [selectedTraits, setSelectedTraits] = useState<string[]>([])
   const [hoveredTrait, setHoveredTrait] = useState<string | null>(null)
@@ -161,6 +168,8 @@ export function PremierProfileClient({
           <p className="text-xs uppercase tracking-widest text-neutral-400 font-medium">
             Nomee profile · Based on feedback from {rawContributions.length}{" "}
             {rawContributions.length === 1 ? "person" : "people"}
+            {analyzableUploads.length > 0 &&
+              ` · ${analyzableUploads.length} ${analyzableUploads.length === 1 ? "upload" : "uploads"}`}
           </p>
         </div>
 
@@ -187,6 +196,12 @@ export function PremierProfileClient({
                       <span className="text-xs text-neutral-500 block mt-1">
                         {rawContributions.length} {rawContributions.length === 1 ? "contribution" : "contributions"} •{" "}
                         {voiceContributions.length} {voiceContributions.length === 1 ? "voice note" : "voice notes"}
+                        {analyzableUploads.length > 0 && (
+                          <>
+                            {" "}
+                            • {analyzableUploads.length} {analyzableUploads.length === 1 ? "upload" : "uploads"}
+                          </>
+                        )}
                       </span>
                     )}
                   </div>
@@ -195,13 +210,21 @@ export function PremierProfileClient({
                 {/* Summary content with expanded view */}
                 <AiPatternSummary
                   contributions={rawContributions}
+                  importedFeedback={rawImportedFeedback}
                   topTraits={traitsWithExamples.slice(0, 5).map((t) => ({ label: t.label, count: t.count }))}
                 />
 
                 {/* Credibility line */}
                 <p className="text-xs text-neutral-500 pt-4 border-t border-neutral-100">
                   Generated from {rawContributions.length}{" "}
-                  {rawContributions.length === 1 ? "contribution" : "contributions"} • Updates as more people contribute
+                  {rawContributions.length === 1 ? "contribution" : "contributions"}
+                  {analyzableUploads.length > 0 && (
+                    <>
+                      {" "}
+                      and {analyzableUploads.length} {analyzableUploads.length === 1 ? "upload" : "uploads"}
+                    </>
+                  )}{" "}
+                  • Updates as more people contribute
                 </p>
               </div>
             </div>

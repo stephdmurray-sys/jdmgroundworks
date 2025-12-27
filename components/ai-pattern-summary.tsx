@@ -13,12 +13,21 @@ interface Contribution {
   traits_category4?: string[]
 }
 
+interface ImportedFeedback {
+  id: string
+  ocr_text: string | null
+  ai_extracted_excerpt: string | null
+  traits: string[] | null
+  included_in_analysis: boolean
+}
+
 interface AiPatternSummaryProps {
   contributions: Contribution[]
+  importedFeedback: ImportedFeedback[]
   topTraits: { label: string; count: number }[]
 }
 
-export function AiPatternSummary({ contributions, topTraits }: AiPatternSummaryProps) {
+export function AiPatternSummary({ contributions, importedFeedback, topTraits }: AiPatternSummaryProps) {
   const [summary, setSummary] = useState<{
     synthesis: string
     patterns: string[]
@@ -29,7 +38,7 @@ export function AiPatternSummary({ contributions, topTraits }: AiPatternSummaryP
 
   useEffect(() => {
     generateSummary()
-  }, [contributions, topTraits])
+  }, [contributions, importedFeedback, topTraits])
 
   const generateSummary = () => {
     if (contributions.length === 0 || topTraits.length === 0) {
@@ -39,20 +48,24 @@ export function AiPatternSummary({ contributions, topTraits }: AiPatternSummaryP
 
     setIsLoading(true)
 
-    // Extract top 3 traits
+    const analyzableUploads = (importedFeedback || []).filter((u) => u.included_in_analysis && u.ocr_text)
+
     const top3Traits = topTraits.slice(0, 3).map((t) => t.label.toLowerCase())
 
-    // Generate synthesis sentence
-    const synthesis = `People consistently describe working with this person as ${top3Traits.slice(0, 2).join(" and ")}, with a strong emphasis on ${top3Traits[2] || "collaboration"}.`
+    const totalSources = contributions.length + analyzableUploads.length
+    const uploadNote = analyzableUploads.length > 0 ? ` across ${totalSources} sources` : ""
+
+    const synthesis = `People consistently describe working with this person as ${top3Traits.slice(0, 2).join(" and ")}, with a strong emphasis on ${top3Traits[2] || "collaboration"}${uploadNote}.`
 
     const patterns: string[] = []
 
     const behaviorPatterns: Record<string, number> = {}
 
-    contributions.forEach((c) => {
-      const text = c.written_note.toLowerCase()
+    const allTexts = [...contributions.map((c) => c.written_note), ...analyzableUploads.map((u) => u.ocr_text || "")]
 
-      // Look for actual behavioral descriptions
+    allTexts.forEach((text) => {
+      const textLower = text.toLowerCase()
+
       const behaviorRegexes = [
         {
           regex: /(brings|delivers|provides) (\w+) (ideas|solutions|perspectives|thinking)/g,
@@ -75,14 +88,13 @@ export function AiPatternSummary({ contributions, topTraits }: AiPatternSummaryP
 
       behaviorRegexes.forEach(({ regex, extract }) => {
         let match
-        while ((match = regex.exec(text)) !== null) {
+        while ((match = regex.exec(textLower)) !== null) {
           const key = extract(match)
           behaviorPatterns[key] = (behaviorPatterns[key] || 0) + 1
         }
       })
     })
 
-    // Get top 3 behavioral patterns with at least 2 mentions
     const sortedBehaviors = Object.entries(behaviorPatterns)
       .filter(([_, count]) => count >= 2)
       .sort((a, b) => b[1] - a[1])
@@ -118,13 +130,11 @@ export function AiPatternSummary({ contributions, topTraits }: AiPatternSummaryP
       const filtered = contributions.filter((c) => variations.some((v) => c.relationship?.toLowerCase().includes(v)))
 
       if (filtered.length >= 2) {
-        // Extract most common qualities mentioned by this relationship type
         const qualityMap: Record<string, number> = {}
 
         filtered.forEach((c) => {
           const text = c.written_note.toLowerCase()
 
-          // Extract quality descriptors
           const qualityRegexes = [
             /\b(reliable|dependable|consistent|trustworthy)\b/g,
             /\b(creative|innovative|strategic|visionary)\b/g,
@@ -184,7 +194,6 @@ export function AiPatternSummary({ contributions, topTraits }: AiPatternSummaryP
 
   return (
     <div className="space-y-5">
-      {/* Summary paragraph with larger font and comfortable line-height */}
       <div className="relative">
         <p
           className={`text-neutral-700 leading-relaxed text-lg md:text-xl transition-all duration-300 ${
@@ -208,7 +217,6 @@ export function AiPatternSummary({ contributions, topTraits }: AiPatternSummaryP
         )}
       </div>
 
-      {/* Most mentioned signals as small pills (max 4) */}
       {summary.patterns.length > 0 && (
         <div>
           <p className="text-xs font-semibold text-neutral-500 uppercase tracking-wider mb-2">Most mentioned signals</p>
