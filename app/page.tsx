@@ -44,7 +44,7 @@ export default function Home() {
                   One link that shows how people experience working with you — from real people, over time.
                 </p>
 
-                <p className="text-lg text-slate-600">Takes ~2 minutes to contribute.</p>
+                <br />
 
                 <div className="flex flex-col sm:flex-row items-start gap-4 pt-4">
                   <Button
@@ -84,6 +84,54 @@ export default function Home() {
               className="lg:hidden mt-12"
             >
               <RealNomeeSlice />
+            </motion.div>
+          </div>
+        </section>
+
+        {/* Why Nomee Exists section */}
+        <section className="py-20 px-6 bg-white">
+          <div className="max-w-3xl mx-auto">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="space-y-12"
+            >
+              {/* Anchor line */}
+              <p className="text-xl md:text-2xl text-slate-700 text-center leading-relaxed font-medium">
+                People don't struggle to describe their work — they struggle to show what they're like.
+              </p>
+
+              {/* Three outcome blocks */}
+              <div className="space-y-10">
+                {/* Block 1: Jobs */}
+                <div className="space-y-3">
+                  <h3 className="text-lg font-semibold text-slate-900">Get hired without over-explaining yourself</h3>
+                  <p className="text-base text-slate-600 leading-relaxed">
+                    Hiring managers don't struggle to assess skills — they struggle to understand what it's actually
+                    like to work with someone. Nomee gives them that answer before the interview.
+                  </p>
+                </div>
+
+                {/* Block 2: Deals & partnerships */}
+                <div className="space-y-3">
+                  <h3 className="text-lg font-semibold text-slate-900">Win trust before the first call</h3>
+                  <p className="text-base text-slate-600 leading-relaxed">
+                    Brands, partners, and collaborators choose people who feel reliable and easy to work with. Nomee
+                    lets them hear that directly — from people you've already worked with.
+                  </p>
+                </div>
+
+                {/* Block 3: Reputation over time */}
+                <div className="space-y-3">
+                  <h3 className="text-lg font-semibold text-slate-900">Keep the praise that usually disappears</h3>
+                  <p className="text-base text-slate-600 leading-relaxed">
+                    Positive feedback gets buried in emails, DMs, and past jobs. Nomee saves it, organizes it, and lets
+                    it compound as your work and relationships grow.
+                  </p>
+                </div>
+              </div>
             </motion.div>
           </div>
         </section>
