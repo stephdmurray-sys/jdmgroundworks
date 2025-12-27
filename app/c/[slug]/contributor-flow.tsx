@@ -45,11 +45,17 @@ export default function ContributorFlow({ profile }: ContributorFlowProps) {
 
   const firstNameValue = profile.full_name.split(" ")[0]
 
+  const handleRecordingComplete = (blob: Blob) => {
+    console.log("[v0] Received recording blob:", blob.size, "bytes")
+    setVoiceBlob(blob)
+  }
+
   // STEP 1: Emotional Entry
   if (step === "entry") {
     return (
       <div className="flex min-h-screen items-center justify-center bg-neutral-50 px-4 py-12">
         <div className="w-full max-w-2xl">
+          <p className="mb-6 text-center text-sm text-neutral-600">⏱️ Takes about 2 minutes</p>
           <Card className="p-12 text-center">
             <h1 className="mb-4 text-4xl font-semibold text-neutral-900">
               What's it really like to work with {profile.full_name}?
@@ -282,6 +288,55 @@ export default function ContributorFlow({ profile }: ContributorFlowProps) {
     const charCount = message.length
     const maxChars = 1200
 
+    const handleMessageSubmit = async () => {
+      if (!message.trim()) {
+        setValidationErrors({ message: "Please write a message" })
+        return
+      }
+
+      setLoading(true)
+      setError(null)
+      setValidationErrors({})
+
+      try {
+        console.log("[v0] Creating contribution at message step")
+        const allSelectedTraitIds = Object.values(selectedTraits).flat()
+
+        const response = await fetch("/api/contributions/create", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            profileId: profile.id,
+            contributorName: "Pending", // Placeholder until identity step
+            contributorEmail: "pending@nomee.app", // Placeholder
+            companyOrOrg: "Unknown",
+            relationship,
+            duration,
+            message: message.trim(),
+            selectedTraitIds: allSelectedTraitIds,
+          }),
+        })
+
+        const result = await response.json()
+
+        if (response.status === 201 && result.success && result.contributionId) {
+          console.log("[v0] ✅ Contribution created:", result.contributionId)
+          setContributionId(result.contributionId)
+          setLoading(false)
+          setStep("identity")
+          return
+        }
+
+        // Handle errors
+        setError("Couldn't save right now. Please try again.")
+        setLoading(false)
+      } catch (err) {
+        console.error("[v0] Network error creating contribution:", err)
+        setError("Network error. Please check your connection and try again.")
+        setLoading(false)
+      }
+    }
+
     return (
       <div className="min-h-screen bg-white py-12 px-4">
         <div className="mx-auto max-w-2xl">
@@ -313,23 +368,18 @@ export default function ContributorFlow({ profile }: ContributorFlowProps) {
               </div>
             )}
 
+            {error && (
+              <div className="mt-4 rounded-lg bg-red-50 border border-red-200 p-4">
+                <p className="text-sm font-medium text-red-800">{error}</p>
+              </div>
+            )}
+
             <div className="mt-8 flex gap-4">
-              <Button onClick={() => setStep("traits")} variant="outline" size="lg">
+              <Button onClick={() => setStep("traits")} variant="outline" size="lg" disabled={loading}>
                 Back
               </Button>
-              <Button
-                onClick={() => {
-                  if (!message.trim()) {
-                    setValidationErrors({ message: "Please write a message" })
-                    return
-                  }
-                  setValidationErrors({})
-                  setStep("identity")
-                }}
-                className="flex-1"
-                size="lg"
-              >
-                Continue
+              <Button onClick={handleMessageSubmit} disabled={loading} className="flex-1" size="lg">
+                {loading ? "Saving..." : "Continue"}
               </Button>
             </div>
           </Card>
@@ -338,14 +388,14 @@ export default function ContributorFlow({ profile }: ContributorFlowProps) {
     )
   }
 
-  // STEP 7: Identity
+  // STEP 6: Identity
   if (step === "identity") {
     const isValidEmail = (email: string): boolean => {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
       return emailRegex.test(email)
     }
 
-    const handleSubmit = async () => {
+    const handleIdentityUpdate = async () => {
       // Validation
       const errors: Record<string, string> = {}
       if (!firstName.trim()) errors.firstName = "First name is required"
@@ -358,41 +408,40 @@ export default function ContributorFlow({ profile }: ContributorFlowProps) {
         return
       }
 
+      if (!contributionId) {
+        setError("Something went wrong. Please refresh and try again.")
+        return
+      }
+
       setLoading(true)
       setError(null)
       setValidationErrors({})
 
       try {
-        const allSelectedTraitIds = Object.values(selectedTraits).flat()
-
-        const response = await fetch("/api/contributions/create", {
+        console.log("[v0] Updating contribution with identity info")
+        const response = await fetch("/api/contributions/update-identity", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            profileId: profile.id,
+            contributionId,
             contributorName: `${firstName.trim()} ${lastInitial.trim()}.`,
             contributorEmail: email.trim().toLowerCase(),
-            companyOrOrg: "Unknown", // Not collected in new flow
-            relationship,
-            duration,
-            message: message.trim(),
-            selectedTraitIds: allSelectedTraitIds,
           }),
         })
 
         const result = await response.json()
 
-        if (response.status === 201 && result.success && result.contributionId) {
-          setContributionId(result.contributionId)
+        if (response.ok && result.success) {
+          console.log("[v0] ✅ Identity updated successfully")
           setLoading(false)
           setStep("voice")
           return
         }
 
         // Handle errors
-        let userMessage = "Couldn't submit right now. Please try again."
+        let userMessage = "Couldn't update right now. Please try again."
         if (response.status === 429 || result.code === "RATE_LIMIT") {
-          userMessage = result.error || "This email has reached its submission limit. Try again later."
+          userMessage = result.error || "This email has reached its submission limit."
         } else if (response.status === 409 || result.code === "DUPLICATE_SUBMISSION") {
           userMessage = result.error || "This email has already submitted for this person."
         }
@@ -400,6 +449,7 @@ export default function ContributorFlow({ profile }: ContributorFlowProps) {
         setError(userMessage)
         setLoading(false)
       } catch (err) {
+        console.error("[v0] Network error updating identity:", err)
         setError("Network error. Please check your connection and try again.")
         setLoading(false)
       }
@@ -485,8 +535,8 @@ export default function ContributorFlow({ profile }: ContributorFlowProps) {
               <Button onClick={() => setStep("message")} variant="outline" size="lg" disabled={loading}>
                 Back
               </Button>
-              <Button onClick={handleSubmit} disabled={loading} className="flex-1" size="lg">
-                {loading ? "Submitting..." : "Submit"}
+              <Button onClick={handleIdentityUpdate} disabled={loading} className="flex-1" size="lg">
+                {loading ? "Finishing..." : "Finish"}
               </Button>
             </div>
           </Card>
@@ -495,14 +545,16 @@ export default function ContributorFlow({ profile }: ContributorFlowProps) {
     )
   }
 
-  // STEP 6: Voice (Optional)
+  // STEP 7: Voice (Optional)
   if (step === "voice") {
     const handleSkip = () => {
+      console.log("[v0] User skipped voice recording")
       setStep("submitted")
     }
 
     const handleUploadVoice = async () => {
       if (!voiceBlob || !contributionId) {
+        console.log("[v0] No voice blob or contributionId, moving to submitted")
         setStep("submitted")
         return
       }
@@ -511,6 +563,7 @@ export default function ContributorFlow({ profile }: ContributorFlowProps) {
       setError(null)
 
       try {
+        console.log("[v0] Uploading voice recording, blob size:", voiceBlob.size)
         const formData = new FormData()
         formData.append("file", voiceBlob, `voice-${Date.now()}.webm`)
         formData.append("contributionId", contributionId)
@@ -523,9 +576,13 @@ export default function ContributorFlow({ profile }: ContributorFlowProps) {
         const result = await response.json()
 
         if (!response.ok || !result.success) {
+          console.log("[v0] Voice upload failed, but continuing anyway")
           setError("Voice upload failed, but your message was saved successfully")
+        } else {
+          console.log("[v0] ✅ Voice uploaded successfully")
         }
       } catch (err) {
+        console.error("[v0] Voice upload error:", err)
         setError("Voice upload failed, but your message was saved successfully")
       }
 
@@ -534,6 +591,7 @@ export default function ContributorFlow({ profile }: ContributorFlowProps) {
     }
 
     const handleContinue = () => {
+      console.log("[v0] User chose to continue without voice")
       setStep("submitted")
     }
 
@@ -543,53 +601,41 @@ export default function ContributorFlow({ profile }: ContributorFlowProps) {
           <div className="mb-8">
             <p className="mb-4 text-sm text-neutral-600">Step 6 of 6 (Optional)</p>
             <h1 className="mb-2 text-3xl font-semibold text-neutral-900">Want to read it in your own voice?</h1>
-            <p className="text-neutral-600">Optional, but adds authenticity and meaning.</p>
+            <p className="text-neutral-600">Optional — adds authenticity, totally up to you.</p>
           </div>
 
-          <Card className="p-8">
-            <div className="mb-6 rounded-lg bg-neutral-100 p-4">
-              <p className="text-sm text-neutral-700">{message}</p>
+          <VoiceRecorder quote={message} onRecordingComplete={handleRecordingComplete} />
+
+          {error && (
+            <div className="mt-6 rounded-lg bg-amber-50 border border-amber-200 p-4">
+              <p className="text-sm text-amber-800">{error}</p>
             </div>
+          )}
 
-            <VoiceRecorder
-              quote={message}
-              onRecordingComplete={(blob) => {
-                setVoiceBlob(blob)
-              }}
-            />
-
-            {error && (
-              <div className="mt-4 rounded-lg bg-amber-50 border border-amber-200 p-4">
-                <p className="text-sm text-amber-800">{error}</p>
-              </div>
+          <div className="mt-8 flex flex-col gap-3">
+            {voiceBlob ? (
+              <>
+                <Button size="lg" onClick={handleUploadVoice} disabled={loading}>
+                  {loading ? "Uploading..." : "Upload voice note"}
+                </Button>
+                <Button size="lg" variant="outline" onClick={handleContinue} disabled={loading}>
+                  Continue without uploading
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button size="lg" variant="outline" onClick={handleSkip}>
+                  Skip — no voice note
+                </Button>
+              </>
             )}
-
-            <div className="mt-8 flex flex-col gap-4">
-              <Button onClick={handleUploadVoice} disabled={loading || !voiceBlob} className="w-full" size="lg">
-                {loading ? "Uploading..." : "🎙️ Record your voice"}
-              </Button>
-              <div className="flex gap-4">
-                <Button
-                  onClick={handleSkip}
-                  variant="outline"
-                  className="flex-1 bg-transparent"
-                  size="lg"
-                  disabled={loading}
-                >
-                  Skip
-                </Button>
-                <Button onClick={handleContinue} className="flex-1" size="lg" disabled={loading}>
-                  Continue
-                </Button>
-              </div>
-            </div>
-          </Card>
+          </div>
         </div>
       </div>
     )
   }
 
-  // STEP 8: Confirmation
+  // STEP 8: Confirmation (ALWAYS SHOWS)
   return (
     <div className="flex min-h-screen items-center justify-center bg-white px-4">
       <Card className="mx-auto max-w-2xl p-12 text-center">
@@ -601,10 +647,8 @@ export default function ContributorFlow({ profile }: ContributorFlowProps) {
           </div>
         </div>
 
-        <h1 className="mb-4 text-3xl font-semibold text-neutral-900">Your Nomee is complete.</h1>
-        <p className="mb-8 text-neutral-600">
-          Thank you for capturing what it felt like to work with {profile.full_name}.
-        </p>
+        <h1 className="mb-4 text-3xl font-semibold text-neutral-900">Your Nomee is complete</h1>
+        <p className="mb-8 text-neutral-600">Thank you for taking the time — this really matters.</p>
 
         <Button variant="outline" size="lg" onClick={() => (window.location.href = "/")}>
           Create your own Nomee
