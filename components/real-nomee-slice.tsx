@@ -119,22 +119,25 @@ export function RealNomeeSlice() {
                     className="flex items-center gap-2 px-4 py-2 rounded-lg border border-neutral-300 bg-white hover:bg-blue-50/30 transition-all"
                   >
                     <span className="text-sm font-semibold text-neutral-800">{trait.label}</span>
-                    <span className="text-xs font-semibold text-neutral-500">×{trait.count}</span>
+                    <span className="text-xs font-semibold text-gray-400">×{trait.count}</span>
                   </button>
                 ))}
               </div>
             </div>
 
             {/* C. Contributions feed (real component with auto-rotation) */}
-            <div className="space-y-6">
+            <div className="space-y-6 md:space-y-0">
               <motion.div
                 key={currentCardIndex}
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -8 }}
                 transition={{ duration: 0.5 }}
+                className="overflow-x-auto md:overflow-x-visible snap-x snap-mandatory scrollbar-thin scrollbar-thumb-neutral-300 scrollbar-track-transparent pb-4"
               >
-                <FloatingQuoteCards contributions={visibleContributions} />
+                <div className="flex gap-4 md:grid md:grid-cols-1 min-w-full">
+                  <FloatingQuoteCards contributions={visibleContributions} />
+                </div>
               </motion.div>
             </div>
 

@@ -91,6 +91,67 @@ export default function Home() {
           </div>
         </section>
 
+        <section className="py-16 px-6 bg-slate-50">
+          <div className="max-w-4xl mx-auto">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="text-center space-y-6"
+            >
+              <h2 className="text-2xl md:text-3xl font-semibold text-slate-900">Use your Nomee anywhere</h2>
+              <p className="text-lg text-slate-600 max-w-2xl mx-auto">
+                Embed your live Nomee on your site, media kit, or portfolio.
+              </p>
+
+              {/* Mock embed visual */}
+              <div className="mt-8 max-w-3xl mx-auto">
+                <div className="border border-slate-200 rounded-xl overflow-hidden shadow-lg bg-white">
+                  <div className="bg-slate-100 px-4 py-3 border-b border-slate-200 flex items-center gap-2">
+                    <div className="w-3 h-3 rounded-full bg-slate-300" />
+                    <div className="w-3 h-3 rounded-full bg-slate-300" />
+                    <div className="w-3 h-3 rounded-full bg-slate-300" />
+                    <div className="ml-4 flex-1 bg-white rounded px-3 py-1 text-xs text-slate-500">
+                      yoursite.com/about
+                    </div>
+                  </div>
+                  <div className="p-8 space-y-6">
+                    <div className="space-y-2">
+                      <div className="h-4 bg-slate-200 rounded w-3/4" />
+                      <div className="h-4 bg-slate-200 rounded w-full" />
+                      <div className="h-4 bg-slate-200 rounded w-5/6" />
+                    </div>
+                    <div className="border-2 border-blue-200 rounded-lg p-6 bg-blue-50/30">
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="w-12 h-12 rounded-full bg-blue-200" />
+                        <div className="space-y-2 flex-1">
+                          <div className="h-3 bg-blue-200 rounded w-1/3" />
+                          <div className="h-2 bg-blue-100 rounded w-1/4" />
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <div className="h-3 bg-blue-100 rounded w-full" />
+                        <div className="h-3 bg-blue-100 rounded w-5/6" />
+                      </div>
+                      <div className="mt-4 text-xs text-center text-blue-600 font-medium">Powered by Nomee</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="pt-4">
+                <Link
+                  href="/pricing"
+                  className="inline-flex items-center gap-2 text-base font-medium text-slate-600 hover:text-slate-900 transition-colors"
+                >
+                  See embed options →
+                </Link>
+              </div>
+            </motion.div>
+          </div>
+        </section>
+
         {/* Why Nomee Exists section */}
         <section className="py-20 px-6 bg-white">
           <div className="max-w-3xl mx-auto">
@@ -194,6 +255,12 @@ export default function Home() {
                     </button>
                   </div>
                 </div>
+              </div>
+
+              <div className="pt-8 border-t border-slate-100">
+                <p className="text-sm text-slate-500 text-center">
+                  Submissions are tied to real people — one per contributor.
+                </p>
               </div>
             </motion.div>
           </div>
@@ -656,7 +723,7 @@ export default function Home() {
         </section>
       </div>
 
-      <ModalSignup isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} initialType={modalType} />
+      <ModalSignup initialType={modalType} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </>
   )
 }
