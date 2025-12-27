@@ -12,6 +12,8 @@ import { CheckCircle2, AlertCircle, Trash2, Eye, EyeOff } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { LOCKED_TRAITS, SOURCE_TYPES, type ImportedFeedback } from "@/lib/imported-feedback-traits"
 import { useToast } from "@/hooks/use-toast"
+import { highlightQuote } from "@/lib/highlight-quote"
+import { extractKeywordsFromText } from "@/lib/extract-keywords-from-text"
 
 type ReviewListProps = {
   pending: ImportedFeedback[]
@@ -232,9 +234,19 @@ export default function ReviewList({ pending, approved, profileId }: ReviewListP
                         <>
                           <div>
                             <Label className="mb-1 block text-sm font-medium">Extracted Excerpt</Label>
-                            <p className="text-sm text-neutral-700 italic">
-                              "{feedback.ai_extracted_excerpt || "No positive excerpt found"}"
-                            </p>
+                            <div className="text-sm text-neutral-700 italic leading-relaxed">
+                              "{(() => {
+                                const keywords = extractKeywordsFromText(
+                                  feedback.ai_extracted_excerpt || "No positive excerpt found",
+                                  feedback.traits || [],
+                                )
+                                return highlightQuote(
+                                  feedback.ai_extracted_excerpt || "No positive excerpt found",
+                                  keywords,
+                                  5,
+                                )
+                              })()}"
+                            </div>
                           </div>
 
                           <div className="grid grid-cols-2 gap-4">

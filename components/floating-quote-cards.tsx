@@ -36,7 +36,7 @@ export function FloatingQuoteCards({
   isFeatured = false,
   isFirstInGroup = false,
   groupIndex = 0,
-  highlightPatterns = [], // Use highlightPatterns instead of boldingType
+  highlightPatterns = [],
 }: FloatingQuoteCardsProps) {
   const [expandedId, setExpandedId] = useState<string | null>(null)
 
@@ -173,7 +173,7 @@ export function FloatingQuoteCards({
                 ...(contribution.traits_category2 || []),
                 ...(contribution.traits_category3 || []),
                 ...(contribution.traits_category4 || []),
-              ].slice(0, 3)
+              ]
 
               const isFeaturedCard = isFeatured && isFirstInGroup && colIdx === 0 && cardIdx === 0
               const cardClass = isFeaturedCard
@@ -189,7 +189,7 @@ export function FloatingQuoteCards({
               const cardPatterns = extractKeywordsFromText(contribution.written_note || "", allTraits)
               console.log("[v0] Card", contribution.id, "- extracted", cardPatterns.length, "patterns")
 
-              const renderedText = displayText ? highlightQuote(displayText, cardPatterns, 4) : displayText
+              const renderedText = displayText ? highlightQuote(displayText, cardPatterns, 5) : displayText
 
               return (
                 <motion.div
@@ -306,12 +306,11 @@ export function FloatingQuoteCards({
             const cardPatterns = extractKeywordsFromText(contribution.written_note || "", allTraits)
             console.log("[v0] Mobile card", contribution.id, "- extracted", cardPatterns.length, "patterns")
 
-            const renderedText = displayText ? highlightQuote(displayText, cardPatterns, 4) : displayText
+            const renderedText = displayText ? highlightQuote(displayText, cardPatterns, 5) : displayText
 
             return (
               <motion.div
                 key={contribution.id}
-                id={`quote-${contribution.id}`}
                 className="snap-center flex-shrink-0 w-[85vw] max-w-md cursor-pointer group relative"
                 initial={{ opacity: 0, x: 20 }}
                 animate={{

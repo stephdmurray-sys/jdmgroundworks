@@ -58,8 +58,8 @@ export function VoiceCard({ contribution, isMobile = false, highlightPatterns = 
   const hasMoreText = fullText.length > previewText.length
 
   // Apply highlighting to both preview and full text
-  const highlightedPreview = previewText ? highlightQuote(previewText, effectivePatterns, 4) : null
-  const highlightedFull = fullText ? highlightQuote(fullText, effectivePatterns, 4) : null
+  const highlightedPreview = previewText ? highlightQuote(previewText, effectivePatterns, 5) : null
+  const highlightedFull = fullText ? highlightQuote(fullText, effectivePatterns, 5) : null
 
   return (
     <div
@@ -80,6 +80,7 @@ export function VoiceCard({ contribution, isMobile = false, highlightPatterns = 
           <div className="text-sm md:text-base text-neutral-700 leading-relaxed">
             {showFullTranscript ? highlightedFull : highlightedPreview}
           </div>
+
           {hasMoreText && (
             <button
               onClick={() => setShowFullTranscript(!showFullTranscript)}

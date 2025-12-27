@@ -1,13 +1,17 @@
 import type React from "react"
 import type { HighlightPattern } from "./extract-highlight-patterns"
 
-export function highlightQuote(text: string, patterns: HighlightPattern[], maxHighlights = 4): React.ReactNode {
+export function highlightQuote(text: string, patterns: HighlightPattern[], maxHighlights = 5): React.ReactNode {
   if (!text || patterns.length === 0) return text
+
+  const validPatterns = patterns.filter((p) => p && typeof p.phrase === "string" && p.phrase.trim().length > 0)
+
+  if (validPatterns.length === 0) return text
 
   const matches: { phrase: string; index: number; length: number; tier: string }[] = []
 
   // Find all matches with their tier information
-  patterns.forEach((pattern) => {
+  validPatterns.forEach((pattern) => {
     const regex = new RegExp(`\\b${pattern.phrase.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`, "gi")
     let match
     while ((match = regex.exec(text)) !== null) {
@@ -45,7 +49,7 @@ export function highlightQuote(text: string, patterns: HighlightPattern[], maxHi
 
   if (nonOverlapping.length === 0) return text
 
-  // Build the highlighted text with tiered styling
+  // Build the highlighted text with light blue marker style (NO PILLS)
   const parts: React.ReactNode[] = []
   let lastIndex = 0
 
@@ -54,21 +58,8 @@ export function highlightQuote(text: string, patterns: HighlightPattern[], maxHi
       parts.push(text.slice(lastIndex, match.index))
     }
 
-    // Tiered styling: theme (strong blue), working-style (neutral), contextual (subtle)
-    let className = ""
-    if (match.tier === "theme") {
-      // TIER 1: Theme keywords - trust blue 12% opacity, most prominent
-      className = "bg-blue-500/12 px-1 rounded font-medium"
-    } else if (match.tier === "working-style") {
-      // TIER 2: Working-style - neutral gray 8% opacity, secondary emphasis
-      className = "bg-neutral-400/8 px-1 rounded font-medium"
-    } else {
-      // TIER 3: Contextual - subtle gray 5% opacity, minimal emphasis
-      className = "bg-neutral-300/5 px-0.5 rounded"
-    }
-
     parts.push(
-      <span key={`highlight-${idx}`} className={className}>
+      <span key={`highlight-${idx}`} className="bg-blue-100/70 px-1 rounded-md font-medium">
         {match.phrase}
       </span>,
     )

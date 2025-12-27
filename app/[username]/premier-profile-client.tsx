@@ -14,19 +14,15 @@ import { dedupeContributions } from "@/lib/dedupe-contributions"
 import { filterWrongOwnerQuotes } from "@/lib/filter-wrong-owner-quotes"
 import { extractHighlightPatterns } from "@/lib/extract-highlight-patterns"
 import { highlightQuote } from "@/lib/highlight-quote"
-import type { ImportedFeedback } from "@/lib/imported-feedback-traits"
-import type { Contribution } from "@/types"
+import { extractKeywordsFromText } from "@/lib/extract-keywords-from-text"
+import type { Profile, Contribution, ImportedFeedback, Trait } from "@/lib/types"
+import Link from "next/link"
 
 interface PremierProfileClientProps {
-  profile: any
+  profile: Profile
   contributions: Contribution[]
   importedFeedback: ImportedFeedback[]
-  traits: any[]
-  totalContributions: number
-  uniqueCompanies: number
-  interpretationSentence: string | null
-  vibeLabels?: string[]
-  anchorQuote: string | null
+  traits: Trait[]
 }
 
 export function PremierProfileClient({
@@ -34,11 +30,6 @@ export function PremierProfileClient({
   contributions: rawContributions,
   importedFeedback: rawImportedFeedback,
   traits,
-  totalContributions,
-  uniqueCompanies,
-  interpretationSentence,
-  vibeLabels = [],
-  anchorQuote,
 }: PremierProfileClientProps) {
   const dedupedContributions = dedupeContributions(rawContributions, profile.full_name)
   const contributions = filterWrongOwnerQuotes(dedupedContributions, profile.full_name)
@@ -167,7 +158,8 @@ export function PremierProfileClient({
           )}
 
           <p className="text-xs uppercase tracking-widest text-neutral-400 font-medium">
-            Nomee profile · Based on feedback from {totalContributions} {totalContributions === 1 ? "person" : "people"}
+            Nomee profile · Based on feedback from {rawContributions.length}{" "}
+            {rawContributions.length === 1 ? "person" : "people"}
           </p>
         </div>
 
@@ -205,12 +197,13 @@ export function PremierProfileClient({
             </div>
           )}
 
-          {interpretationSentence && (
+          {/* Added: Display interpretation sentence if available */}
+          {profile.interpretation_sentence && (
             <p
               className={`text-base md:text-lg text-neutral-600 leading-relaxed max-w-[65ch] transition-all duration-700 ${heroVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
               style={{ transitionDelay: "600ms", lineHeight: "1.6" }}
             >
-              {interpretationSentence}
+              {profile.interpretation_sentence}
             </p>
           )}
         </div>
@@ -219,7 +212,7 @@ export function PremierProfileClient({
 
       <div className="mx-auto max-w-6xl px-6 lg:px-8 space-y-20 md:space-y-24 py-10">
         {/* Working Energy Snapshot */}
-        {vibeLabels.length > 0 && (
+        {profile.vibe_labels && profile.vibe_labels.length > 0 && (
           <section className="space-y-6 py-8 md:py-10">
             <div className="relative max-w-4xl mx-auto p-8 md:p-10 rounded-3xl border-2 border-blue-200/60 bg-blue-50/20 animate-border-draw">
               <div className="space-y-4">
@@ -229,11 +222,11 @@ export function PremierProfileClient({
 
                 <div className="text-center">
                   <p className="text-3xl md:text-4xl lg:text-5xl font-semibold text-neutral-900 leading-tight">
-                    {vibeLabels.map((label, idx) => (
+                    {profile.vibe_labels.map((label, idx) => (
                       <span key={label}>
                         {label}
-                        {idx < vibeLabels.length - 1 && ". "}
-                        {idx === vibeLabels.length - 1 && "."}
+                        {idx < profile.vibe_labels.length - 1 && ". "}
+                        {idx === profile.vibe_labels.length - 1 && "."}
                       </span>
                     ))}
                   </p>
@@ -404,61 +397,63 @@ export function PremierProfileClient({
 
               <div className="relative overflow-hidden -mx-6 lg:-mx-8">
                 <div className="flex gap-5 animate-marquee-left-slow hover:[animation-play-state:paused] px-6 lg:px-8">
-                  {[...importedFeedback, ...importedFeedback].map((feedback, index) => (
-                    <Card
-                      key={`${feedback.id}-${index}`}
-                      className="p-6 border border-neutral-200 bg-white flex-shrink-0 w-[340px] hover:shadow-lg transition-all duration-300 rounded-2xl"
-                    >
-                      <div className="mb-4 flex items-start justify-between gap-3">
-                        <div className="flex-1">
-                          <p className="text-sm font-semibold text-neutral-900">{feedback.giver_name}</p>
-                          {feedback.giver_company && (
-                            <p className="text-xs text-neutral-600 mt-0.5">{feedback.giver_company}</p>
-                          )}
-                          {feedback.giver_role && (
-                            <p className="text-xs text-neutral-500 mt-0.5">{feedback.giver_role}</p>
-                          )}
-                        </div>
-                        {feedback.source_type && (
-                          <Badge
-                            variant="secondary"
-                            className="text-xs bg-blue-100/40 text-blue-800 border-blue-200/40"
-                          >
-                            {feedback.source_type}
-                          </Badge>
-                        )}
-                      </div>
+                  {[...importedFeedback, ...importedFeedback].map((feedback, index) => {
+                    const keywords = extractKeywordsFromText(feedback.ai_extracted_excerpt || "", feedback.traits || [])
+                    const patterns = keywords
+                      .filter((k) => typeof k === "string" && k.trim().length > 0)
+                      .map((keyword) => ({
+                        phrase: keyword,
+                        tier: "theme" as const,
+                        frequency: 1,
+                      }))
 
-                      {feedback.ai_extracted_excerpt && (
-                        <p className="mb-4 text-sm text-neutral-700 leading-relaxed italic max-w-[72ch]">
-                          "{highlightQuote(feedback.ai_extracted_excerpt, highlightPatterns, 3)}"
-                        </p>
-                      )}
-
-                      {feedback.traits && feedback.traits.length > 0 && (
-                        <div className="flex flex-wrap gap-1.5 mb-4">
-                          {feedback.traits.slice(0, 4).map((trait) => (
+                    return (
+                      <Card
+                        key={`${feedback.id}-${index}`}
+                        className="p-6 border border-neutral-200 bg-white flex-shrink-0 w-[340px] hover:shadow-lg transition-all duration-300 rounded-2xl"
+                      >
+                        <div className="mb-4 flex items-start justify-between gap-3">
+                          <div className="flex-1">
+                            <p className="text-sm font-semibold text-neutral-900">{feedback.giver_name}</p>
+                            {feedback.giver_company && (
+                              <p className="text-xs text-neutral-600 mt-0.5">{feedback.giver_company}</p>
+                            )}
+                            {feedback.giver_role && (
+                              <p className="text-xs text-neutral-500 mt-0.5">{feedback.giver_role}</p>
+                            )}
+                          </div>
+                          {feedback.source_type && (
                             <Badge
-                              key={trait}
-                              variant="outline"
-                              className="text-xs text-neutral-500 border-neutral-200"
+                              variant="secondary"
+                              className="text-xs bg-blue-100/40 text-blue-800 border-blue-200/40"
                             >
-                              {trait}
+                              {feedback.source_type}
                             </Badge>
-                          ))}
+                          )}
                         </div>
-                      )}
 
-                      {feedback.approx_date && (
-                        <p className="text-xs text-neutral-400">
-                          {new Date(feedback.approx_date).toLocaleDateString("en-US", {
-                            month: "short",
-                            year: "numeric",
-                          })}
-                        </p>
-                      )}
-                    </Card>
-                  ))}
+                        {feedback.ai_extracted_excerpt && (
+                          <div className="mb-4 text-sm text-neutral-700 leading-relaxed italic max-w-[72ch]">
+                            "{highlightQuote(feedback.ai_extracted_excerpt, patterns, 5)}"
+                          </div>
+                        )}
+
+                        {feedback.traits && feedback.traits.length > 0 && (
+                          <div className="flex flex-wrap gap-1.5 mt-3">
+                            {feedback.traits.slice(0, 3).map((trait, idx) => (
+                              <Badge
+                                key={`${feedback.id}-trait-${idx}`}
+                                variant="secondary"
+                                className="text-xs px-2 py-0.5 bg-neutral-100/80 text-neutral-700 border-neutral-200/40"
+                              >
+                                {trait}
+                              </Badge>
+                            ))}
+                          </div>
+                        )}
+                      </Card>
+                    )
+                  })}
                 </div>
               </div>
             </section>
@@ -467,12 +462,12 @@ export function PremierProfileClient({
 
         {/* CTA */}
         <section className="text-center py-16">
-          <a
+          <Link
             href="/auth/signup"
             className="inline-block rounded-full bg-neutral-900 px-10 py-4 text-base font-semibold text-white transition-all hover:bg-neutral-800 hover:scale-105 hover:shadow-xl"
           >
             Create your Nomee
-          </a>
+          </Link>
         </section>
       </div>
     </div>
