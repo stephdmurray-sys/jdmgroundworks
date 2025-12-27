@@ -12,7 +12,6 @@ import { AiPatternSummary } from "@/components/ai-pattern-summary"
 import { categorizeTestimonials } from "@/lib/categorize-testimonials"
 import { extractRepeatedPhrases } from "@/lib/extract-repeated-phrases"
 import { dedupeContributions } from "@/lib/dedupe-contributions"
-import { filterWrongOwnerQuotes } from "@/lib/filter-wrong-owner-quotes"
 import { extractHighlightPatterns } from "@/lib/extract-highlight-patterns"
 import { highlightQuote } from "@/lib/highlight-quote"
 import { extractKeywordsFromText } from "@/lib/extract-keywords-from-text"
@@ -24,6 +23,11 @@ interface PremierProfileClientProps {
   contributions: Contribution[]
   importedFeedback: ImportedFeedback[]
   traits: Trait[]
+  totalContributions: number
+  uniqueCompanies: string[]
+  interpretationSentence: string
+  vibeLabels: string[]
+  anchorQuote: string
 }
 
 export function PremierProfileClient({
@@ -31,9 +35,25 @@ export function PremierProfileClient({
   contributions: rawContributions,
   importedFeedback: rawImportedFeedback,
   traits,
+  totalContributions,
+  uniqueCompanies,
+  interpretationSentence,
+  vibeLabels,
+  anchorQuote,
 }: PremierProfileClientProps) {
-  const dedupedContributions = dedupeContributions(rawContributions, profile.full_name)
-  const contributions = filterWrongOwnerQuotes(dedupedContributions, profile.full_name)
+  const contributions = dedupeContributions(rawContributions)
+  const voiceContributions = contributions.filter((c) => c.audio_url && c.audio_url.trim() !== "")
+
+  console.log("[v0] PremierProfileClient: Voice contributions debug", {
+    totalContributions: contributions.length,
+    voiceContributions: voiceContributions.length,
+    contributionsWithAudio: contributions.filter((c) => c.audio_url).length,
+    sampleAudioUrls: contributions.slice(0, 3).map((c) => ({ id: c.id, audio_url: c.audio_url })),
+  })
+
+  const analyzableUploads = rawImportedFeedback.filter((u) => u.included_in_analysis && u.ocr_text)
+  const totalUploads = rawImportedFeedback.length
+  const voiceNotesCount = voiceContributions.length
 
   // Filter imported feedback to remove quotes mentioning wrong owner names
   const dedupedImportedFeedback = Array.from(
@@ -54,11 +74,6 @@ export function PremierProfileClient({
 
     return !mentionsDifferentName
   })
-
-  const voiceContributions = contributions.filter((c) => c.audio_url && c.audio_url.trim() !== "")
-  const analyzableUploads = rawImportedFeedback.filter((u) => u.included_in_analysis && u.ocr_text)
-  const totalUploads = rawImportedFeedback.length
-  const voiceNotesCount = voiceContributions.length
 
   const [selectedTraits, setSelectedTraits] = useState<string[]>([])
   const [hoveredTrait, setHoveredTrait] = useState<string | null>(null)
@@ -215,15 +230,14 @@ export function PremierProfileClient({
           )}
 
           <p className="text-sm text-neutral-500 uppercase tracking-wide">
-            Nomee Profile · Based on feedback from {rawContributions.length}{" "}
-            {rawContributions.length === 1 ? "person" : "people"}
+            Nomee Profile · Based on feedback from {totalContributions} {totalContributions === 1 ? "person" : "people"}
             {totalUploads > 0 && ` · ${totalUploads} ${totalUploads === 1 ? "upload" : "uploads"}`}
           </p>
 
           <p className="text-xs text-neutral-500 mt-2">Each contributor can submit once.</p>
         </div>
 
-        {rawContributions.length > 0 && traits.length > 0 && (
+        {totalContributions > 0 && traits.length > 0 && (
           <div
             className={`mb-10 md:mb-12 transition-all duration-700 ${heroVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
             style={{ transitionDelay: "200ms" }}
@@ -242,9 +256,9 @@ export function PremierProfileClient({
                     <span className="text-xs text-neutral-400 uppercase tracking-widest block">
                       Updated automatically
                     </span>
-                    {rawContributions.length > 0 && (
+                    {totalContributions > 0 && (
                       <span className="text-xs text-neutral-500 block mt-1">
-                        {rawContributions.length} {rawContributions.length === 1 ? "contribution" : "contributions"} •{" "}
+                        {totalContributions} {totalContributions === 1 ? "contribution" : "contributions"} •{" "}
                         {voiceNotesCount} {voiceNotesCount === 1 ? "voice note" : "voice notes"}
                         {totalUploads > 0 && (
                           <>
@@ -265,8 +279,7 @@ export function PremierProfileClient({
                 />
 
                 <p className="text-xs text-neutral-500 pt-4 border-t border-neutral-100">
-                  Generated from {rawContributions.length}{" "}
-                  {rawContributions.length === 1 ? "contribution" : "contributions"}
+                  Generated from {totalContributions} {totalContributions === 1 ? "contribution" : "contributions"}
                   {totalUploads > 0 && (
                     <>
                       {" "}
