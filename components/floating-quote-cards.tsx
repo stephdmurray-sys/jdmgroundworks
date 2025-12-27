@@ -10,6 +10,7 @@ import { ReportButton } from "@/components/report-button"
 import { IntimateAudioPlayer } from "@/components/intimate-audio-player"
 import { Share2 } from "lucide-react"
 import { highlightQuote } from "@/lib/highlight-quote"
+import { extractKeywordsFromText } from "@/lib/extract-keywords-from-text"
 import type { HighlightPattern } from "@/lib/extract-highlight-patterns"
 
 interface FloatingQuoteCardsProps {
@@ -184,8 +185,11 @@ export function FloatingQuoteCards({
               const displayText = isExpanded
                 ? contribution.written_note
                 : truncateToSentences(contribution.written_note, 3)
-              const renderedText =
-                highlightPatterns.length > 0 ? highlightQuote(displayText, highlightPatterns, 3) : displayText
+
+              const cardPatterns = extractKeywordsFromText(contribution.written_note || "", allTraits)
+              console.log("[v0] Card", contribution.id, "- extracted", cardPatterns.length, "patterns")
+
+              const renderedText = displayText ? highlightQuote(displayText, cardPatterns, 4) : displayText
 
               return (
                 <motion.div
@@ -298,8 +302,11 @@ export function FloatingQuoteCards({
             const displayText = isExpanded
               ? contribution.written_note
               : truncateToSentences(contribution.written_note, 3)
-            const renderedText =
-              highlightPatterns.length > 0 ? highlightQuote(displayText, highlightPatterns, 3) : displayText
+
+            const cardPatterns = extractKeywordsFromText(contribution.written_note || "", allTraits)
+            console.log("[v0] Mobile card", contribution.id, "- extracted", cardPatterns.length, "patterns")
+
+            const renderedText = displayText ? highlightQuote(displayText, cardPatterns, 4) : displayText
 
             return (
               <motion.div

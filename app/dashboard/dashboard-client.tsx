@@ -9,6 +9,8 @@ import { Copy, Check, Star } from "lucide-react"
 import { IntimateAudioPlayer } from "@/components/intimate-audio-player"
 import { ImportedFeedbackUploadCard } from "@/components/imported-feedback-upload-card"
 import { extractSubmissionPhrases, calculatePhraseFrequencies, getTopPhrases } from "@/lib/extract-submission-phrases"
+import { highlightQuote } from "@/lib/highlight-quote"
+import { extractKeywordsFromText } from "@/lib/extract-keywords-from-text"
 
 type DashboardClientProps = {
   profile: any
@@ -302,7 +304,18 @@ export default function DashboardClient({
                     </div>
                   )}
 
-                  <p className="mb-4 text-base leading-relaxed text-neutral-900">{contribution.written_note}</p>
+                  {(() => {
+                    const allTraits = [
+                      ...(contribution.traits_category1 || []),
+                      ...(contribution.traits_category2 || []),
+                      ...(contribution.traits_category3 || []),
+                      ...(contribution.traits_category4 || []),
+                    ]
+                    const keywords = extractKeywordsFromText(contribution.written_note, allTraits)
+                    const highlightedText = highlightQuote(contribution.written_note, keywords, 4)
+
+                    return <p className="mb-4 text-base leading-relaxed text-neutral-900">{highlightedText}</p>
+                  })()}
 
                   {/* Phrase Highlights */}
                   {submissionPhrases.length > 0 && (

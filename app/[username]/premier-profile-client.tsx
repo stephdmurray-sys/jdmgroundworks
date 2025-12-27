@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Share2, Copy } from "lucide-react"
 import { TestimonialGroup } from "@/components/testimonial-group"
 import { VoiceCard } from "@/components/voice-card" // Import VoiceCard component
+import { SiteHeader } from "@/components/site-header" // Import SiteHeader component
 import { categorizeTestimonials } from "@/lib/categorize-testimonials"
 import { extractRepeatedPhrases } from "@/lib/extract-repeated-phrases"
 import { dedupeContributions } from "@/lib/dedupe-contributions"
@@ -123,6 +124,9 @@ export function PremierProfileClient({
 
   return (
     <div className="min-h-screen bg-white">
+      {/* Fixed site header for navigation */}
+      <SiteHeader />
+
       {/* Floating share cluster - Desktop only */}
       <div className="hidden lg:block fixed right-8 top-1/2 -translate-y-1/2 z-40">
         <div className="flex flex-col gap-3">
@@ -147,7 +151,8 @@ export function PremierProfileClient({
         </div>
       </div>
 
-      <section className="max-w-6xl mx-auto px-6 lg:px-8 pt-16 md:pt-20 pb-12 md:pb-16">
+      {/* Top padding to account for fixed header */}
+      <section className="max-w-6xl mx-auto px-6 lg:px-8 pt-28 md:pt-32 pb-12 md:pb-16">
         {/* Owner anchor */}
         <div
           className={`mb-8 md:mb-10 transition-all duration-700 ${heroVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
@@ -338,14 +343,19 @@ export function PremierProfileClient({
             <div className="md:hidden -mx-6">
               <div className="flex gap-4 overflow-x-auto snap-x snap-mandatory px-6 pb-4 scrollbar-hide">
                 {voiceContributions.map((contribution) => (
-                  <VoiceCard key={contribution.id} contribution={contribution} isMobile />
+                  <VoiceCard
+                    key={contribution.id}
+                    contribution={contribution}
+                    isMobile
+                    highlightPatterns={highlightPatterns}
+                  />
                 ))}
               </div>
             </div>
 
             <div className="hidden md:grid grid-cols-1 lg:grid-cols-2 gap-6 mx-auto max-w-6xl">
               {voiceContributions.map((contribution) => (
-                <VoiceCard key={contribution.id} contribution={contribution} />
+                <VoiceCard key={contribution.id} contribution={contribution} highlightPatterns={highlightPatterns} />
               ))}
             </div>
 
