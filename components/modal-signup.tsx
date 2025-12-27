@@ -2,14 +2,15 @@
 import { Button } from "@/components/ui/button"
 import { X } from "lucide-react"
 import { useRouter } from "next/navigation"
+import Link from "next/link"
 
 interface ModalSignupProps {
   isOpen: boolean
   onClose: () => void
-  type: "deck" | "recognition"
+  initialType: "deck" | "recognition"
 }
 
-export function ModalSignup({ isOpen, onClose, type }: ModalSignupProps) {
+export function ModalSignup({ isOpen, onClose, initialType }: ModalSignupProps) {
   const router = useRouter()
 
   if (!isOpen) return null
@@ -24,11 +25,14 @@ export function ModalSignup({ isOpen, onClose, type }: ModalSignupProps) {
     onClose()
   }
 
-  const title = type === "deck" ? "Create your Nomee" : "Request recognition"
+  const title = initialType === "deck" ? "Create your Nomee" : "Request recognition"
   const description =
-    type === "deck"
-      ? "Get started with your personal recognition deck"
+    initialType === "deck"
+      ? "Get your page in 60 seconds. Invite people when you're ready."
       : "Send a request link to partners you've worked with"
+
+  const primaryButtonText = initialType === "deck" ? "Create my Nomee" : "Sign up"
+  const secondaryButtonText = initialType === "deck" ? "I already have an account" : "Log in"
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fade-in">
@@ -47,20 +51,30 @@ export function ModalSignup({ isOpen, onClose, type }: ModalSignupProps) {
         <div className="space-y-3">
           <Button
             onClick={handleSignUp}
-            className="w-full bg-primary-blue hover:bg-primary-blue/90 text-white rounded-full h-12 text-base"
+            className="w-full bg-primary-blue hover:bg-primary-blue/90 text-white rounded-full h-12 text-base font-semibold"
           >
-            Sign up
+            {primaryButtonText}
           </Button>
           <Button
             onClick={handleLogin}
             variant="outline"
             className="w-full border-neutral-300 text-charcoal hover:bg-neutral-50 rounded-full h-12 text-base bg-transparent"
           >
-            Log in
+            {secondaryButtonText}
           </Button>
         </div>
 
-        <p className="text-xs text-neutral-500 text-center mt-6">Free forever. No credit card required.</p>
+        <div className="mt-6 text-center space-y-2">
+          <p className="text-xs text-neutral-500">Free forever. No credit card required.</p>
+          {initialType === "deck" && (
+            <Link
+              href="/dashboard"
+              className="text-xs text-primary-blue hover:text-primary-blue/80 hover:underline inline-block"
+            >
+              Just want to request a contribution?
+            </Link>
+          )}
+        </div>
       </div>
     </div>
   )

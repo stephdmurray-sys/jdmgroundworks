@@ -9,10 +9,13 @@ import { ArrowRight } from "lucide-react"
 import Link from "next/link"
 import { DemoCard } from "@/components/demo-card"
 import { RealNomeeSlice } from "@/components/real-nomee-slice"
+import { ChevronDown } from "lucide-react"
 
 export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [modalType, setModalType] = useState<"deck" | "recognition">("deck")
+  const [expandedOutcome, setExpandedOutcome] = useState<number | null>(null)
+  const [expandedFramework, setExpandedFramework] = useState<string | null>(null)
 
   const openModal = (type: "deck" | "recognition") => {
     setModalType(type)
@@ -106,40 +109,89 @@ export default function Home() {
               </div>
 
               {/* Three outcome blocks */}
-              <div className="space-y-10">
+              <div className="space-y-6">
                 {/* Block 1: Jobs */}
                 <div className="flex gap-4 items-start">
                   <div className="w-1.5 h-6 bg-blue-400 rounded-full flex-shrink-0 mt-0.5" />
-                  <div className="space-y-3">
+                  <div className="space-y-2 flex-1">
                     <h3 className="text-lg font-semibold text-slate-900">Get hired without over-explaining yourself</h3>
                     <p className="text-base text-slate-600 leading-relaxed">
                       Hiring managers don't struggle to assess skills — they struggle to understand what it's actually
-                      like to work with someone. Nomee gives them that answer before the interview.
+                      like to work with someone.
                     </p>
+                    {expandedOutcome === 1 && (
+                      <motion.p
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={{ duration: 0.3 }}
+                        className="text-base text-slate-600 leading-relaxed"
+                      >
+                        Nomee gives them that answer before the interview.
+                      </motion.p>
+                    )}
+                    <button
+                      onClick={() => setExpandedOutcome(expandedOutcome === 1 ? null : 1)}
+                      className="text-sm text-slate-500 hover:text-slate-700 font-medium mt-2"
+                    >
+                      {expandedOutcome === 1 ? "Show less" : "Read more"}
+                    </button>
                   </div>
                 </div>
 
                 {/* Block 2: Deals & partnerships */}
                 <div className="flex gap-4 items-start">
                   <div className="w-1.5 h-6 bg-blue-400 rounded-full flex-shrink-0 mt-0.5" />
-                  <div className="space-y-3">
+                  <div className="space-y-2 flex-1">
                     <h3 className="text-lg font-semibold text-slate-900">Win trust before the first call</h3>
                     <p className="text-base text-slate-600 leading-relaxed">
-                      Brands, partners, and collaborators choose people who feel reliable and easy to work with. Nomee
-                      lets them hear that directly — from people you've already worked with.
+                      Brands, partners, and collaborators choose people who feel reliable and easy to work with.
                     </p>
+                    {expandedOutcome === 2 && (
+                      <motion.p
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={{ duration: 0.3 }}
+                        className="text-base text-slate-600 leading-relaxed"
+                      >
+                        Nomee lets them hear that directly — from people you've already worked with.
+                      </motion.p>
+                    )}
+                    <button
+                      onClick={() => setExpandedOutcome(expandedOutcome === 2 ? null : 2)}
+                      className="text-sm text-slate-500 hover:text-slate-700 font-medium mt-2"
+                    >
+                      {expandedOutcome === 2 ? "Show less" : "Read more"}
+                    </button>
                   </div>
                 </div>
 
                 {/* Block 3: Reputation over time */}
                 <div className="flex gap-4 items-start">
                   <div className="w-1.5 h-6 bg-blue-400 rounded-full flex-shrink-0 mt-0.5" />
-                  <div className="space-y-3">
+                  <div className="space-y-2 flex-1">
                     <h3 className="text-lg font-semibold text-slate-900">Keep the praise that usually disappears</h3>
                     <p className="text-base text-slate-600 leading-relaxed">
-                      Positive feedback gets buried in emails, DMs, and past jobs. Nomee saves it, organizes it, and
-                      lets it compound as your work and relationships grow.
+                      Positive feedback gets buried in emails, DMs, and past jobs.
                     </p>
+                    {expandedOutcome === 3 && (
+                      <motion.p
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={{ duration: 0.3 }}
+                        className="text-base text-slate-600 leading-relaxed"
+                      >
+                        Nomee saves it, organizes it, and lets it compound as your work and relationships grow.
+                      </motion.p>
+                    )}
+                    <button
+                      onClick={() => setExpandedOutcome(expandedOutcome === 3 ? null : 3)}
+                      className="text-sm text-slate-500 hover:text-slate-700 font-medium mt-2"
+                    >
+                      {expandedOutcome === 3 ? "Show less" : "Read more"}
+                    </button>
                   </div>
                 </div>
               </div>
@@ -147,26 +199,32 @@ export default function Home() {
           </div>
         </section>
 
-        {/* What a Nomee shows interpretive framing block */}
-        <section className="py-20 px-6 bg-white relative overflow-hidden">
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            {/* Circle 1: "How it feels" - shifted left, lighter opacity */}
-            <div className="absolute w-[280px] h-[280px] rounded-full bg-blue-200/[0.06] -translate-x-32 -translate-y-16" />
-
-            {/* Circle 2: "What stands out" - shifted right, light opacity */}
-            <div className="absolute w-[260px] h-[260px] rounded-full bg-blue-200/[0.08] translate-x-28 -translate-y-20" />
-
-            {/* Circle 3: "What's consistent" - dominant circle, larger and higher opacity */}
-            <div className="absolute w-[340px] h-[340px] rounded-full bg-blue-200/[0.11] translate-x-2 -translate-y-8" />
+        {/* Contrast statement after outcomes section */}
+        <section className="py-12 px-6 bg-white">
+          <div className="max-w-2xl mx-auto">
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="text-xl md:text-2xl text-slate-700 text-center leading-relaxed"
+            >
+              Without Nomee, people have to take your word for it.
+              <br />
+              <span className="block mt-3">With Nomee, they hear it from others.</span>
+            </motion.p>
           </div>
+        </section>
 
-          <div className="max-w-3xl mx-auto space-y-8 text-center relative z-10">
+        {/* What a Nomee shows interpretive framing block */}
+        <section className="py-24 px-6 bg-white relative overflow-hidden">
+          <div className="max-w-4xl mx-auto space-y-12">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
-              className="space-y-6"
+              className="space-y-6 text-center"
             >
               <h2 className="text-2xl md:text-3xl font-semibold text-slate-900">What a Nomee shows</h2>
 
@@ -175,29 +233,110 @@ export default function Home() {
                 <br />
                 It's built from the people who've worked with them.
               </p>
+            </motion.div>
 
-              <div className="space-y-4 text-left max-w-2xl mx-auto pt-4">
-                <p className="text-base text-slate-700 flex items-start gap-3">
-                  <span className="w-2 h-2 rounded-full bg-blue-300/60 mt-2 flex-shrink-0" />
-                  <span>
-                    <span className="font-bold">How it feels</span> — Short reflections capture the experience of
-                    working together
-                  </span>
-                </p>
-                <p className="text-base text-slate-700 flex items-start gap-3">
-                  <span className="w-2 h-2 rounded-full bg-blue-300/60 mt-2 flex-shrink-0" />
-                  <span>
-                    <span className="font-bold">What stands out</span> — Key traits are highlighted directly from each
-                    contribution
-                  </span>
-                </p>
-                <p className="text-base text-slate-700 flex items-start gap-3">
-                  <span className="w-2 h-2 rounded-full bg-blue-300/60 mt-2 flex-shrink-0" />
-                  <span>
-                    <span className="font-bold">What's consistent</span> — Patterns emerge as more people share over
-                    time
-                  </span>
-                </p>
+            {/* Horizontal framework cards */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="grid grid-cols-1 md:grid-cols-3 gap-4"
+            >
+              {/* How it feels */}
+              <div className="relative">
+                <button
+                  onClick={() => setExpandedFramework(expandedFramework === "feels" ? null : "feels")}
+                  className="w-full p-6 border border-slate-300 rounded-xl bg-white hover:border-slate-400 hover:shadow-md transition-all duration-300 group"
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-lg font-semibold text-slate-900 group-hover:text-blue-600 transition-colors">
+                      How it feels
+                    </span>
+                    <ChevronDown
+                      className={`w-5 h-5 text-blue-600 transition-transform duration-300 ${
+                        expandedFramework === "feels" ? "rotate-180" : ""
+                      }`}
+                    />
+                  </div>
+                </button>
+                {expandedFramework === "feels" && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="mt-2 p-4 bg-slate-50 rounded-lg border border-slate-200"
+                  >
+                    <p className="text-sm text-slate-600 leading-relaxed">
+                      Short reflections capture the experience of working together
+                    </p>
+                  </motion.div>
+                )}
+              </div>
+
+              {/* What stands out */}
+              <div className="relative">
+                <button
+                  onClick={() => setExpandedFramework(expandedFramework === "stands" ? null : "stands")}
+                  className="w-full p-6 border border-slate-300 rounded-xl bg-white hover:border-slate-400 hover:shadow-md transition-all duration-300 group"
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-lg font-semibold text-slate-900 group-hover:text-blue-600 transition-colors">
+                      What stands out
+                    </span>
+                    <ChevronDown
+                      className={`w-5 h-5 text-blue-600 transition-transform duration-300 ${
+                        expandedFramework === "stands" ? "rotate-180" : ""
+                      }`}
+                    />
+                  </div>
+                </button>
+                {expandedFramework === "stands" && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="mt-2 p-4 bg-slate-50 rounded-lg border border-slate-200"
+                  >
+                    <p className="text-sm text-slate-600 leading-relaxed">
+                      Key traits are highlighted directly from each contribution
+                    </p>
+                  </motion.div>
+                )}
+              </div>
+
+              {/* What's consistent */}
+              <div className="relative">
+                <button
+                  onClick={() => setExpandedFramework(expandedFramework === "consistent" ? null : "consistent")}
+                  className="w-full p-6 border border-slate-300 rounded-xl bg-white hover:border-slate-400 hover:shadow-md transition-all duration-300 group"
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-lg font-semibold text-slate-900 group-hover:text-blue-600 transition-colors">
+                      What's consistent
+                    </span>
+                    <ChevronDown
+                      className={`w-5 h-5 text-blue-600 transition-transform duration-300 ${
+                        expandedFramework === "consistent" ? "rotate-180" : ""
+                      }`}
+                    />
+                  </div>
+                </button>
+                {expandedFramework === "consistent" && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="mt-2 p-4 bg-slate-50 rounded-lg border border-slate-200"
+                  >
+                    <p className="text-sm text-slate-600 leading-relaxed">
+                      Patterns emerge as more people share over time
+                    </p>
+                  </motion.div>
+                )}
               </div>
             </motion.div>
           </div>
@@ -346,7 +485,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="py-24 px-6 bg-slate-50">
+        <section className="py-24 px-6 bg-white">
           <div className="max-w-4xl mx-auto space-y-12">
             <motion.h2
               initial={{ opacity: 0, y: 20 }}
@@ -460,6 +599,22 @@ export default function Home() {
           </div>
         </section>
 
+        {/* Authority line before final CTA */}
+        <section className="py-12 px-6 bg-white">
+          <div className="max-w-2xl mx-auto">
+            <motion.p
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="text-sm text-slate-500 text-center font-medium"
+            >
+              This is the context people usually wait until the reference check to get.
+            </motion.p>
+          </div>
+        </section>
+
+        {/* Final CTA */}
         <section className="py-32 px-6 bg-slate-900">
           <div className="max-w-3xl mx-auto text-center space-y-8">
             <motion.h2
