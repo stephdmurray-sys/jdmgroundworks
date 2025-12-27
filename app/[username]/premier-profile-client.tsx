@@ -1,11 +1,8 @@
 "use client"
 
 import { useState, useEffect, useMemo } from "react"
-import { Badge } from "@/components/ui/badge"
-import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Share2, Copy } from "lucide-react"
-import { TestimonialGroup } from "@/components/testimonial-group"
 import { VoiceCard } from "@/components/voice-card" // Import VoiceCard component
 import { SiteHeader } from "@/components/site-header" // Import SiteHeader component
 import { AiPatternSummary } from "@/components/ai-pattern-summary"
@@ -15,10 +12,7 @@ import { categorizeTestimonials } from "@/lib/categorize-testimonials"
 import { extractRepeatedPhrases } from "@/lib/extract-repeated-phrases"
 import { dedupeContributions } from "@/lib/dedupe-contributions"
 import { extractHighlightPatterns } from "@/lib/extract-highlight-patterns"
-import { highlightQuote } from "@/lib/highlight-quote"
-import { extractKeywordsFromText } from "@/lib/extract-keywords-from-text"
 import type { Profile, Contribution, ImportedFeedback, Trait } from "@/lib/types"
-import Link from "next/link"
 
 interface PremierProfileClientProps {
   profile: Profile
@@ -43,12 +37,35 @@ export function PremierProfileClient({
   vibeLabels,
   anchorQuote,
 }: PremierProfileClientProps) {
+  console.log("[v0] PremierProfileClient: Profile loaded:", profile.slug)
+  console.log("[v0] PremierProfileClient: Total contributions received:", rawContributions.length)
+  console.log(
+    "[v0] PremierProfileClient: Contributions with audio_url:",
+    rawContributions.filter((c) => c.audio_url).length,
+  )
+  console.log(
+    "[v0] PremierProfileClient: Sample audio URLs:",
+    rawContributions
+      .filter((c) => c.audio_url)
+      .slice(0, 3)
+      .map((c) => ({ id: c.id, audio_url: c.audio_url, has_audio_url: !!c.audio_url })),
+  )
+  // </CHANGE>
+
   const contributions = dedupeContributions(rawContributions)
   const voiceContributions = contributions.filter((c) => c.audio_url && c.audio_url.trim() !== "")
+
+  console.log("[v0] PremierProfileClient: voiceContributions.length:", voiceContributions.length)
+  console.log("[v0] PremierProfileClient: voiceContributions sample:", voiceContributions.slice(0, 2))
+  // </CHANGE>
 
   const analyzableUploads = rawImportedFeedback.filter((u) => u.included_in_analysis && u.ocr_text)
   const totalUploads = rawImportedFeedback.length
   const voiceNotesCount = voiceContributions.length
+
+  console.log("[v0] PremierProfileClient: voiceNotesCount (determines section visibility):", voiceNotesCount)
+  console.log("[v0] PremierProfileClient: Will 'In Their Own Words' section render?", voiceNotesCount > 0)
+  // </CHANGE>
 
   // Filter imported feedback to remove quotes mentioning wrong owner names
   const dedupedImportedFeedback = Array.from(
@@ -397,157 +414,22 @@ export function PremierProfileClient({
                       <button
                         key={trait.label}
                         onClick={() => handleTraitSelect(isSelected ? null : trait.label)}
-                        className={`inline-flex items-center gap-2 px-3 py-2 rounded-lg border text-sm transition-all hover:shadow-sm ${
+                        className={`flex items-center px-3 py-2 rounded-full border transition-all hover:shadow-sm ${
                           styles.bg
                         } ${styles.border}`}
                       >
-                        <span className={`font-medium ${styles.text}`}>{trait.label}</span>
-                        <span className={`text-xs font-semibold ${styles.badge}`}>×{trait.count}</span>
+                        <span className={`font-semibold ${styles.text}`}>{trait.label}</span>
+                        <span className={`text-xs font-semibold px-2 py-1 rounded-full ${styles.badge}`}>
+                          ×{trait.count}
+                        </span>
                       </button>
                     )
                   })}
                 </div>
               </div>
             </div>
-
-            {selectedHeatmapTrait && (
-              <button
-                onClick={() => handleTraitSelect(null)}
-                className="text-sm text-neutral-600 hover:text-neutral-900 underline py-2 mx-auto block"
-              >
-                Clear filter
-              </button>
-            )}
           </section>
         )}
-
-        {howItFeels.length > 0 && (
-          <section className="space-y-6 py-8 md:py-10">
-            <div className="space-y-3 max-w-2xl mx-auto">
-              <h3 className="text-3xl md:text-4xl font-semibold text-neutral-900 text-center">How it feels</h3>
-              <p className="text-base md:text-lg text-neutral-600 leading-relaxed text-center max-w-[65ch] mx-auto">
-                Day-to-day collaboration style and working patterns
-              </p>
-            </div>
-
-            <div className="flex justify-center">
-              <RelationshipFilter
-                contributions={howItFeels}
-                selectedCategory={howItFeelsRelationshipFilter}
-                onCategoryChange={setHowItFeelsRelationshipFilter}
-              />
-            </div>
-
-            {filteredHowItFeels.length > 0 ? (
-              <TestimonialGroup
-                title=""
-                contributions={filteredHowItFeels}
-                selectedTraits={selectedTraits}
-                hoveredTrait={hoveredTrait}
-                profileName={profile.full_name}
-                highlightPatterns={highlightPatterns}
-              />
-            ) : (
-              <div className="text-center py-8">
-                <p className="text-neutral-600">
-                  No perspectives yet from {howItFeelsRelationshipFilter.toLowerCase()}.
-                </p>
-                <button
-                  onClick={() => setHowItFeelsRelationshipFilter("All")}
-                  className="mt-2 text-blue-600 hover:text-blue-700 text-sm font-medium"
-                >
-                  View all perspectives
-                </button>
-              </div>
-            )}
-          </section>
-        )}
-
-        {importedFeedback.length > 0 && (
-          <>
-            <div className="border-t border-neutral-100" />
-            <section className="space-y-8 py-8 md:py-10">
-              <div className="space-y-3 max-w-2xl mx-auto">
-                <h3 className="text-3xl md:text-4xl font-semibold text-neutral-900 text-center">Uploaded proof</h3>
-                <p className="text-sm text-neutral-600 text-center">
-                  Screenshots and highlights {profile.full_name?.split(" ")[0] || "they"} saved.
-                </p>
-              </div>
-
-              <div className="relative overflow-hidden -mx-6 lg:-mx-8">
-                <div className="flex gap-5 animate-marquee-left-slow hover:[animation-play-state:paused] px-6 lg:px-8">
-                  {importedFeedback.map((feedback, index) => {
-                    const keywords = extractKeywordsFromText(feedback.ai_extracted_excerpt || "", feedback.traits || [])
-                    const patterns = keywords
-                      .filter((k) => typeof k === "string" && k.trim().length > 0)
-                      .map((keyword) => ({
-                        phrase: keyword,
-                        tier: "theme" as const,
-                        frequency: 1,
-                      }))
-
-                    return (
-                      <Card
-                        key={`${feedback.id}-${index}`}
-                        className="p-6 border border-neutral-200 bg-white flex-shrink-0 w-[340px] hover:shadow-lg transition-all duration-300 rounded-2xl"
-                      >
-                        <div className="mb-4 flex items-start justify-between gap-3">
-                          <div className="flex-1">
-                            <p className="text-sm font-semibold text-neutral-900">{feedback.giver_name}</p>
-                            {feedback.giver_company && (
-                              <p className="text-xs text-neutral-600 mt-0.5">{feedback.giver_company}</p>
-                            )}
-                            {feedback.giver_role && (
-                              <p className="text-xs text-neutral-500 mt-0.5">{feedback.giver_role}</p>
-                            )}
-                          </div>
-                          {feedback.source_type && (
-                            <Badge
-                              variant="secondary"
-                              className="text-xs bg-blue-100/40 text-blue-800 border-blue-200/40"
-                            >
-                              {feedback.source_type}
-                            </Badge>
-                          )}
-                        </div>
-
-                        {feedback.ai_extracted_excerpt && (
-                          <div className="mb-4 text-sm text-neutral-700 leading-relaxed italic max-w-[72ch]">
-                            "{highlightQuote(feedback.ai_extracted_excerpt, patterns, 5)}"
-                          </div>
-                        )}
-
-                        {feedback.traits && feedback.traits.length > 0 && (
-                          <div className="flex flex-wrap gap-1.5 mt-3">
-                            {feedback.traits.slice(0, 3).map((trait, idx) => (
-                              <Badge
-                                key={`${feedback.id}-trait-${idx}`}
-                                variant="secondary"
-                                className="text-xs px-2 py-0.5 bg-neutral-100/80 text-neutral-700 border-neutral-200/40"
-                              >
-                                {trait}
-                              </Badge>
-                            ))}
-                          </div>
-                        )}
-                      </Card>
-                    )
-                  })}
-                </div>
-              </div>
-            </section>
-          </>
-        )}
-
-        {/* CTA */}
-        <section className="text-center py-16">
-          <Link
-            href="/auth/signup"
-            className="inline-block rounded-full bg-neutral-900 px-10 py-4 text-base font-semibold text-white transition-all hover:bg-neutral-800 hover:scale-105 hover:shadow-xl"
-          >
-            Create your Nomee
-          </Link>
-        </section>
       </div>
     </div>
   )

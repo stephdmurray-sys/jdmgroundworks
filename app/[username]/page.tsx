@@ -54,6 +54,24 @@ export default async function PublicNomeePage({ params }: { params: Promise<{ us
 
     const featuredContributions = contributions || []
 
+    console.log("[v0] PublicNomeePage: Total contributions fetched:", featuredContributions.length)
+    console.log(
+      "[v0] PublicNomeePage: Contributions with audio_url field:",
+      featuredContributions.filter((c) => c.audio_url).length,
+    )
+    console.log(
+      "[v0] PublicNomeePage: Sample contributions with audio:",
+      featuredContributions
+        .filter((c) => c.audio_url)
+        .slice(0, 3)
+        .map((c) => ({
+          id: c.id,
+          contributor_name: c.contributor_name,
+          audio_url: c.audio_url ? "EXISTS" : "NULL",
+          audio_url_length: c.audio_url?.length,
+        })),
+    )
+
     const { data: importedFeedback } = await supabase
       .from("imported_feedback")
       .select("*")
