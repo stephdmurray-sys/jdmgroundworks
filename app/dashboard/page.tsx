@@ -30,8 +30,8 @@ export default async function DashboardPage() {
     .order("created_at", { ascending: false })
 
   const allContributions = contributions || []
-  const confirmedContributions = allContributions.filter((c) => c.status === "confirmed")
-  const pendingContributions = allContributions.filter((c) => c.status === "pending_confirmation")
+  const confirmedContributions = allContributions
+  const pendingContributions: any[] = []
 
   const publicUrl = profile.username ? `https://www.nomee.co/${profile.username}` : null
   const collectionUrl = profile.username ? `https://www.nomee.co/c/${profile.username}` : null

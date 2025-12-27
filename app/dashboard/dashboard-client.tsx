@@ -34,10 +34,10 @@ export default function DashboardClient({
 
   const plan = profile.plan || "free"
   const featuredLimit = plan === "free" ? 1 : plan === "starter" ? 3 : Number.POSITIVE_INFINITY
-  const featuredCount = contributions.filter((c) => c.is_featured && c.status === "confirmed").length
+  const featuredCount = contributions.filter((c) => c.is_featured).length
   const canAddMoreFeatured = featuredCount < featuredLimit
 
-  const confirmedContributions = contributions.filter((c) => c.status === "confirmed")
+  const confirmedContributions = contributions
   const phraseFrequencies = calculatePhraseFrequencies(confirmedContributions)
   const topPhrases = getTopPhrases(confirmedContributions)
 
@@ -95,11 +95,11 @@ export default function DashboardClient({
       <div className="mb-12 grid grid-cols-1 md:grid-cols-4 gap-6">
         <Card className="p-6">
           <div className="mb-2 text-3xl font-bold text-neutral-900">{confirmedCount}</div>
-          <div className="text-sm font-medium text-neutral-600">Confirmed Perspectives</div>
+          <div className="text-sm font-medium text-neutral-600">Total Perspectives</div>
         </Card>
         <Card className="p-6">
           <div className="mb-2 text-3xl font-bold text-amber-600">{pendingCount}</div>
-          <div className="text-sm font-medium text-neutral-600">Pending Confirmation</div>
+          <div className="text-sm font-medium text-neutral-600">Pending (if any)</div>
         </Card>
         <Card className="p-6 border-2 border-blue-200 bg-blue-50/30">
           <div className="mb-2 text-3xl font-bold text-blue-900">{featuredCount}</div>
@@ -256,30 +256,17 @@ export default function DashboardClient({
         {contributions.length > 0 ? (
           <div className="space-y-4">
             {contributions.map((contribution) => {
-              const isConfirmed = contribution.status === "confirmed"
               const isFeatured = contribution.is_featured
-              const submissionPhrases = isConfirmed ? extractSubmissionPhrases(contribution) : []
+              const submissionPhrases = extractSubmissionPhrases(contribution)
 
               return (
                 <Card
                   key={contribution.id}
-                  className={`p-6 ${
-                    isFeatured && isConfirmed
-                      ? "border-2 border-blue-300 bg-blue-50/40"
-                      : contribution.status === "pending" || contribution.status === "pending_confirmation"
-                        ? "border-amber-200 bg-amber-50/30"
-                        : ""
-                  }`}
+                  className={`p-6 ${isFeatured ? "border-2 border-blue-300 bg-blue-50/40" : ""}`}
                 >
                   <div className="flex items-start justify-between mb-4">
                     <div>
-                      {contribution.status === "pending" ||
-                        (contribution.status === "pending_confirmation" && (
-                          <Badge variant="secondary" className="bg-amber-100 text-amber-800">
-                            Awaiting Email Confirmation
-                          </Badge>
-                        ))}
-                      {isFeatured && isConfirmed && (
+                      {isFeatured && (
                         <Badge variant="default" className="bg-blue-600">
                           <Star className="mr-1 h-3 w-3 fill-current" />
                           Featured
@@ -287,28 +274,26 @@ export default function DashboardClient({
                       )}
                     </div>
 
-                    {isConfirmed && (
-                      <Button
-                        size="sm"
-                        variant={isFeatured ? "outline" : "default"}
-                        onClick={() => handleToggleFeatured(contribution.id, isFeatured)}
-                        disabled={togglingId === contribution.id || (!isFeatured && !canAddMoreFeatured)}
-                      >
-                        {togglingId === contribution.id ? (
-                          "..."
-                        ) : isFeatured ? (
-                          <>
-                            <Star className="mr-1 h-3 w-3 fill-current" />
-                            Unfeature
-                          </>
-                        ) : (
-                          <>
-                            <Star className="mr-1 h-3 w-3" />
-                            Feature
-                          </>
-                        )}
-                      </Button>
-                    )}
+                    <Button
+                      size="sm"
+                      variant={isFeatured ? "outline" : "default"}
+                      onClick={() => handleToggleFeatured(contribution.id, isFeatured)}
+                      disabled={togglingId === contribution.id || (!isFeatured && !canAddMoreFeatured)}
+                    >
+                      {togglingId === contribution.id ? (
+                        "..."
+                      ) : isFeatured ? (
+                        <>
+                          <Star className="mr-1 h-3 w-3 fill-current" />
+                          Unfeature
+                        </>
+                      ) : (
+                        <>
+                          <Star className="mr-1 h-3 w-3" />
+                          Feature
+                        </>
+                      )}
+                    </Button>
                   </div>
 
                   {contribution.voice_url && (
@@ -320,7 +305,7 @@ export default function DashboardClient({
                   <p className="mb-4 text-base leading-relaxed text-neutral-900">{contribution.written_note}</p>
 
                   {/* Phrase Highlights */}
-                  {isConfirmed && submissionPhrases.length > 0 && (
+                  {submissionPhrases.length > 0 && (
                     <div className="mb-4 flex flex-wrap gap-2">
                       {submissionPhrases.map((phrase, idx) => {
                         const frequency = phraseFrequencies.get(phrase) || 1
@@ -347,7 +332,7 @@ export default function DashboardClient({
                     )}
                   </div>
 
-                  {!isFeatured && !canAddMoreFeatured && isConfirmed && (
+                  {!isFeatured && !canAddMoreFeatured && (
                     <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
                       <p className="text-sm text-blue-900">
                         You've reached your {featuredLimit} featured perspective limit.{" "}

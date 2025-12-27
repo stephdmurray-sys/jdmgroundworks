@@ -50,8 +50,7 @@ export default async function PublicNomeePage({ params }: { params: Promise<{ us
       .from("contributions")
       .select("*")
       .eq("owner_id", profile.id)
-      .eq("status", "confirmed")
-      .order("confirmed_at", { ascending: false })
+      .order("created_at", { ascending: false })
 
     const featuredContributions = contributions || []
 
