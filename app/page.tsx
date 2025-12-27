@@ -40,7 +40,7 @@ export default function Home() {
                 <p className="text-lg text-slate-500 font-medium">Real experiences. Highlighted patterns. Over time.</p>
 
                 <p className="text-xl md:text-2xl text-slate-700 leading-relaxed">
-                  A Nomee shows what it's really like to work with you — from real people, over time.
+                  A Nomee shows how it feels to work with you — from real people, over time.
                 </p>
 
                 <p className="text-lg text-slate-600">Takes ~2 minutes to contribute.</p>
@@ -99,6 +99,42 @@ export default function Home() {
           </div>
         </section>
 
+        {/* What a Nomee shows interpretive framing block */}
+        <section className="py-20 px-6 bg-white">
+          <div className="max-w-3xl mx-auto space-y-8 text-center">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="space-y-6"
+            >
+              <h2 className="text-2xl md:text-3xl font-semibold text-slate-900">What a Nomee shows</h2>
+
+              <p className="text-lg text-slate-700 leading-relaxed">
+                A Nomee isn't written by the person.
+                <br />
+                It's built from the people who've worked with them.
+              </p>
+
+              <div className="space-y-4 text-left max-w-2xl mx-auto pt-4">
+                <p className="text-base text-slate-700">
+                  <span className="font-semibold">How it feels</span> — Short reflections capture the experience of
+                  working together
+                </p>
+                <p className="text-base text-slate-700">
+                  <span className="font-semibold">What stands out</span> — Key traits are highlighted directly from each
+                  contribution
+                </p>
+                <p className="text-base text-slate-700">
+                  <span className="font-semibold">What's consistent</span> — Patterns emerge as more people share over
+                  time
+                </p>
+              </div>
+            </motion.div>
+          </div>
+        </section>
+
         <section className="py-20 px-6 bg-slate-50">
           <div className="max-w-7xl mx-auto space-y-8">
             <motion.div
@@ -112,7 +148,7 @@ export default function Home() {
                 Shared by people who've worked with them
               </h2>
               <p className="text-sm text-slate-500 font-medium">
-                Highlights are pulled directly from each contribution.
+                Each contribution highlights the traits and moments that stood out.
               </p>
               <p className="text-lg text-slate-600 max-w-2xl mx-auto">
                 Real perspectives from collaborators, clients, and team members.
@@ -190,7 +226,7 @@ export default function Home() {
             >
               <h2 className="text-3xl md:text-4xl font-semibold text-slate-900">What stands out, consistently</h2>
               <p className="text-sm text-slate-500 max-w-2xl mx-auto leading-relaxed">
-                These traits weren't selected — they emerged as more people shared their experience.
+                These traits appear repeatedly as more people share their experience.
               </p>
             </motion.div>
 
