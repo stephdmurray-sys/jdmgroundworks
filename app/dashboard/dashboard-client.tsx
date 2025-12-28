@@ -5,7 +5,7 @@ import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import Link from "next/link"
 import { useState } from "react"
-import { Copy, Check, Star } from "lucide-react"
+import { Copy, Check, Star, ExternalLink } from "lucide-react"
 import { IntimateAudioPlayer } from "@/components/intimate-audio-player"
 import { ImportedFeedbackUploadCard } from "@/components/imported-feedback-upload-card"
 import { extractSubmissionPhrases, calculatePhraseFrequencies, getTopPhrases } from "@/lib/extract-submission-phrases"
@@ -183,25 +183,32 @@ export default function DashboardClient({
                 readOnly
                 className="w-full rounded-lg border px-3 py-2 text-sm bg-neutral-100"
               />
-              <Button onClick={handleCopyCollection} className="w-full" variant="default">
-                {copiedCollection ? (
-                  <>
-                    <Check className="mr-2 h-4 w-4" />
-                    Copied!
-                  </>
-                ) : (
-                  <>
-                    <Copy className="mr-2 h-4 w-4" />
-                    Copy Link
-                  </>
-                )}
-              </Button>
+              <div className="flex gap-2">
+                <Button onClick={handleCopyCollection} className="flex-1" variant="default">
+                  {copiedCollection ? (
+                    <>
+                      <Check className="mr-2 h-4 w-4" />
+                      Copied!
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="mr-2 h-4 w-4" />
+                      Copy Link
+                    </>
+                  )}
+                </Button>
+                <Button variant="outline" asChild>
+                  <a href={collectionUrl} target="_blank" rel="noopener noreferrer">
+                    <ExternalLink className="h-4 w-4" />
+                  </a>
+                </Button>
+              </div>
             </div>
           ) : (
             <div className="space-y-3">
               <p className="text-sm text-neutral-700">Set a username to activate your collection link.</p>
-              <Button variant="default" asChild className="w-full">
-                <Link href="/dashboard/settings">Set username</Link>
+              <Button variant="default" onClick={() => setShowOnboarding(true)} className="w-full">
+                Set username
               </Button>
             </div>
           )}
