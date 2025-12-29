@@ -270,20 +270,6 @@ export function PremierProfileClient({
               <div className="h-full rounded-xl border border-neutral-200 bg-neutral-50/50 p-6">
                 <h3 className="text-lg font-semibold text-neutral-900 mb-4">{firstName}'s vibe</h3>
                 {(() => {
-                  const contributorsWithVibes = new Set(
-                    rawContributions
-                      .filter((c) => c.traits_category4 && c.traits_category4.length > 0)
-                      .map((c) => c.contributor_id || c.contributor_name),
-                  ).size
-
-                  if (contributorsWithVibes < 2) {
-                    return (
-                      <p className="text-sm text-neutral-500 leading-relaxed">
-                        Vibe appears once 2+ people contribute.
-                      </p>
-                    )
-                  }
-
                   if (profileAnalysis.vibeSignals.length === 0) {
                     return (
                       <p className="text-sm text-neutral-500 leading-relaxed">
@@ -291,6 +277,8 @@ export function PremierProfileClient({
                       </p>
                     )
                   }
+
+                  const totalVibeMentions = profileAnalysis.vibeSignals.reduce((sum, v) => sum + v.count, 0)
 
                   return (
                     <div className="space-y-3">
@@ -303,7 +291,7 @@ export function PremierProfileClient({
                           <div className="flex items-center gap-2">
                             <span className="text-xs font-medium text-purple-700">×{vibe.count}</span>
                             <span className="text-xs text-purple-500">
-                              ({Math.round((vibe.count / contributorsWithVibes) * 100)}%)
+                              ({Math.round((vibe.count / totalVibeMentions) * 100)}%)
                             </span>
                           </div>
                         </div>
@@ -593,7 +581,7 @@ export function PremierProfileClient({
                 {importedFeedback.map((feedback) => (
                   <div
                     key={feedback.id}
-                    className="rounded-xl p-6 bg-white border border-neutral-200 hover:border-neutral-300 hover:shadow-sm transition-all"
+                    className="rounded-xl p-6 bg-white border border-neutral-200 hover:border-neutral-300 hover:shadow-sm transition-all relative"
                   >
                     <p className="text-sm leading-relaxed text-neutral-700 mb-4">{feedback.ai_extracted_excerpt}</p>
 
@@ -609,10 +597,20 @@ export function PremierProfileClient({
                       )}
                     </div>
 
-                    {feedback.source && (
-                      <div className="mt-3 pt-3 border-t border-neutral-100">
-                        <span className="inline-flex items-center px-2.5 py-1 rounded-full bg-neutral-100 text-neutral-700 text-xs font-medium border border-neutral-200">
-                          {feedback.source}
+                    {feedback.source_type && (
+                      <div className="absolute bottom-4 right-4">
+                        <span
+                          className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border ${
+                            feedback.source_type === "Email"
+                              ? "bg-neutral-900 text-white border-neutral-900"
+                              : feedback.source_type === "LinkedIn"
+                                ? "bg-blue-600 text-white border-blue-600"
+                                : feedback.source_type === "DM"
+                                  ? "bg-black text-white border-black"
+                                  : "bg-neutral-100 text-neutral-700 border-neutral-200"
+                          }`}
+                        >
+                          {feedback.source_type}
                         </span>
                       </div>
                     )}

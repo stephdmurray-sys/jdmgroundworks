@@ -12,7 +12,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    const { imageUrl, profileId } = await request.json()
+    const { imageUrl, profileId, sourceType } = await request.json()
 
     if (!imageUrl || !profileId) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 })
@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
         giver_name: "Processing...",
         giver_company: null,
         giver_role: null,
-        source_type: null,
+        source_type: sourceType || null,
         approx_date: null,
         traits: [],
         confidence_score: null,
@@ -54,7 +54,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Failed to create record" }, { status: 500 })
     }
 
-    console.log("[v0] Created imported_feedback record:", importedFeedback.id)
+    console.log("[v0] Created imported_feedback record:", importedFeedback.id, "with source:", sourceType || "none")
 
     return NextResponse.json({
       id: importedFeedback.id,

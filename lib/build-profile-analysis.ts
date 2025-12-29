@@ -24,25 +24,6 @@ export interface ProfileAnalysis {
   confidenceLevel: ConfidenceLevel
 }
 
-const LOCKED_VIBE_LIST = [
-  "Energized",
-  "Focused",
-  "Clear",
-  "Motivated",
-  "Inspired",
-  "Confident",
-  "Calm",
-  "Supported",
-  "Seen",
-  "Safe",
-  "Elevated",
-  "Unstuck",
-]
-
-function isValidVibe(label: string): boolean {
-  return LOCKED_VIBE_LIST.some((v) => v.toLowerCase() === label.toLowerCase())
-}
-
 function getConfidenceLevel(contributionCount: number, uploadCount: number): ConfidenceLevel {
   const totalCount = contributionCount + uploadCount
 
@@ -118,9 +99,6 @@ export async function buildProfileAnalysis(profileId: string): Promise<ProfileAn
       traitArray.forEach((traitValue: string) => {
         if (!traitValue?.trim()) return
 
-        // Skip if this is actually a vibe (shouldn't be in cat1-3, but safety check)
-        if (isValidVibe(traitValue)) return
-
         // Try to find the canonical label from TRAIT_CATEGORIES
         let foundLabel: string | null = null
         for (const [categoryKey, category] of Object.entries(TRAIT_CATEGORIES)) {
@@ -155,26 +133,27 @@ export async function buildProfileAnalysis(profileId: string): Promise<ProfileAn
     vibeArray.forEach((vibeValue: string) => {
       if (!vibeValue?.trim()) return
 
-      // Check if it's in the locked vibe list
-      const matchedVibe = LOCKED_VIBE_LIST.find((v) => v.toLowerCase() === vibeValue.toLowerCase())
+      // Try to find the canonical label from TRAIT_CATEGORIES.the_vibe
+      let foundLabel: string | null = null
+      const vibeTrait = TRAIT_CATEGORIES.the_vibe?.traits.find(
+        (t) => t.id.toLowerCase() === vibeValue.toLowerCase() || t.label.toLowerCase() === vibeValue.toLowerCase(),
+      )
 
-      if (matchedVibe) {
-        vibeCounts[matchedVibe] = (vibeCounts[matchedVibe] || 0) + 1
+      if (vibeTrait) {
+        foundLabel = vibeTrait.label
+      } else {
+        // If not found in trait categories, use the value as-is (capitalized)
+        foundLabel = vibeValue.charAt(0).toUpperCase() + vibeValue.slice(1)
       }
-      // If not in locked list, check TRAIT_CATEGORIES.the_vibe as fallback
-      else {
-        const vibeTrait = TRAIT_CATEGORIES.the_vibe?.traits.find(
-          (t) => t.id.toLowerCase() === vibeValue.toLowerCase() || t.label.toLowerCase() === vibeValue.toLowerCase(),
-        )
-        if (vibeTrait && isValidVibe(vibeTrait.label)) {
-          vibeCounts[vibeTrait.label] = (vibeCounts[vibeTrait.label] || 0) + 1
-        }
+
+      if (foundLabel) {
+        vibeCounts[foundLabel] = (vibeCounts[foundLabel] || 0) + 1
       }
     })
   })
 
   const vibeSignals: VibeSignal[] = Object.entries(vibeCounts)
-    .filter(([label]) => label?.trim() && isValidVibe(label))
+    .filter(([label]) => label?.trim())
     .sort(([, a], [, b]) => b - a)
     .map(([label, count]) => ({ label, count }))
 

@@ -7,6 +7,7 @@ import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Upload, X, Loader2, CheckCircle2, AlertCircle, RefreshCw } from "lucide-react"
 import { useRouter } from "next/navigation"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 type UploadFormProps = {
   profileId: string
@@ -20,7 +21,18 @@ type UploadFile = {
   status: "pending" | "uploading" | "uploaded" | "processing" | "ready_for_review" | "error_upload"
   error?: string
   id?: string
+  sourceType?: string
 }
+
+const SOURCE_OPTIONS = [
+  { value: "Email", label: "Email" },
+  { value: "LinkedIn", label: "LinkedIn" },
+  { value: "DM", label: "Direct Message" },
+  { value: "Slack", label: "Slack" },
+  { value: "Teams", label: "Microsoft Teams" },
+  { value: "Text", label: "Text Message" },
+  { value: "Other", label: "Other" },
+]
 
 export default function UploadForm({ profileId, currentCount, limit }: UploadFormProps) {
   const router = useRouter()
@@ -45,6 +57,7 @@ export default function UploadForm({ profileId, currentCount, limit }: UploadFor
       file,
       preview: URL.createObjectURL(file),
       status: "pending" as const,
+      sourceType: undefined,
     }))
 
     setFiles((prev) => [...prev, ...filesToAdd])
@@ -78,14 +91,12 @@ export default function UploadForm({ profileId, currentCount, limit }: UploadFor
     const fileData = files[index]
     if (!fileData) return
 
-    // Reset status to pending and trigger upload
     setFiles((prev) => {
       const updated = [...prev]
       updated[index] = { ...updated[index], status: "pending", error: undefined }
       return updated
     })
 
-    // Trigger upload for this file
     await uploadSingleFile(index)
   }
 
@@ -127,6 +138,7 @@ export default function UploadForm({ profileId, currentCount, limit }: UploadFor
         body: JSON.stringify({
           imageUrl: url,
           profileId,
+          sourceType: fileData.sourceType || null,
         }),
       })
 
@@ -153,7 +165,6 @@ export default function UploadForm({ profileId, currentCount, limit }: UploadFor
         }),
       }).catch((err) => {
         console.error("[v0] Background processing error:", err)
-        // Don't fail the upload - just mark for review
       })
 
       setTimeout(() => {
@@ -193,6 +204,14 @@ export default function UploadForm({ profileId, currentCount, limit }: UploadFor
   const isProcessing = files.some((f) => f.status === "uploading" || f.status === "uploaded")
 
   const remainingDisplay = limit === Number.POSITIVE_INFINITY ? "Unlimited" : `${remainingUploads} remaining`
+
+  const updateSourceType = (index: number, sourceType: string) => {
+    setFiles((prev) => {
+      const updated = [...prev]
+      updated[index] = { ...updated[index], sourceType }
+      return updated
+    })
+  }
 
   return (
     <div className="space-y-6">
@@ -253,9 +272,26 @@ export default function UploadForm({ profileId, currentCount, limit }: UploadFor
                     alt={fileData.file.name}
                     className="h-20 w-20 object-cover rounded border"
                   />
-                  <div className="flex-1 min-w-0">
+                  <div className="flex-1 min-w-0 space-y-2">
                     <p className="text-sm font-medium text-neutral-900 truncate">{fileData.file.name}</p>
                     <p className="text-xs text-neutral-500">{(fileData.file.size / 1024 / 1024).toFixed(2)} MB</p>
+
+                    {(fileData.status === "pending" || fileData.status === "error_upload") && (
+                      <div className="pt-1">
+                        <Select value={fileData.sourceType} onValueChange={(value) => updateSourceType(index, value)}>
+                          <SelectTrigger className="h-8 text-xs">
+                            <SelectValue placeholder="Source (optional)" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {SOURCE_OPTIONS.map((option) => (
+                              <SelectItem key={option.value} value={option.value} className="text-xs">
+                                {option.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    )}
 
                     <div className="mt-2">
                       {fileData.status === "pending" && (
