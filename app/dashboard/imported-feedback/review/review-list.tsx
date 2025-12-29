@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useState } from "react"
-import { CheckCircle2, AlertCircle, Trash2, Eye, EyeOff } from "lucide-react"
+import { CheckCircle2, AlertCircle, Trash2, Eye, EyeOff, RefreshCw } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { LOCKED_TRAITS, SOURCE_TYPES, type ImportedFeedback } from "@/lib/imported-feedback-traits"
 import { useToast } from "@/hooks/use-toast"
@@ -192,6 +192,42 @@ export default function ReviewList({ pending, approved, profileId }: ReviewListP
     }
   }
 
+  const handleRetryExtraction = async (feedbackId: string, imageUrl: string) => {
+    setProcessingId(feedbackId)
+    try {
+      const { data: profile } = await fetch("/api/user/profile").then((r) => r.json())
+
+      const response = await fetch("/api/imported-feedback/process", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          imageUrl,
+          profileId: profile.id,
+          recordId: feedbackId,
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error("Extraction failed")
+      }
+
+      toast({
+        title: "Extraction retried",
+        description: "Check the updated fields below.",
+      })
+
+      router.refresh()
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Retry failed",
+        description: "You can still edit details manually.",
+      })
+    } finally {
+      setProcessingId(null)
+    }
+  }
+
   return (
     <div className="space-y-12">
       {/* Pending Review Section */}
@@ -208,9 +244,11 @@ export default function ReviewList({ pending, approved, profileId }: ReviewListP
               return (
                 <Card key={feedback.id} className={`p-6 ${requiresReview ? "border-amber-300 bg-amber-50/30" : ""}`}>
                   {requiresReview && (
-                    <div className="mb-4 flex items-center gap-2 text-sm text-amber-700">
-                      <AlertCircle className="h-4 w-4" />
-                      Low confidence extraction - please review carefully
+                    <div className="mb-4 flex items-center gap-2 rounded-lg bg-blue-50 p-3 text-sm text-blue-800">
+                      <AlertCircle className="h-4 w-4 flex-shrink-0" />
+                      <span>
+                        We pulled what we could — confirm the details below. You can publish with minimal info.
+                      </span>
                     </div>
                   )}
 
@@ -252,19 +290,31 @@ export default function ReviewList({ pending, approved, profileId }: ReviewListP
                           <div className="grid grid-cols-2 gap-4">
                             <div>
                               <Label className="mb-1 block text-sm font-medium">Giver Name</Label>
-                              <p className="text-sm text-neutral-700">{feedback.giver_name}</p>
+                              <p className="text-sm text-neutral-700">
+                                {feedback.giver_name === "Review needed" || feedback.giver_name === "Unknown"
+                                  ? "Not detected — add manually if known"
+                                  : feedback.giver_name}
+                              </p>
                             </div>
                             <div>
                               <Label className="mb-1 block text-sm font-medium">Company</Label>
-                              <p className="text-sm text-neutral-700">{feedback.giver_company || "—"}</p>
+                              <p className="text-sm text-neutral-700">{feedback.giver_company || "Not detected"}</p>
                             </div>
                             <div>
                               <Label className="mb-1 block text-sm font-medium">Role</Label>
-                              <p className="text-sm text-neutral-700">{feedback.giver_role || "—"}</p>
+                              <p className="text-sm text-neutral-700">{feedback.giver_role || "Not detected"}</p>
                             </div>
                             <div>
                               <Label className="mb-1 block text-sm font-medium">Source</Label>
-                              <p className="text-sm text-neutral-700">{feedback.source_type || "—"}</p>
+                              <div className="flex items-center gap-2">
+                                {feedback.source_type ? (
+                                  <Badge variant="secondary" className="text-xs">
+                                    {feedback.source_type}
+                                  </Badge>
+                                ) : (
+                                  <p className="text-sm text-neutral-500">Not detected</p>
+                                )}
+                              </div>
                             </div>
                           </div>
 
@@ -284,6 +334,15 @@ export default function ReviewList({ pending, approved, profileId }: ReviewListP
                           </div>
 
                           <div className="flex gap-2 pt-4">
+                            <Button
+                              onClick={() => handleRetryExtraction(feedback.id, feedback.raw_image_url)}
+                              variant="outline"
+                              size="sm"
+                              disabled={isProcessing}
+                            >
+                              <RefreshCw className="mr-2 h-4 w-4" />
+                              Retry Extraction
+                            </Button>
                             <Button onClick={() => handleEdit(feedback)} variant="outline" className="flex-1">
                               Edit Details
                             </Button>

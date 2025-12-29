@@ -1,15 +1,59 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { createClient } from "@/lib/supabase/server"
+import { createAdminClient } from "@/lib/supabase/admin"
 import { generateText } from "ai"
 import { LOCKED_TRAITS } from "@/lib/imported-feedback-traits"
 import { redactSensitiveData } from "@/lib/redact-sensitive-data"
 
-// OCR function using AI SDK for text extraction
-async function extractTextFromImage(imageUrl: string): Promise<{ text: string; confidence: number }> {
+async function extractFeedbackFromImage(imageUrl: string): Promise<{
+  excerpt: string | null
+  giverName: string
+  giverCompany: string | null
+  giverRole: string | null
+  sourceType: string | null
+  approxDate: string | null
+  traits: string[]
+  rawExtractedText: string
+  confidence: {
+    overall: number
+    giverName: number
+    excerpt: number
+    source: number
+  }
+}> {
   try {
-    // Use AI SDK with vision model for OCR
+    console.log("[SCREENSHOT_EXTRACTION] Starting vision-based extraction for:", imageUrl)
+
+    const systemPrompt = `You are a feedback extraction assistant. Extract structured data from this screenshot.
+
+LOCKED TRAITS (select UP TO 3 that apply): ${LOCKED_TRAITS.join(", ")}
+
+Return ONLY valid JSON with this exact structure:
+{
+  "excerpt": "1-2 sentence verbatim positive quote from the feedback, or null if not found",
+  "giverName": "Full name of person who wrote this, or 'Unknown' if not clear",
+  "giverCompany": "Company/organization name, or null",
+  "giverRole": "Job title/role, or null",
+  "sourceType": "One of: LinkedIn, Email, Slack, Text, DM, Teams, Other, or null",
+  "approxDate": "YYYY-MM-DD format if visible, or null",
+  "traits": ["trait1", "trait2"],
+  "rawExtractedText": "All visible text from the image for debugging",
+  "confidence": {
+    "overall": 0.85,
+    "giverName": 0.9,
+    "excerpt": 0.8,
+    "source": 0.7
+  }
+}
+
+RULES:
+- Extract verbatim, don't rewrite
+- Only use traits from the LOCKED list
+- Confidence 0-1 scale (1 = very confident)
+- If you can see clear positive feedback, set overall confidence >= 0.7
+- If screenshot is unclear/not feedback, set overall < 0.5`
+
     const { text } = await generateText({
-      model: "openai/gpt-4o-mini",
+      model: "openai/gpt-4o",
       messages: [
         {
           role: "user",
@@ -20,81 +64,16 @@ async function extractTextFromImage(imageUrl: string): Promise<{ text: string; c
             },
             {
               type: "text",
-              text: "Extract all text from this image. Return only the extracted text, nothing else. If this appears to be feedback, a message, or a review, preserve the original formatting and structure.",
+              text: systemPrompt,
             },
           ],
         },
       ],
     })
 
-    // Simple confidence heuristic: longer text = higher confidence
-    const wordCount = text.trim().split(/\s+/).length
-    const confidence = Math.min(wordCount / 50, 1)
+    console.log("[SCREENSHOT_EXTRACTION] Raw AI response:", text)
 
-    return { text, confidence: Number(confidence.toFixed(2)) }
-  } catch (error) {
-    console.error("[v0] OCR extraction error:", error)
-    throw new Error("Failed to extract text from image")
-  }
-}
-
-// AI extraction with strict bounded prompt
-async function extractStructuredFeedback(ocrText: string): Promise<{
-  excerpt: string | null
-  giverName: string
-  giverCompany: string | null
-  giverRole: string | null
-  sourceType: string | null
-  approxDate: string | null
-  traits: string[]
-  confidence: number
-}> {
-  try {
-    const systemPrompt = `You are a deterministic extraction assistant. Extract ONLY the following from feedback text:
-
-1. Positive excerpt (1-2 sentences, verbatim or lightly trimmed, must be genuinely positive)
-2. Giver name (or "Not specified")
-3. Company/organization name (if present)
-4. Giver role/title (if present)
-5. Source type: one of [Email, LinkedIn, DM, Review, Other]
-6. Approximate date (YYYY-MM-DD format if present)
-7. Traits: Select UP TO 3 from this LOCKED list ONLY: ${LOCKED_TRAITS.join(", ")}
-8. Confidence score (0-1, based on clarity and positivity)
-
-STRICT RULES:
-- Do NOT invent traits outside the locked list
-- Do NOT rewrite creatively, only extract verbatim or trim lightly
-- If no positive content found, set excerpt to null and confidence < 0.6
-- If confidence < 0.6, the item requires manual review
-- Extract ONLY what is clearly present, do not infer
-
-Return valid JSON with this structure:
-{
-  "excerpt": "...",
-  "giverName": "...",
-  "giverCompany": "..." or null,
-  "giverRole": "..." or null,
-  "sourceType": "..." or null,
-  "approxDate": "..." or null,
-  "traits": ["...", "..."],
-  "confidence": 0.85
-}`
-
-    const { text } = await generateText({
-      model: "openai/gpt-4o-mini",
-      messages: [
-        {
-          role: "system",
-          content: systemPrompt,
-        },
-        {
-          role: "user",
-          content: `Extract structured data from this text:\n\n${ocrText}`,
-        },
-      ],
-    })
-
-    // Parse AI response
+    // Parse JSON response
     const jsonMatch = text.match(/\{[\s\S]*\}/)
     if (!jsonMatch) {
       throw new Error("AI did not return valid JSON")
@@ -102,99 +81,83 @@ Return valid JSON with this structure:
 
     const extracted = JSON.parse(jsonMatch[0])
 
-    // Validate traits are from locked list
-    const validTraits = extracted.traits.filter((t: string) => LOCKED_TRAITS.includes(t as any)).slice(0, 3)
+    // Validate and clean data
+    const validTraits = (extracted.traits || []).filter((t: string) => LOCKED_TRAITS.includes(t as any)).slice(0, 3)
 
-    return {
+    const result = {
       excerpt: extracted.excerpt || null,
-      giverName: extracted.giverName || "Not specified",
+      giverName: extracted.giverName || "Unknown",
       giverCompany: extracted.giverCompany || null,
       giverRole: extracted.giverRole || null,
       sourceType: extracted.sourceType || null,
       approxDate: extracted.approxDate || null,
       traits: validTraits,
-      confidence: Math.max(0, Math.min(1, Number(extracted.confidence))),
+      rawExtractedText: extracted.rawExtractedText || "",
+      confidence: {
+        overall: Math.max(0, Math.min(1, Number(extracted.confidence?.overall || 0))),
+        giverName: Math.max(0, Math.min(1, Number(extracted.confidence?.giverName || 0))),
+        excerpt: Math.max(0, Math.min(1, Number(extracted.confidence?.excerpt || 0))),
+        source: Math.max(0, Math.min(1, Number(extracted.confidence?.source || 0))),
+      },
     }
+
+    console.log("[SCREENSHOT_EXTRACTION] Extracted data:", {
+      hasExcerpt: !!result.excerpt,
+      giverName: result.giverName,
+      traits: result.traits,
+      overallConfidence: result.confidence.overall,
+    })
+
+    return result
   } catch (error) {
-    console.error("[v0] AI extraction error:", error)
-    throw new Error("Failed to extract structured feedback")
+    console.error("[SCREENSHOT_EXTRACTION] Extraction error:", error)
+    throw new Error(`Failed to extract: ${error instanceof Error ? error.message : "Unknown error"}`)
   }
 }
 
 export async function POST(request: NextRequest) {
   try {
-    const supabase = await createClient()
-    const {
-      data: { user },
-    } = await supabase.auth.getUser()
-
-    if (!user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-    }
+    const supabase = createAdminClient()
 
     const { imageUrl, profileId, recordId } = await request.json()
 
-    if (!imageUrl || !profileId) {
+    console.log("[SCREENSHOT_EXTRACTION] Processing request:", { imageUrl, profileId, recordId })
+
+    if (!imageUrl || !profileId || !recordId) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 })
     }
 
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("id")
-      .eq("id", profileId)
-      .eq("id", user.id)
-      .single()
+    // Verify profile exists
+    const { data: profile } = await supabase.from("profiles").select("id").eq("id", profileId).single()
 
     if (!profile) {
-      return NextResponse.json({ error: "Profile not found or unauthorized" }, { status: 403 })
+      return NextResponse.json({ error: "Profile not found" }, { status: 403 })
     }
 
     try {
-      // Step 1: OCR extraction
-      console.log("[v0] Starting OCR extraction for image:", imageUrl)
-      const { text: ocrText, confidence: ocrConfidence } = await extractTextFromImage(imageUrl)
+      // Extract feedback using vision model
+      const extracted = await extractFeedbackFromImage(imageUrl)
 
-      if (!ocrText || ocrText.trim().length < 10) {
-        await supabase
-          .from("imported_feedback")
-          .update({
-            ai_extracted_excerpt: "Could not extract text",
-            giver_name: "Review needed",
-            confidence_score: 0,
-          })
-          .eq("id", recordId)
+      // Redact sensitive data from raw text
+      const redactedText = redactSensitiveData(extracted.rawExtractedText)
 
-        return NextResponse.json({
-          id: recordId,
-          requiresReview: true,
-          confidence: 0,
-          message: "Could not extract meaningful text. Please review manually.",
-        })
-      }
-
-      console.log("[v0] OCR extraction complete. Text length:", ocrText.length, "Confidence:", ocrConfidence)
-
-      const redactedOcrText = redactSensitiveData(ocrText)
-      console.log("[v0] OCR text redacted for privacy")
-
-      // Step 2: AI structured extraction
-      console.log("[v0] Starting AI structured extraction")
-      const extracted = await extractStructuredFeedback(redactedOcrText)
-
-      console.log("[v0] AI extraction complete. Confidence:", extracted.confidence, "Traits:", extracted.traits)
-
-      // Criteria: confidence >= 0.6, text length >= 50 chars, has excerpt
+      // Determine if this should be included in analysis
+      // Include if: confidence >= 0.5 AND has excerpt OR has giver name
       const shouldIncludeInAnalysis =
-        extracted.confidence >= 0.6 && redactedOcrText.length >= 50 && extracted.excerpt !== null
+        extracted.confidence.overall >= 0.5 && (extracted.excerpt !== null || extracted.giverName !== "Unknown")
 
-      console.log("[v0] Include in analysis:", shouldIncludeInAnalysis)
+      console.log("[SCREENSHOT_EXTRACTION] Processing complete:", {
+        recordId,
+        shouldIncludeInAnalysis,
+        overallConfidence: extracted.confidence.overall,
+      })
 
-      // Step 3: Update database record with extracted data
+      // Update database with extracted data
       const { error } = await supabase
         .from("imported_feedback")
         .update({
-          ocr_text: redactedOcrText, // Store redacted text
-          ocr_confidence: ocrConfidence,
+          ocr_text: redactedText,
+          ocr_confidence: extracted.confidence.overall,
           included_in_analysis: shouldIncludeInAnalysis,
           ai_extracted_excerpt: extracted.excerpt,
           giver_name: extracted.giverName,
@@ -203,31 +166,36 @@ export async function POST(request: NextRequest) {
           source_type: extracted.sourceType,
           approx_date: extracted.approxDate,
           traits: extracted.traits,
-          confidence_score: extracted.confidence,
+          confidence_score: extracted.confidence.overall,
+          confidence_details: extracted.confidence,
         })
         .eq("id", recordId)
 
       if (error) {
-        console.error("[v0] Database update error:", error)
-        throw new Error("Failed to update imported feedback")
+        console.error("[SCREENSHOT_EXTRACTION] Database update error:", error)
+        throw new Error("Failed to update database")
       }
-
-      console.log("[v0] Successfully updated imported feedback:", recordId)
 
       return NextResponse.json({
         id: recordId,
-        requiresReview: extracted.confidence < 0.6,
-        confidence: extracted.confidence,
+        requiresReview: extracted.confidence.overall < 0.7,
+        confidence: extracted.confidence.overall,
+        extracted: {
+          excerpt: extracted.excerpt,
+          giverName: extracted.giverName,
+          traits: extracted.traits,
+        },
       })
     } catch (processingError) {
-      console.error("[v0] Processing error:", processingError)
+      console.error("[SCREENSHOT_EXTRACTION] Processing failed:", processingError)
 
       await supabase
         .from("imported_feedback")
         .update({
-          ai_extracted_excerpt: "Processing failed - manual review needed",
+          ai_extracted_excerpt: null,
           giver_name: "Review needed",
           confidence_score: 0,
+          ocr_text: `Extraction failed: ${processingError instanceof Error ? processingError.message : "Unknown error"}`,
         })
         .eq("id", recordId)
 
@@ -235,11 +203,17 @@ export async function POST(request: NextRequest) {
         id: recordId,
         requiresReview: true,
         confidence: 0,
-        message: "Processing failed. Please review and edit manually.",
+        message: "We couldn't extract details automatically. You can still publish by adding info manually.",
+        error: processingError instanceof Error ? processingError.message : "Extraction failed",
       })
     }
   } catch (error) {
-    console.error("[v0] Process error:", error)
-    return NextResponse.json({ error: error instanceof Error ? error.message : "Processing failed" }, { status: 500 })
+    console.error("[SCREENSHOT_EXTRACTION] Request error:", error)
+    return NextResponse.json(
+      {
+        error: error instanceof Error ? error.message : "Processing failed",
+      },
+      { status: 500 },
+    )
   }
 }

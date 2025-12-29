@@ -25,12 +25,13 @@ type UploadFile = {
 }
 
 const SOURCE_OPTIONS = [
-  { value: "Email", label: "Email" },
   { value: "LinkedIn", label: "LinkedIn" },
-  { value: "DM", label: "Direct Message" },
+  { value: "Email", label: "Email" },
   { value: "Slack", label: "Slack" },
+  { value: "Text", label: "Text/SMS" },
+  { value: "DM", label: "DM (Instagram/Twitter)" },
+  { value: "Facebook", label: "Facebook" },
   { value: "Teams", label: "Microsoft Teams" },
-  { value: "Text", label: "Text Message" },
   { value: "Other", label: "Other" },
 ]
 
@@ -277,14 +278,17 @@ export default function UploadForm({ profileId, currentCount, limit }: UploadFor
                     <p className="text-xs text-neutral-500">{(fileData.file.size / 1024 / 1024).toFixed(2)} MB</p>
 
                     {(fileData.status === "pending" || fileData.status === "error_upload") && (
-                      <div className="pt-1">
+                      <div className="pt-2">
+                        <label className="text-xs font-medium text-neutral-700 mb-1 block">
+                          Where is this from? <span className="text-red-500">*</span>
+                        </label>
                         <Select value={fileData.sourceType} onValueChange={(value) => updateSourceType(index, value)}>
-                          <SelectTrigger className="h-8 text-xs">
-                            <SelectValue placeholder="Source (optional)" />
+                          <SelectTrigger className={`h-9 text-sm ${!fileData.sourceType ? "border-blue-500" : ""}`}>
+                            <SelectValue placeholder="Select source..." />
                           </SelectTrigger>
                           <SelectContent>
                             {SOURCE_OPTIONS.map((option) => (
-                              <SelectItem key={option.value} value={option.value} className="text-xs">
+                              <SelectItem key={option.value} value={option.value} className="text-sm">
                                 {option.label}
                               </SelectItem>
                             ))}
@@ -352,7 +356,11 @@ export default function UploadForm({ profileId, currentCount, limit }: UploadFor
           </div>
 
           <div className="flex gap-4">
-            <Button onClick={handleUpload} disabled={isProcessing || allProcessed} className="flex-1">
+            <Button
+              onClick={handleUpload}
+              disabled={isProcessing || allProcessed || files.some((f) => f.status === "pending" && !f.sourceType)}
+              className="flex-1"
+            >
               {isProcessing ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
