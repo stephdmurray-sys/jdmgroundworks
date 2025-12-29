@@ -155,14 +155,26 @@ export function AiPatternSummary({
         <div className="space-y-3">
           <p className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">Most mentioned signals</p>
           <div className="flex flex-wrap gap-3">
-            {summary.patterns.map((pattern, index) => (
-              <span
-                key={index}
-                className="inline-flex items-center px-4 py-2.5 rounded-full bg-blue-50 text-blue-700 text-sm font-medium border border-blue-100 transition-all duration-200 ease-out cursor-default hover:scale-105 hover:shadow-md hover:shadow-blue-100/50 hover:bg-blue-100 hover:border-blue-200"
-              >
-                {pattern}
-              </span>
-            ))}
+            {summary.patterns.map((pattern, index) => {
+              const prefixes = ["Known for being", "Reputation for", "Recognized for"]
+              const prefix = prefixes[index % prefixes.length]
+              // Format: "Known for being thoughtful" or "Reputation for strategic work"
+              const displayText =
+                index === 1
+                  ? `${prefix} ${pattern.toLowerCase()} work`
+                  : index === 2
+                    ? `${prefix} ${pattern.toLowerCase()} approach`
+                    : `${prefix} ${pattern.toLowerCase()}`
+
+              return (
+                <span
+                  key={index}
+                  className="inline-flex items-center px-4 py-2.5 rounded-full bg-blue-50 text-blue-700 text-sm font-medium border border-blue-100 transition-all duration-200 ease-out cursor-default hover:scale-105 hover:shadow-md hover:shadow-blue-100/50 hover:bg-blue-100 hover:border-blue-200"
+                >
+                  {displayText}
+                </span>
+              )
+            })}
           </div>
         </div>
       )}

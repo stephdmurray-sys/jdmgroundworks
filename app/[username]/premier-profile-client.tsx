@@ -587,35 +587,46 @@ export function PremierProfileClient({
       </section>
 
       {/* Screenshots and highlights Section */}
-      {importedFeedback.length > 0 && (
-        <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 md:py-16 bg-white">
-          <div className="space-y-4 sm:space-y-6 py-6 sm:py-8 md:py-10">
-            <div className="space-y-2 sm:space-y-3 max-w-2xl mx-auto text-center">
-              <h3 className="text-2xl sm:text-3xl md:text-4xl font-semibold text-neutral-900">
-                Screenshots and highlights
-              </h3>
+      <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 md:py-16 bg-white">
+        <div className="space-y-4 sm:space-y-6 py-6 sm:py-8 md:py-10">
+          <div className="space-y-2 sm:space-y-3 max-w-2xl mx-auto text-center">
+            <h3 className="text-2xl sm:text-3xl md:text-4xl font-semibold text-neutral-900">
+              Screenshots and highlights
+            </h3>
+            {importedFeedback.length > 0 ? (
               <p className="text-sm sm:text-base md:text-lg text-neutral-600 leading-relaxed">
                 {firstName} saved {importedFeedback.length} {importedFeedback.length === 1 ? "piece" : "pieces"} of
                 feedback
               </p>
-            </div>
+            ) : (
+              <p className="text-sm sm:text-base text-neutral-500 leading-relaxed">
+                Saved moments that add context—screenshots, DMs, and written praise.
+              </p>
+            )}
+          </div>
 
+          {importedFeedback.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {importedFeedback.map((feedback) => (
                 <div
                   key={feedback.id}
                   className="p-5 rounded-xl border border-neutral-200 bg-white hover:border-neutral-300 transition-colors"
                 >
-                  <p className="text-sm text-neutral-700 leading-relaxed mb-4">
+                  <p className="text-sm text-neutral-700 leading-relaxed mb-4 line-clamp-3">
                     {feedback.ai_extracted_excerpt || feedback.ocr_text?.slice(0, 200)}
                   </p>
                   <div className="flex items-center justify-between pt-3 border-t border-neutral-100">
                     <div>
-                      <p className="text-sm font-medium text-neutral-900">{feedback.giver_name}</p>
+                      <p className="text-sm font-medium text-neutral-900">
+                        {feedback.giver_name}
+                        {feedback.giver_title && (
+                          <span className="text-neutral-500 font-normal"> · {feedback.giver_title}</span>
+                        )}
+                      </p>
                       {feedback.giver_company && <p className="text-xs text-neutral-500">{feedback.giver_company}</p>}
                     </div>
                     {feedback.source_type && (
-                      <span className="text-xs font-medium px-2 py-1 rounded-full bg-neutral-100 text-neutral-600">
+                      <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-neutral-100 text-neutral-600 capitalize">
                         {feedback.source_type}
                       </span>
                     )}
@@ -623,9 +634,13 @@ export function PremierProfileClient({
                 </div>
               ))}
             </div>
-          </div>
-        </section>
-      )}
+          ) : (
+            <div className="text-center py-8">
+              <p className="text-neutral-500">No highlights added yet.</p>
+            </div>
+          )}
+        </div>
+      </section>
 
       {/* Final CTA */}
       <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 md:py-20">
