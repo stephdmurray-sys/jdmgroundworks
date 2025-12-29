@@ -204,7 +204,6 @@ export async function POST(request: NextRequest) {
         contributor_email: normalizedEmail,
         contributor_company: companyOrOrg || "Unknown",
         relationship,
-        relationship_context: relationshipContext || null,
         duration,
         written_note: message,
         email_hash: emailHash,
