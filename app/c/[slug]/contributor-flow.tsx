@@ -200,10 +200,12 @@ export default function ContributorFlow({ profile }: ContributorFlowProps) {
   const validateEmailInline = (email: string) => {
     if (!email) {
       setEmailValidation("")
-      return
+      return false
     }
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    setEmailValidation(emailRegex.test(email) ? "valid" : "invalid")
+    const isValid = emailRegex.test(email)
+    setEmailValidation(isValid ? "valid" : "invalid")
+    return isValid
   }
 
   const handleSaveMessage = async () => {
@@ -719,13 +721,17 @@ export default function ContributorFlow({ profile }: ContributorFlowProps) {
             </div>
           )}
 
+          {error && (
+            <div className="mt-4 rounded-lg bg-red-50 border border-red-200 p-4 text-sm text-red-800">{error}</div>
+          )}
+
           <div className="mt-8 flex gap-4">
-            <Button onClick={() => setStep("duration")} variant="outline" size="lg">
+            <Button onClick={() => setStep("duration")} variant="outline" size="lg" disabled={loading || isSaving}>
               Back
             </Button>
             <Button
               onClick={() => {
-                if (totalSelected < 1) {
+                if (Object.values(selectedTraits).flat().length < 1) {
                   setValidationErrors({ traits: "Please select at least 1 trait" })
                   return
                 }
@@ -809,6 +815,19 @@ export default function ContributorFlow({ profile }: ContributorFlowProps) {
 
   // STEP 5: Identity - This step ONLY calls update-identity, NEVER create
   if (step === "identity") {
+    const firstNameValid = firstName.trim().length > 0
+    const emailValid = emailValidation === "valid"
+    const hasContributionId = !!(contributionId || sessionStorage.getItem(CONTRIBUTION_STORAGE_KEY))
+    const canContinue = firstNameValid && emailValid && hasContributionId && !isSaving
+
+    console.log("[IDENTITY] canContinue check", {
+      firstNameLength: firstName.trim().length,
+      emailValid,
+      contributionId: contributionId || sessionStorage.getItem(CONTRIBUTION_STORAGE_KEY),
+      isSaving,
+      canContinue,
+    })
+
     return (
       <div className="min-h-screen bg-white py-12 px-4">
         <div className="mx-auto max-w-2xl">
@@ -856,7 +875,9 @@ export default function ContributorFlow({ profile }: ContributorFlowProps) {
                   type="email"
                   value={email}
                   onChange={(e) => {
-                    setEmail(e.target.value)
+                    const newEmail = e.target.value
+                    setEmail(newEmail)
+                    validateEmailInline(newEmail)
                     setValidationErrors((prev) => ({ ...prev, email: "" }))
                   }}
                   placeholder="joe@example.com"
@@ -881,21 +902,28 @@ export default function ContributorFlow({ profile }: ContributorFlowProps) {
               </div>
             </div>
 
+            {!hasContributionId && (
+              <div className="mt-6 rounded-lg bg-red-50 border border-red-200 p-4 text-sm text-red-800">
+                We lost your draft. Please go back one step and click Continue again.
+              </div>
+            )}
+
             {error && (
               <div className="mt-6 rounded-lg bg-red-50 border border-red-200 p-4 text-sm text-red-800">{error}</div>
             )}
 
             <div className="mt-8 flex gap-4">
-              <Button onClick={() => setStep("message")} variant="outline" size="lg" disabled={loading}>
+              <Button onClick={() => setStep("message")} variant="outline" size="lg" disabled={isSaving}>
                 Back
               </Button>
               <Button
                 onClick={handleIdentityUpdate}
-                disabled={loading || !firstName.trim() || !email.trim() || emailValidation !== "valid"}
+                disabled={!canContinue}
                 className="flex-1"
                 size="lg"
+                data-continue-button
               >
-                {loading ? "Saving..." : "Continue to voice (optional)"}
+                {isSaving ? "Saving..." : "Continue to voice (optional)"}
               </Button>
             </div>
           </Card>
