@@ -242,14 +242,31 @@ export function PremierProfileClient({
         </div>
       </section>
 
-      {/* Vibe Section - Always show when contributions >= 1 */}
-      {profileAnalysis.counts.contributions >= 1 && (
-        <section className="w-full bg-white">
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <div className="max-w-3xl mx-auto">
-              <div className="rounded-xl border border-neutral-200 bg-neutral-50/50 p-6 sm:p-8">
-                <h3 className="text-lg sm:text-xl font-semibold text-neutral-900 mb-4">{firstName}'s vibe</h3>
-                {profileAnalysis.vibeSignals.length > 0 && profileAnalysis.counts.contributions >= 2 ? (
+      {/* Vibe Section - Always show */}
+      <section className="w-full bg-white">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="max-w-3xl mx-auto">
+            <div className="rounded-xl border border-neutral-200 bg-neutral-50/50 p-6 sm:p-8">
+              <h3 className="text-lg sm:text-xl font-semibold text-neutral-900 mb-4">
+                {firstName ? `${firstName}'s vibe` : "Their vibe"}
+              </h3>
+              {(() => {
+                // Count unique contributors who selected vibes
+                const contributorsWithVibes = new Set(
+                  rawContributions
+                    .filter((c) => c.traits_category4 && c.traits_category4.length > 0)
+                    .map((c) => c.contributor_id || c.contributor_name),
+                ).size
+
+                if (contributorsWithVibes < 2) {
+                  return <p className="text-sm text-neutral-500">Vibe appears once 2+ people contribute.</p>
+                }
+
+                if (profileAnalysis.vibeSignals.length === 0) {
+                  return <p className="text-sm text-neutral-500">Vibe appears once 2+ people contribute.</p>
+                }
+
+                return (
                   <div className="flex flex-wrap gap-3">
                     {profileAnalysis.vibeSignals.slice(0, 6).map((vibe, index) => (
                       <span
@@ -265,14 +282,12 @@ export function PremierProfileClient({
                       </span>
                     ))}
                   </div>
-                ) : (
-                  <p className="text-sm text-neutral-500">Vibe appears once 2+ people contribute.</p>
-                )}
-              </div>
+                )
+              })()}
             </div>
           </div>
-        </section>
-      )}
+        </div>
+      </section>
 
       {/* Voice Notes Section */}
       {voiceContributions.length > 0 && (
@@ -490,9 +505,12 @@ export function PremierProfileClient({
                       )}
 
                       <div className="pt-3 border-t border-neutral-100">
-                        <p className="text-xs font-semibold text-neutral-900">{contribution.giver_name}</p>
-                        {contribution.giver_role && (
-                          <p className="text-xs text-neutral-500">{contribution.giver_role}</p>
+                        <p className="text-xs font-semibold text-neutral-900">{contribution.contributor_name}</p>
+                        {contribution.relationship && (
+                          <p className="text-xs text-neutral-500">{contribution.relationship}</p>
+                        )}
+                        {contribution.contributor_company && (
+                          <p className="text-xs text-neutral-500">{contribution.contributor_company}</p>
                         )}
                       </div>
                     </div>

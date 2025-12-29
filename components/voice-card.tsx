@@ -81,6 +81,9 @@ export function VoiceCard({ contribution, isMobile = false, highlightPatterns = 
           {contribution.relationship && (
             <div className="text-xs text-gray-500 capitalize">{contribution.relationship.replace(/_/g, " ")}</div>
           )}
+          {contribution.contributor_company && (
+            <div className="text-xs text-gray-500">{contribution.contributor_company}</div>
+          )}
         </div>
       </div>
     </div>
