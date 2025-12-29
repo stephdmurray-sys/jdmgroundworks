@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react"
 import { ChevronDown } from "lucide-react"
 
+export type TraitSignal = { label: string; count: number }
+
 interface Contribution {
   id: string
   written_note: string
@@ -20,8 +22,20 @@ interface ImportedFeedback {
 interface AiPatternSummaryProps {
   contributions: Contribution[]
   importedFeedback: ImportedFeedback[]
-  topTraits: { label: string; count: number }[]
+  topTraits: TraitSignal[] | string[] // Accept both formats for backwards compatibility
   firstName?: string
+  contributionsCount?: number // Add explicit count for count-aware language
+}
+
+function normalizeTraits(traits: TraitSignal[] | string[]): TraitSignal[] {
+  if (!traits || traits.length === 0) return []
+
+  // Check if first item is a string
+  if (typeof traits[0] === "string") {
+    return (traits as string[]).map((label) => ({ label, count: 1 }))
+  }
+
+  return traits as TraitSignal[]
 }
 
 export function AiPatternSummary({
@@ -29,41 +43,72 @@ export function AiPatternSummary({
   importedFeedback,
   topTraits,
   firstName = "this person",
+  contributionsCount,
 }: AiPatternSummaryProps) {
   const [summary, setSummary] = useState<{
     synthesis: string
     patterns: string[]
-    relationshipInsights?: { role: string; qualities: string[] }[]
   } | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [isExpanded, setIsExpanded] = useState(false)
 
+  const count = contributionsCount ?? contributions.length
+
   useEffect(() => {
     generateSummary()
-  }, [contributions, importedFeedback, topTraits, firstName])
+  }, [contributions, importedFeedback, topTraits, firstName, count])
 
   const generateSummary = () => {
-    if (contributions.length === 0 || topTraits.length === 0) {
-      setIsLoading(false)
-      return
+    const normalizedTraits = normalizeTraits(topTraits)
+
+    if (count === 0 || normalizedTraits.length === 0) {
+      // Only show placeholder when there's truly no data
+      if (count === 0) {
+        setIsLoading(false)
+        return
+      }
     }
 
     setIsLoading(true)
 
-    const analyzableUploads = (importedFeedback || []).filter((u) => u.included_in_analysis && u.ocr_text)
-
-    const traits = topTraits.slice(0, 3)
+    const traits = normalizedTraits.slice(0, 3)
     let synthesis = ""
 
-    if (traits.length >= 3) {
-      synthesis = `People consistently describe working with ${firstName} as ${traits[0].label.toLowerCase()} and ${traits[1].label.toLowerCase()}, with a strong emphasis on ${traits[2].label.toLowerCase()}.`
-    } else if (traits.length === 2) {
-      synthesis = `People describe working with ${firstName} as ${traits[0].label.toLowerCase()} and ${traits[1].label.toLowerCase()}.`
-    } else if (traits.length === 1) {
-      synthesis = `People describe working with ${firstName} as ${traits[0].label.toLowerCase()}.`
+    if (count === 1) {
+      // MUST say "Early signal..."
+      if (traits.length >= 2) {
+        synthesis = `Early signal from 1 person: ${firstName} comes through as ${traits[0].label.toLowerCase()} and ${traits[1].label.toLowerCase()}${traits.length >= 3 ? `, and ${traits[2].label.toLowerCase()}` : ""}.`
+      } else if (traits.length === 1) {
+        synthesis = `Early signal from 1 person: ${firstName} comes through as ${traits[0].label.toLowerCase()}.`
+      }
+    } else if (count === 2) {
+      // MUST say "So far..."
+      if (traits.length >= 2) {
+        synthesis = `So far, ${firstName} comes through as ${traits[0].label.toLowerCase()} and ${traits[1].label.toLowerCase()}${traits.length >= 3 ? `, with emphasis on ${traits[2].label.toLowerCase()}` : ""}.`
+      } else if (traits.length === 1) {
+        synthesis = `So far, ${firstName} comes through as ${traits[0].label.toLowerCase()}.`
+      }
+    } else if (count >= 3 && count < 5) {
+      // "People describe..." but NOT "consistently"
+      if (traits.length >= 3) {
+        synthesis = `People describe working with ${firstName} as ${traits[0].label.toLowerCase()} and ${traits[1].label.toLowerCase()}, with a strong emphasis on ${traits[2].label.toLowerCase()}.`
+      } else if (traits.length === 2) {
+        synthesis = `People describe working with ${firstName} as ${traits[0].label.toLowerCase()} and ${traits[1].label.toLowerCase()}.`
+      } else if (traits.length === 1) {
+        synthesis = `People describe working with ${firstName} as ${traits[0].label.toLowerCase()}.`
+      }
+    } else {
+      // count >= 5: Can use "consistently"
+      if (traits.length >= 3) {
+        synthesis = `People consistently describe working with ${firstName} as ${traits[0].label.toLowerCase()} and ${traits[1].label.toLowerCase()}, with a strong emphasis on ${traits[2].label.toLowerCase()}.`
+      } else if (traits.length === 2) {
+        synthesis = `People consistently describe working with ${firstName} as ${traits[0].label.toLowerCase()} and ${traits[1].label.toLowerCase()}.`
+      } else if (traits.length === 1) {
+        synthesis = `People consistently describe working with ${firstName} as ${traits[0].label.toLowerCase()}.`
+      }
     }
 
-    const patterns = traits.map((t) => `Known for being ${t.label.toLowerCase()}`)
+    const patterns = traits.map((t) => t.label)
 
     setSummary({
       synthesis,
@@ -73,7 +118,7 @@ export function AiPatternSummary({
     setIsLoading(false)
   }
 
-  if (isLoading && contributions.length > 0) {
+  if (isLoading && count > 0) {
     return (
       <div className="space-y-4 animate-pulse">
         <div className="h-24 bg-neutral-100 rounded-lg"></div>
@@ -82,7 +127,7 @@ export function AiPatternSummary({
     )
   }
 
-  if (!summary) {
+  if (!summary || count === 0) {
     return (
       <div className="text-center py-12 text-neutral-500">
         <p className="text-lg">Summary will appear once contributions are received.</p>
@@ -93,10 +138,10 @@ export function AiPatternSummary({
   const needsExpand = summary.synthesis.length > 240
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-6">
       <div className="relative">
         <p
-          className={`text-neutral-700 leading-relaxed text-lg md:text-xl transition-all duration-300 ${
+          className={`text-neutral-700 leading-relaxed text-base sm:text-lg md:text-xl transition-all duration-300 ${
             !isExpanded && needsExpand ? "line-clamp-2" : ""
           }`}
           style={{ lineHeight: "1.7" }}
@@ -118,13 +163,13 @@ export function AiPatternSummary({
       </div>
 
       {summary.patterns.length > 0 && (
-        <div>
-          <p className="text-xs font-semibold text-neutral-500 uppercase tracking-wider mb-3">Most mentioned signals</p>
+        <div className="space-y-3">
+          <p className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">Most mentioned signals</p>
           <div className="flex flex-wrap gap-3">
-            {summary.patterns.slice(0, 4).map((pattern, index) => (
+            {summary.patterns.map((pattern, index) => (
               <span
                 key={index}
-                className="inline-flex items-center px-5 py-2.5 rounded-full bg-blue-50 text-blue-700 text-sm font-medium border border-blue-100 transition-all duration-300 ease-out cursor-default hover:scale-105 hover:shadow-lg hover:shadow-blue-100/50 hover:bg-blue-100 hover:border-blue-200 hover:-translate-y-0.5"
+                className="inline-flex items-center px-4 py-2.5 rounded-full bg-blue-50 text-blue-700 text-sm font-medium border border-blue-100 transition-all duration-200 ease-out cursor-default hover:scale-105 hover:shadow-md hover:shadow-blue-100/50 hover:bg-blue-100 hover:border-blue-200"
               >
                 {pattern}
               </span>
