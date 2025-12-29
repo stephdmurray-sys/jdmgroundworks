@@ -22,20 +22,9 @@ interface ImportedFeedback {
 interface AiPatternSummaryProps {
   contributions: Contribution[]
   importedFeedback: ImportedFeedback[]
-  topTraits: TraitSignal[] | string[] // Accept both formats for backwards compatibility
+  topTraits: TraitSignal[]
   firstName?: string
-  contributionsCount?: number // Add explicit count for count-aware language
-}
-
-function normalizeTraits(traits: TraitSignal[] | string[]): TraitSignal[] {
-  if (!traits || traits.length === 0) return []
-
-  // Check if first item is a string
-  if (typeof traits[0] === "string") {
-    return (traits as string[]).map((label) => ({ label, count: 1 }))
-  }
-
-  return traits as TraitSignal[]
+  contributionsCount: number
 }
 
 export function AiPatternSummary({
@@ -52,55 +41,55 @@ export function AiPatternSummary({
   const [isLoading, setIsLoading] = useState(true)
   const [isExpanded, setIsExpanded] = useState(false)
 
-  const count = contributionsCount ?? contributions.length
-
   useEffect(() => {
     generateSummary()
-  }, [contributions, importedFeedback, topTraits, firstName, count])
+  }, [contributions, importedFeedback, topTraits, firstName, contributionsCount])
 
   const generateSummary = () => {
-    const normalizedTraits = normalizeTraits(topTraits)
+    if (contributionsCount === 0) {
+      setIsLoading(false)
+      return
+    }
 
-    if (count === 0 || normalizedTraits.length === 0) {
-      // Only show placeholder when there's truly no data
-      if (count === 0) {
-        setIsLoading(false)
-        return
-      }
+    if (topTraits.length === 0) {
+      // Even with no traits, generate a basic summary if we have contributions
+      setSummary({
+        synthesis: `${firstName} is building their professional reputation with early feedback.`,
+        patterns: [],
+      })
+      setIsLoading(false)
+      return
     }
 
     setIsLoading(true)
 
-    const traits = normalizedTraits.slice(0, 3)
+    const traits = topTraits.slice(0, 3)
     let synthesis = ""
 
-    if (count === 1) {
-      // MUST say "Early signal..."
+    if (contributionsCount === 1) {
       if (traits.length >= 2) {
         synthesis = `Early signal from 1 person: ${firstName} comes through as ${traits[0].label.toLowerCase()} and ${traits[1].label.toLowerCase()}${traits.length >= 3 ? `, and ${traits[2].label.toLowerCase()}` : ""}.`
       } else if (traits.length === 1) {
         synthesis = `Early signal from 1 person: ${firstName} comes through as ${traits[0].label.toLowerCase()}.`
       }
-    } else if (count === 2) {
-      // MUST say "So far..."
+    } else if (contributionsCount === 2) {
       if (traits.length >= 2) {
         synthesis = `So far, ${firstName} comes through as ${traits[0].label.toLowerCase()} and ${traits[1].label.toLowerCase()}${traits.length >= 3 ? `, with emphasis on ${traits[2].label.toLowerCase()}` : ""}.`
       } else if (traits.length === 1) {
         synthesis = `So far, ${firstName} comes through as ${traits[0].label.toLowerCase()}.`
       }
-    } else if (count >= 3 && count < 5) {
-      // "People describe..." but NOT "consistently"
+    } else if (contributionsCount >= 3 && contributionsCount < 5) {
       if (traits.length >= 3) {
-        synthesis = `People describe working with ${firstName} as ${traits[0].label.toLowerCase()} and ${traits[1].label.toLowerCase()}, with a strong emphasis on ${traits[2].label.toLowerCase()}.`
+        synthesis = `People describe working with ${firstName} as ${traits[0].label.toLowerCase()} and ${traits[1].label.toLowerCase()}, with emphasis on ${traits[2].label.toLowerCase()}.`
       } else if (traits.length === 2) {
         synthesis = `People describe working with ${firstName} as ${traits[0].label.toLowerCase()} and ${traits[1].label.toLowerCase()}.`
       } else if (traits.length === 1) {
         synthesis = `People describe working with ${firstName} as ${traits[0].label.toLowerCase()}.`
       }
     } else {
-      // count >= 5: Can use "consistently"
+      // contributionsCount >= 5: Use "consistently"
       if (traits.length >= 3) {
-        synthesis = `People consistently describe working with ${firstName} as ${traits[0].label.toLowerCase()} and ${traits[1].label.toLowerCase()}, with a strong emphasis on ${traits[2].label.toLowerCase()}.`
+        synthesis = `People consistently describe working with ${firstName} as ${traits[0].label.toLowerCase()} and ${traits[1].label.toLowerCase()}, with emphasis on ${traits[2].label.toLowerCase()}.`
       } else if (traits.length === 2) {
         synthesis = `People consistently describe working with ${firstName} as ${traits[0].label.toLowerCase()} and ${traits[1].label.toLowerCase()}.`
       } else if (traits.length === 1) {
@@ -118,7 +107,7 @@ export function AiPatternSummary({
     setIsLoading(false)
   }
 
-  if (isLoading && count > 0) {
+  if (isLoading && contributionsCount > 0) {
     return (
       <div className="space-y-4 animate-pulse">
         <div className="h-24 bg-neutral-100 rounded-lg"></div>
@@ -127,7 +116,7 @@ export function AiPatternSummary({
     )
   }
 
-  if (!summary || count === 0) {
+  if (!summary || contributionsCount === 0) {
     return (
       <div className="text-center py-12 text-neutral-500">
         <p className="text-lg">Summary will appear once contributions are received.</p>

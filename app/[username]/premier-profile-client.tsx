@@ -43,7 +43,9 @@ export function PremierProfileClient({
 }: PremierProfileClientProps) {
   const contributions = dedupeContributions(rawContributions)
   const voiceContributions = contributions.filter((c) => c.voice_url)
-  const voiceNotesCount = voiceContributions.length
+  const voiceNotesCount = useMemo(() => {
+    return rawContributions.filter((c) => c.voice_url).length
+  }, [rawContributions])
 
   const analyzableUploads = rawImportedFeedback.filter((u) => u.included_in_analysis && u.ocr_text)
   const totalUploads = rawImportedFeedback.length
@@ -325,47 +327,89 @@ export function PremierProfileClient({
         </section>
       )}
 
+      {totalContributions >= 2 && vibeSignals.length > 0 && (
+        <section className="w-full bg-white">
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div className="max-w-3xl mx-auto">
+              <div className="rounded-xl border border-neutral-200 bg-neutral-50/50 p-6 sm:p-8">
+                <h3 className="text-lg sm:text-xl font-semibold text-neutral-900 mb-4">{firstName}'s vibe</h3>
+                <div className="flex flex-wrap gap-3">
+                  {topVibes.map((vibe, index) => (
+                    <span
+                      key={index}
+                      className="inline-flex items-center px-4 py-2.5 rounded-full bg-purple-50 text-purple-700 text-sm font-medium border border-purple-100 transition-all duration-200 ease-out cursor-default hover:scale-105 hover:shadow-md hover:shadow-purple-100/50 hover:bg-purple-100 hover:border-purple-200"
+                    >
+                      {vibe.label}
+                      {vibe.count > 1 && (
+                        <span className="ml-2 text-xs font-semibold px-2 py-0.5 rounded-full bg-purple-200 text-purple-800">
+                          ×{vibe.count}
+                        </span>
+                      )}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {totalContributions >= 2 && vibeSignals.length === 0 && (
+        <section className="w-full bg-white">
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div className="max-w-3xl mx-auto">
+              <div className="rounded-xl border border-neutral-200 bg-neutral-50/50 p-6 sm:p-8 text-center">
+                <h3 className="text-lg sm:text-xl font-semibold text-neutral-900 mb-2">{firstName}'s vibe</h3>
+                <p className="text-sm text-neutral-500">Vibe appears once 2+ people contribute.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* Voice Notes Section */}
-      {voiceNotesCount > 0 && (
-        <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 md:py-16 bg-white">
-          <div className="space-y-4 sm:space-y-6 py-6 sm:py-8 md:py-10">
-            <div className="space-y-2 sm:space-y-3 max-w-2xl mx-auto text-center">
-              <h3 className="text-2xl sm:text-3xl md:text-4xl font-semibold text-neutral-900">In Their Own Words</h3>
-              <p className="text-sm sm:text-base md:text-lg text-neutral-600 leading-relaxed max-w-[65ch] mx-auto">
-                Unedited voice notes from people who know {firstName}
-              </p>
-            </div>
-
-            <div className="flex justify-center">
-              <RelationshipFilter
-                contributions={voiceContributions}
-                selectedCategory={voiceRelationshipFilter}
-                onCategoryChange={setVoiceRelationshipFilter}
-              />
-            </div>
-
-            {filteredVoiceContributions.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {filteredVoiceContributions.slice(0, 3).map((contribution) => (
-                  <VoiceCard
-                    key={contribution.id}
-                    contribution={contribution}
-                    profileName={profile.full_name}
-                    highlightPatterns={highlightPatterns}
-                  />
-                ))}
+      {voiceContributions.length > 0 && (
+        <section className="w-full bg-white">
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 md:py-20">
+            <div className="space-y-6">
+              <div className="space-y-3 max-w-2xl mx-auto text-center">
+                <h3 className="text-2xl sm:text-3xl md:text-4xl font-semibold text-neutral-900">In Their Own Words</h3>
+                <p className="text-sm text-neutral-500 leading-relaxed">
+                  Unedited voice notes from people who know {firstName}
+                </p>
               </div>
-            ) : (
-              <div className="text-center py-8">
-                <p className="text-neutral-600">No perspectives yet from {voiceRelationshipFilter.toLowerCase()}.</p>
-                <button
-                  onClick={() => setVoiceRelationshipFilter("All")}
-                  className="mt-2 text-blue-600 hover:text-blue-700 text-sm font-medium min-h-[44px] px-4"
-                >
-                  View all perspectives
-                </button>
+
+              <div className="flex justify-center">
+                <RelationshipFilter
+                  contributions={voiceContributions}
+                  selectedCategory={voiceRelationshipFilter}
+                  onCategoryChange={setVoiceRelationshipFilter}
+                />
               </div>
-            )}
+
+              {filteredVoiceContributions.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {filteredVoiceContributions.slice(0, 3).map((contribution) => (
+                    <VoiceCard
+                      key={contribution.id}
+                      contribution={contribution}
+                      profileName={profile.full_name}
+                      highlightPatterns={highlightPatterns}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-8">
+                  <p className="text-neutral-600">No perspectives yet from {voiceRelationshipFilter.toLowerCase()}.</p>
+                  <button
+                    onClick={() => setVoiceRelationshipFilter("All")}
+                    className="mt-2 text-blue-600 hover:text-blue-700 text-sm font-medium min-h-[44px] px-4"
+                  >
+                    View all perspectives
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         </section>
       )}

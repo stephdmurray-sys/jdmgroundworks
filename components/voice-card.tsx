@@ -44,10 +44,12 @@ export function VoiceCard({ contribution, isMobile = false, highlightPatterns = 
   const highlightedPreview = previewText ? highlightQuote(previewText, effectivePatterns, 5) : null
   const highlightedFull = fullText ? highlightQuote(fullText, effectivePatterns, 5) : null
 
+  const hasAudio = !!contribution.voice_url
+
   return (
     <div className={`rounded-xl p-6 bg-white border border-gray-200 ${isMobile ? "min-w-[85vw] snap-center" : ""}`}>
       <div className="space-y-3">
-        <IntimateAudioPlayer audioUrl={contribution.voice_url!} />
+        {hasAudio && <IntimateAudioPlayer audioUrl={contribution.voice_url!} />}
 
         {highlightedPreview && (
           <div className="space-y-2">
