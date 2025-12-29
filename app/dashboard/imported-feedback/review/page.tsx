@@ -57,7 +57,7 @@ export default async function ImportedFeedbackReviewPage() {
           </p>
         </div>
 
-        <ReviewList pending={pendingReview} approved={approved} profileId={profile.id} />
+        <ReviewList initialPending={pendingReview} initialApproved={approved} profileId={profile.id} />
       </div>
     </div>
   )
