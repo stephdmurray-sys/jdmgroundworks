@@ -32,16 +32,18 @@ export function AiPatternSummary({
   }, [analysisText, traitSignals, vibeSignals, firstName, contributionsCount])
 
   const generateSummary = () => {
-    const hasContent = analysisText.length >= 40 || traitSignals.length > 0 || vibeSignals.length > 0
+    const hasTraits = traitSignals.length > 0
+    const hasVibes = vibeSignals.length > 0
+    const hasText = analysisText.length >= 40
 
-    if (!hasContent) {
+    if (!hasTraits && !hasVibes && !hasText) {
       setSummary(null)
       return
     }
 
     const patterns: Array<{ label: string; type: "trait" | "vibe" }> = []
 
-    // Prefer traits first, then fill with vibes
+    // Prefer traits for pills, then fill with vibes
     traitSignals.slice(0, 3).forEach((t) => {
       patterns.push({ label: t.label, type: "trait" })
     })
@@ -53,39 +55,47 @@ export function AiPatternSummary({
     }
 
     let synthesis = ""
-
     const topThreeTraits = traitSignals.slice(0, 3)
 
-    if (contributionsCount === 1 && topThreeTraits.length > 0) {
-      if (topThreeTraits.length >= 2) {
-        synthesis = `Early signal from 1 person: ${firstName} comes through as ${topThreeTraits[0].label.toLowerCase()} and ${topThreeTraits[1].label.toLowerCase()}${topThreeTraits.length >= 3 ? `, and ${topThreeTraits[2].label.toLowerCase()}` : ""}.`
-      } else {
-        synthesis = `Early signal from 1 person: ${firstName} comes through as ${topThreeTraits[0].label.toLowerCase()}.`
+    if (topThreeTraits.length > 0) {
+      if (contributionsCount === 1) {
+        if (topThreeTraits.length >= 2) {
+          synthesis = `Early feedback describes ${firstName} as ${topThreeTraits[0].label.toLowerCase()} and ${topThreeTraits[1].label.toLowerCase()}${topThreeTraits.length >= 3 ? `, with a ${topThreeTraits[2].label.toLowerCase()} approach` : ""}.`
+        } else {
+          synthesis = `Early feedback describes ${firstName} as ${topThreeTraits[0].label.toLowerCase()}.`
+        }
+      } else if (contributionsCount === 2) {
+        if (topThreeTraits.length >= 2) {
+          synthesis = `So far, ${firstName} comes through as ${topThreeTraits[0].label.toLowerCase()} and ${topThreeTraits[1].label.toLowerCase()}${topThreeTraits.length >= 3 ? `, with emphasis on ${topThreeTraits[2].label.toLowerCase()}` : ""}.`
+        } else {
+          synthesis = `So far, ${firstName} comes through as ${topThreeTraits[0].label.toLowerCase()}.`
+        }
+      } else if (contributionsCount >= 3 && contributionsCount < 5) {
+        if (topThreeTraits.length >= 3) {
+          synthesis = `People describe working with ${firstName} as ${topThreeTraits[0].label.toLowerCase()} and ${topThreeTraits[1].label.toLowerCase()}, with a strong emphasis on ${topThreeTraits[2].label.toLowerCase()}.`
+        } else if (topThreeTraits.length === 2) {
+          synthesis = `People describe working with ${firstName} as ${topThreeTraits[0].label.toLowerCase()} and ${topThreeTraits[1].label.toLowerCase()}.`
+        } else {
+          synthesis = `People describe working with ${firstName} as ${topThreeTraits[0].label.toLowerCase()}.`
+        }
+      } else if (contributionsCount >= 5) {
+        if (topThreeTraits.length >= 3) {
+          synthesis = `People consistently describe working with ${firstName} as ${topThreeTraits[0].label.toLowerCase()} and ${topThreeTraits[1].label.toLowerCase()}, with a strong emphasis on ${topThreeTraits[2].label.toLowerCase()}.`
+        } else if (topThreeTraits.length === 2) {
+          synthesis = `People consistently describe working with ${firstName} as ${topThreeTraits[0].label.toLowerCase()} and ${topThreeTraits[1].label.toLowerCase()}.`
+        } else {
+          synthesis = `People consistently describe working with ${firstName} as ${topThreeTraits[0].label.toLowerCase()}.`
+        }
       }
-    } else if (contributionsCount === 2 && topThreeTraits.length > 0) {
-      if (topThreeTraits.length >= 2) {
-        synthesis = `So far, ${firstName} comes through as ${topThreeTraits[0].label.toLowerCase()} and ${topThreeTraits[1].label.toLowerCase()}${topThreeTraits.length >= 3 ? `, with emphasis on ${topThreeTraits[2].label.toLowerCase()}` : ""}.`
+    } else if (hasVibes && vibeSignals.length > 0) {
+      const topVibes = vibeSignals.slice(0, 2)
+      if (topVibes.length >= 2) {
+        synthesis = `Working with ${firstName} feels ${topVibes[0].label.toLowerCase()} and ${topVibes[1].label.toLowerCase()}.`
       } else {
-        synthesis = `So far, ${firstName} comes through as ${topThreeTraits[0].label.toLowerCase()}.`
+        synthesis = `Working with ${firstName} feels ${topVibes[0].label.toLowerCase()}.`
       }
-    } else if (contributionsCount >= 3 && contributionsCount < 5 && topThreeTraits.length > 0) {
-      if (topThreeTraits.length >= 3) {
-        synthesis = `People describe working with ${firstName} as ${topThreeTraits[0].label.toLowerCase()} and ${topThreeTraits[1].label.toLowerCase()}, with emphasis on ${topThreeTraits[2].label.toLowerCase()}.`
-      } else if (topThreeTraits.length === 2) {
-        synthesis = `People describe working with ${firstName} as ${topThreeTraits[0].label.toLowerCase()} and ${topThreeTraits[1].label.toLowerCase()}.`
-      } else {
-        synthesis = `People describe working with ${firstName} as ${topThreeTraits[0].label.toLowerCase()}.`
-      }
-    } else if (contributionsCount >= 5 && topThreeTraits.length > 0) {
-      if (topThreeTraits.length >= 3) {
-        synthesis = `People consistently describe working with ${firstName} as ${topThreeTraits[0].label.toLowerCase()} and ${topThreeTraits[1].label.toLowerCase()}, with emphasis on ${topThreeTraits[2].label.toLowerCase()}.`
-      } else if (topThreeTraits.length === 2) {
-        synthesis = `People consistently describe working with ${firstName} as ${topThreeTraits[0].label.toLowerCase()} and ${topThreeTraits[1].label.toLowerCase()}.`
-      } else {
-        synthesis = `People consistently describe working with ${firstName} as ${topThreeTraits[0].label.toLowerCase()}.`
-      }
-    } else if (analysisText.length >= 40) {
-      synthesis = `Across shared highlights and notes, ${firstName} is building their professional reputation.`
+    } else if (hasText) {
+      synthesis = `${firstName} is gathering feedback to build their professional reputation.`
     }
 
     setSummary({
@@ -146,7 +156,6 @@ export function AiPatternSummary({
                       ? `${prefix} ${pattern.label.toLowerCase()} approach`
                       : `${prefix} ${pattern.label.toLowerCase()}`
               } else {
-                // Vibe
                 displayText = `Brings a ${pattern.label.toLowerCase()} energy`
               }
 

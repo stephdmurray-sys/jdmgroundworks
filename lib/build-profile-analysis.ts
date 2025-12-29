@@ -24,6 +24,25 @@ export interface ProfileAnalysis {
   confidenceLevel: ConfidenceLevel
 }
 
+const LOCKED_VIBE_LIST = [
+  "Energized",
+  "Focused",
+  "Clear",
+  "Motivated",
+  "Inspired",
+  "Confident",
+  "Calm",
+  "Supported",
+  "Seen",
+  "Safe",
+  "Elevated",
+  "Unstuck",
+]
+
+function isValidVibe(label: string): boolean {
+  return LOCKED_VIBE_LIST.some((v) => v.toLowerCase() === label.toLowerCase())
+}
+
 function getConfidenceLevel(contributionCount: number, uploadCount: number): ConfidenceLevel {
   const totalCount = contributionCount + uploadCount
 
@@ -70,19 +89,7 @@ export async function buildProfileAnalysis(profileId: string): Promise<ProfileAn
     .eq("approved_by_owner", true)
     .eq("visibility", "public")
 
-  console.log("[v0] buildProfileAnalysis: contributions count:", contributions?.length)
-  console.log(
-    "[v0] buildProfileAnalysis: sample contribution traits:",
-    contributions?.[0]
-      ? {
-          cat1: contributions[0].traits_category1,
-          cat2: contributions[0].traits_category2,
-          cat3: contributions[0].traits_category3,
-          cat4: contributions[0].traits_category4,
-        }
-      : null,
-  )
-
+  // Collect all text for analysis
   const textParts: string[] = []
 
   contributions?.forEach((c) => {
@@ -100,28 +107,38 @@ export async function buildProfileAnalysis(profileId: string): Promise<ProfileAn
 
   const analysisText = textParts.join(" ").replace(/\s+/g, " ").trim()
 
-  // Database stores labels directly ("Strategic") not IDs ("strategic")
+  // Database stores labels directly ("Strategic", "Analytical", etc.)
   const traitCounts: Record<string, number> = {}
-  contributions?.forEach((c) => {
-    const traitValues = [...(c.traits_category1 || []), ...(c.traits_category2 || []), ...(c.traits_category3 || [])]
 
-    traitValues.forEach((traitValue: string) => {
-      let found = false
-      // First try to find by id or label in TRAIT_CATEGORIES
-      for (const [categoryKey, category] of Object.entries(TRAIT_CATEGORIES)) {
-        if (categoryKey === "the_vibe") continue
-        const trait = category.traits.find((t) => t.id === traitValue || t.label === traitValue)
-        if (trait) {
-          traitCounts[trait.label] = (traitCounts[trait.label] || 0) + 1
-          found = true
-          break
+  contributions?.forEach((c) => {
+    // Only categories 1-3 are traits for Pattern Recognition + Summary
+    const traitArrays = [c.traits_category1 || [], c.traits_category2 || [], c.traits_category3 || []]
+
+    traitArrays.forEach((traitArray) => {
+      traitArray.forEach((traitValue: string) => {
+        if (!traitValue?.trim()) return
+
+        // Skip if this is actually a vibe (shouldn't be in cat1-3, but safety check)
+        if (isValidVibe(traitValue)) return
+
+        // Try to find the canonical label from TRAIT_CATEGORIES
+        let foundLabel: string | null = null
+        for (const [categoryKey, category] of Object.entries(TRAIT_CATEGORIES)) {
+          if (categoryKey === "the_vibe") continue
+          const trait = category.traits.find(
+            (t) =>
+              t.id.toLowerCase() === traitValue.toLowerCase() || t.label.toLowerCase() === traitValue.toLowerCase(),
+          )
+          if (trait) {
+            foundLabel = trait.label
+            break
+          }
         }
-      }
-      // If not found in categories, use the value directly as the label
-      // (handles case where labels are stored directly in database)
-      if (!found && traitValue?.trim()) {
-        traitCounts[traitValue] = (traitCounts[traitValue] || 0) + 1
-      }
+
+        // Use found label or the original value (capitalized properly)
+        const label = foundLabel || traitValue.charAt(0).toUpperCase() + traitValue.slice(1)
+        traitCounts[label] = (traitCounts[label] || 0) + 1
+      })
     })
   })
 
@@ -130,24 +147,34 @@ export async function buildProfileAnalysis(profileId: string): Promise<ProfileAn
     .sort(([, a], [, b]) => b - a)
     .map(([label, count]) => ({ label, count }))
 
-  console.log("[v0] buildProfileAnalysis: final traitSignals:", traitSignals)
-
   const vibeCounts: Record<string, number> = {}
+
   contributions?.forEach((c) => {
-    const vibeValues = c.traits_category4 || []
-    vibeValues.forEach((vibeValue: string) => {
-      const vibeTrait = TRAIT_CATEGORIES.the_vibe?.traits.find((t) => t.id === vibeValue || t.label === vibeValue)
-      if (vibeTrait) {
-        vibeCounts[vibeTrait.label] = (vibeCounts[vibeTrait.label] || 0) + 1
-      } else if (vibeValue?.trim()) {
-        // Use value directly if not found in categories
-        vibeCounts[vibeValue] = (vibeCounts[vibeValue] || 0) + 1
+    const vibeArray = c.traits_category4 || []
+
+    vibeArray.forEach((vibeValue: string) => {
+      if (!vibeValue?.trim()) return
+
+      // Check if it's in the locked vibe list
+      const matchedVibe = LOCKED_VIBE_LIST.find((v) => v.toLowerCase() === vibeValue.toLowerCase())
+
+      if (matchedVibe) {
+        vibeCounts[matchedVibe] = (vibeCounts[matchedVibe] || 0) + 1
+      }
+      // If not in locked list, check TRAIT_CATEGORIES.the_vibe as fallback
+      else {
+        const vibeTrait = TRAIT_CATEGORIES.the_vibe?.traits.find(
+          (t) => t.id.toLowerCase() === vibeValue.toLowerCase() || t.label.toLowerCase() === vibeValue.toLowerCase(),
+        )
+        if (vibeTrait && isValidVibe(vibeTrait.label)) {
+          vibeCounts[vibeTrait.label] = (vibeCounts[vibeTrait.label] || 0) + 1
+        }
       }
     })
   })
 
   const vibeSignals: VibeSignal[] = Object.entries(vibeCounts)
-    .filter(([label]) => label?.trim())
+    .filter(([label]) => label?.trim() && isValidVibe(label))
     .sort(([, a], [, b]) => b - a)
     .map(([label, count]) => ({ label, count }))
 
@@ -160,7 +187,7 @@ export async function buildProfileAnalysis(profileId: string): Promise<ProfileAn
     vibeSignals,
     counts: {
       contributions: contributionCount,
-      voiceNotes: contributions?.filter((c) => c.audio_url)?.length || 0,
+      voiceNotes: contributions?.filter((c) => c.audio_url || c.voice_url)?.length || 0,
       uploads: uploadCount,
     },
     confidenceLevel: getConfidenceLevel(contributionCount, uploadCount),
