@@ -6,7 +6,7 @@ export async function POST(request: NextRequest) {
     const supabase = createAdminClient()
     const { recordId, profileId } = await request.json()
 
-    console.log("[SCREENSHOT_EXTRACTION] Retry extraction request:", { recordId, profileId })
+    console.log("[v0] Retry extraction request:", { recordId, profileId })
 
     if (!recordId || !profileId) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 })
@@ -15,7 +15,7 @@ export async function POST(request: NextRequest) {
     // Verify ownership
     const { data: record } = await supabase
       .from("imported_feedback")
-      .select("id, raw_image_url, profile_id")
+      .select("id, image_url, profile_id")
       .eq("id", recordId)
       .eq("profile_id", profileId)
       .single()
@@ -23,6 +23,15 @@ export async function POST(request: NextRequest) {
     if (!record) {
       return NextResponse.json({ error: "Record not found or access denied" }, { status: 403 })
     }
+
+    await supabase
+      .from("imported_feedback")
+      .update({
+        extraction_status: "processing",
+      })
+      .eq("id", recordId)
+
+    console.log("[v0] Retry attempt initiated for record:", recordId)
 
     // Call the process endpoint to re-extract
     const processUrl = new URL("/api/imported-feedback/process", request.url)
@@ -32,7 +41,7 @@ export async function POST(request: NextRequest) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        imageUrl: record.raw_image_url,
+        imageUrl: record.image_url,
         profileId: record.profile_id,
         recordId: record.id,
       }),
@@ -40,7 +49,7 @@ export async function POST(request: NextRequest) {
 
     const result = await processResponse.json()
 
-    console.log("[SCREENSHOT_EXTRACTION] Retry extraction complete:", {
+    console.log("[v0] Retry extraction complete:", {
       recordId,
       success: processResponse.ok,
       confidence: result.confidence,
@@ -58,7 +67,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(result)
   } catch (error) {
-    console.error("[SCREENSHOT_EXTRACTION] Retry request error:", error)
+    console.error("[v0] Retry request error:", error)
     return NextResponse.json(
       {
         error: error instanceof Error ? error.message : "Retry failed",

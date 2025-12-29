@@ -8,13 +8,10 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useState } from "react"
-import { CheckCircle2, AlertCircle, Trash2, Eye, EyeOff, RefreshCw, Loader2 } from "lucide-react"
+import { CheckCircle2, AlertCircle, Trash2, Eye, EyeOff, RefreshCw, Loader2, Check } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { LOCKED_TRAITS, SOURCE_TYPES, type ImportedFeedback } from "@/lib/imported-feedback-traits"
 import { useToast } from "@/hooks/use-toast"
-import { highlightQuote } from "@/lib/highlight-quote"
-import { extractKeywordsFromText } from "@/lib/extract-keywords-from-text"
-import { Alert, AlertDescription } from "@/components/ui/alert"
 
 type ReviewListProps = {
   initialPending: ImportedFeedback[]
@@ -51,27 +48,26 @@ export default function ReviewList({ initialPending, initialApproved }: ReviewLi
     visibility: "public",
   })
 
-  const handleEdit = (feedback: ImportedFeedback) => {
-    setEditingId(feedback.id)
-    setEditForm({
-      excerpt: feedback.ai_extracted_excerpt || "",
-      giverName: feedback.giver_name,
-      giverCompany: feedback.giver_company || "",
-      giverRole: feedback.giver_role || "",
-      sourceType: feedback.source_type || "",
-      approxDate: feedback.approx_date || "",
-      traits: feedback.traits || [],
-      visibility: feedback.visibility,
-    })
+  const handleEdit = (feedbackId: string) => {
+    setEditingId(feedbackId)
+    const feedback = pending.find((f) => f.id === feedbackId) || approved.find((f) => f.id === feedbackId)
+    if (feedback) {
+      setEditForm({
+        excerpt: feedback.ai_extracted_excerpt || "",
+        giverName: feedback.giver_name,
+        giverCompany: feedback.giver_company || "",
+        giverRole: feedback.giver_role || "",
+        sourceType: feedback.source_type || "",
+        approxDate: feedback.approx_date || "",
+        traits: feedback.traits || [],
+        visibility: feedback.visibility,
+      })
+    }
   }
 
   const handleTraitToggle = (trait: string) => {
-    setEditForm((prev) => ({
-      ...prev,
-      traits: prev.traits.includes(trait)
-        ? prev.traits.filter((t) => t !== trait)
-        : [...prev.traits, trait].slice(0, 3),
-    }))
+    // Traits are AI-generated and read-only for uploads
+    return
   }
 
   const handleApprove = async (feedbackId: string) => {
@@ -210,32 +206,29 @@ export default function ReviewList({ initialPending, initialApproved }: ReviewLi
   }
 
   const handleRetryExtraction = async (feedbackId: string) => {
-    try {
-      setRetryingId(feedbackId)
+    setRetryingId(feedbackId)
 
+    try {
       const response = await fetch("/api/imported-feedback/retry-extraction", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           recordId: feedbackId,
-          profileId: pending.find((f) => f.id === feedbackId)?.profile_id,
+          profileId:
+            pending.find((f) => f.id === feedbackId)?.profile_id ||
+            approved.find((f) => f.id === feedbackId)?.profile_id,
         }),
       })
 
       if (!response.ok) {
-        const error = await response.json()
-        throw new Error(error.error || "Retry failed")
+        throw new Error("Retry failed")
       }
 
-      const result = await response.json()
-
-      console.log("[SCREENSHOT_EXTRACTION] Retry result:", result)
-
-      // Refresh the page to show updated extraction
+      // Refresh the page to show updated data
       window.location.reload()
     } catch (error) {
-      console.error("[SCREENSHOT_EXTRACTION] Retry error:", error)
-      alert(`Failed to retry extraction: ${error instanceof Error ? error.message : "Unknown error"}`)
+      console.error("Retry extraction failed:", error)
+      alert("Failed to retry extraction. Please try again.")
     } finally {
       setRetryingId(null)
     }
@@ -254,18 +247,44 @@ export default function ReviewList({ initialPending, initialApproved }: ReviewLi
               const isProcessing = processingId === feedback.id
               const isRetrying = retryingId === feedback.id
               const confidencePercent = Math.round((feedback.confidence_score || 0) * 100)
-              const isLowConfidence = confidencePercent < 70
 
               return (
-                <Card key={feedback.id} className={isLowConfidence ? "border-orange-200" : ""}>
+                <Card key={feedback.id} className={feedback.extraction_status === "failed" ? "border-red-200" : ""}>
                   <div className="p-6">
-                    {isLowConfidence && (
-                      <Alert className="mb-4 border-orange-200 bg-orange-50">
-                        <AlertCircle className="h-4 w-4 text-orange-600" />
-                        <AlertDescription className="text-orange-800">
-                          Low confidence extraction - please review carefully
-                        </AlertDescription>
-                      </Alert>
+                    {feedback.extraction_status === "failed" && (
+                      <div className="mb-4 rounded-lg border border-red-200 bg-red-50 p-3">
+                        <div className="flex items-start gap-2">
+                          <AlertCircle className="mt-0.5 h-4 w-4 text-red-600" />
+                          <div className="flex-1">
+                            <p className="text-sm font-medium text-red-900">Extraction failed</p>
+                            <p className="mt-1 text-sm text-red-700">{feedback.extraction_error}</p>
+                            <details className="mt-2">
+                              <summary className="cursor-pointer text-xs text-red-600 underline">View details</summary>
+                              <pre className="mt-2 text-xs text-red-800 whitespace-pre-wrap">
+                                {feedback.raw_transcription_text || "No transcription available"}
+                              </pre>
+                            </details>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {feedback.extraction_status === "processing" && (
+                      <div className="mb-4 rounded-lg border border-blue-200 bg-blue-50 p-3">
+                        <div className="flex items-center gap-2">
+                          <Loader2 className="h-4 w-4 animate-spin text-blue-600" />
+                          <p className="text-sm text-blue-900">Extracting data from screenshot...</p>
+                        </div>
+                      </div>
+                    )}
+
+                    {feedback.extraction_status === "success" && (feedback.confidence_score || 0) < 0.7 && (
+                      <div className="mb-4 rounded-lg border border-amber-200 bg-amber-50 p-3">
+                        <div className="flex items-start gap-2">
+                          <AlertCircle className="mt-0.5 h-4 w-4 text-amber-600" />
+                          <p className="text-sm text-amber-900">Low confidence extraction - please review carefully</p>
+                        </div>
+                      </div>
                     )}
 
                     <div className="grid md:grid-cols-2 gap-6">
@@ -280,7 +299,7 @@ export default function ReviewList({ initialPending, initialApproved }: ReviewLi
                         <p className="mt-2 text-xs text-neutral-500">Confidence: {confidencePercent}%</p>
 
                         {/* Retry Button */}
-                        {isLowConfidence && (
+                        {(feedback.extraction_status === "failed" || feedback.extraction_status === "success") && (
                           <Button
                             size="sm"
                             variant="outline"
@@ -308,20 +327,18 @@ export default function ReviewList({ initialPending, initialApproved }: ReviewLi
                         {!isEditing ? (
                           <>
                             <div>
-                              <Label className="mb-1 block text-sm font-medium">Extracted Excerpt</Label>
-                              <div className="text-sm text-neutral-700 italic leading-relaxed">
-                                "{(() => {
-                                  const keywords = extractKeywordsFromText(
-                                    feedback.ai_extracted_excerpt || "No positive excerpt found",
-                                    feedback.traits || [],
-                                  )
-                                  return highlightQuote(
-                                    feedback.ai_extracted_excerpt || "No positive excerpt found",
-                                    keywords,
-                                    5,
-                                  )
-                                })()}"
-                              </div>
+                              <Label className="mb-2 block text-sm font-medium">Extracted Excerpt</Label>
+                              {feedback.extraction_status === "processing" ? (
+                                <div className="space-y-2">
+                                  <div className="h-4 w-3/4 animate-pulse rounded bg-neutral-200" />
+                                  <div className="h-4 w-full animate-pulse rounded bg-neutral-200" />
+                                  <div className="h-4 w-2/3 animate-pulse rounded bg-neutral-200" />
+                                </div>
+                              ) : (
+                                <p className="text-sm text-neutral-700">
+                                  {feedback.ai_extracted_excerpt || "No excerpt extracted"}
+                                </p>
+                              )}
                             </div>
 
                             <div className="grid grid-cols-2 gap-4">
@@ -356,11 +373,11 @@ export default function ReviewList({ initialPending, initialApproved }: ReviewLi
                             </div>
 
                             <div>
-                              <Label className="mb-2 block text-sm font-medium">Traits</Label>
+                              <Label className="mb-2 block text-sm font-medium">AI Traits</Label>
                               <div className="flex flex-wrap gap-2">
                                 {feedback.traits && feedback.traits.length > 0 ? (
                                   feedback.traits.map((trait) => (
-                                    <Badge key={trait} variant="secondary">
+                                    <Badge key={trait} variant="secondary" className="cursor-default">
                                       {trait}
                                     </Badge>
                                   ))
@@ -368,51 +385,40 @@ export default function ReviewList({ initialPending, initialApproved }: ReviewLi
                                   <p className="text-sm text-neutral-500">No traits extracted</p>
                                 )}
                               </div>
+                              <p className="mt-1 text-xs text-neutral-500">
+                                AI-generated traits based on feedback content
+                              </p>
                             </div>
 
                             <div className="flex gap-2 pt-4">
-                              <Button
-                                onClick={() => handleRetryExtraction(feedback.id)}
-                                variant="outline"
-                                size="sm"
-                                disabled={isRetrying || isProcessing}
-                              >
-                                {isRetrying ? (
-                                  <>
-                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                    Retrying...
-                                  </>
-                                ) : (
-                                  <>
-                                    <RefreshCw className="mr-2 h-4 w-4" />
-                                    Retry Extraction
-                                  </>
-                                )}
-                              </Button>
-                              <Button onClick={() => handleEdit(feedback)} variant="outline" className="flex-1">
+                              {(feedback.extraction_status === "failed" ||
+                                (feedback.extraction_status === "success" &&
+                                  (feedback.confidence_score || 0) < 0.7)) && (
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => handleRetryExtraction(feedback.id)}
+                                  disabled={retryingId === feedback.id}
+                                >
+                                  {retryingId === feedback.id ? (
+                                    <>
+                                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                      Retrying...
+                                    </>
+                                  ) : (
+                                    <>
+                                      <RefreshCw className="mr-2 h-4 w-4" />
+                                      Retry Extraction
+                                    </>
+                                  )}
+                                </Button>
+                              )}
+                              <Button variant="outline" size="sm" onClick={() => handleEdit(feedback.id)}>
                                 Edit Details
                               </Button>
-                              <Button
-                                onClick={() => handleApprove(feedback.id)}
-                                disabled={isProcessing}
-                                className="flex-1"
-                              >
-                                {isProcessing ? (
-                                  "Approving..."
-                                ) : (
-                                  <>
-                                    <CheckCircle2 className="mr-2 h-4 w-4" />
-                                    Approve & Publish
-                                  </>
-                                )}
-                              </Button>
-                              <Button
-                                onClick={() => handleDelete(feedback.id)}
-                                disabled={isProcessing}
-                                variant="destructive"
-                                size="icon"
-                              >
-                                <Trash2 className="h-4 w-4" />
+                              <Button size="sm" onClick={() => handleApprove(feedback.id)}>
+                                <Check className="mr-2 h-4 w-4" />
+                                Approve & Publish
                               </Button>
                             </div>
                           </>
