@@ -8,24 +8,28 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useState } from "react"
-import { CheckCircle2, AlertCircle, Trash2, Eye, EyeOff, RefreshCw } from "lucide-react"
+import { CheckCircle2, AlertCircle, Trash2, Eye, EyeOff, RefreshCw, Loader2 } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { LOCKED_TRAITS, SOURCE_TYPES, type ImportedFeedback } from "@/lib/imported-feedback-traits"
 import { useToast } from "@/hooks/use-toast"
 import { highlightQuote } from "@/lib/highlight-quote"
 import { extractKeywordsFromText } from "@/lib/extract-keywords-from-text"
+import { Alert, AlertDescription } from "@/components/ui/alert"
 
 type ReviewListProps = {
-  pending: ImportedFeedback[]
-  approved: ImportedFeedback[]
-  profileId: string
+  initialPending: ImportedFeedback[]
+  initialApproved: ImportedFeedback[]
 }
 
-export default function ReviewList({ pending, approved, profileId }: ReviewListProps) {
+export default function ReviewList({ initialPending, initialApproved }: ReviewListProps) {
   const router = useRouter()
   const { toast } = useToast()
   const [editingId, setEditingId] = useState<string | null>(null)
   const [processingId, setProcessingId] = useState<string | null>(null)
+  const [retryingId, setRetryingId] = useState<string | null>(null)
+
+  const [pending, setPending] = useState(initialPending)
+  const [approved, setApproved] = useState(initialApproved)
 
   const [editForm, setEditForm] = useState<{
     excerpt: string
@@ -98,7 +102,10 @@ export default function ReviewList({ pending, approved, profileId }: ReviewListP
         description: "Your feedback is now published on your profile.",
       })
 
-      router.refresh()
+      const updatedPending = pending.filter((f) => f.id !== feedbackId)
+      const updatedApproved = [...approved, { ...pending.find((f) => f.id === feedbackId), visibility: "public" }]
+      setPending(updatedPending)
+      setApproved(updatedApproved)
       setEditingId(null)
     } catch (error) {
       toast({
@@ -140,7 +147,10 @@ export default function ReviewList({ pending, approved, profileId }: ReviewListP
         description: "The imported feedback has been removed.",
       })
 
-      router.refresh()
+      const updatedPending = pending.filter((f) => f.id !== feedbackId)
+      const updatedApproved = approved.filter((f) => f.id !== feedbackId)
+      setPending(updatedPending)
+      setApproved(updatedApproved)
     } catch (error) {
       toast({
         variant: "destructive",
@@ -180,7 +190,14 @@ export default function ReviewList({ pending, approved, profileId }: ReviewListP
         description: `Feedback is now ${currentVisibility === "public" ? "private" : "public"}.`,
       })
 
-      router.refresh()
+      const updatedPending = pending.map((f) =>
+        f.id === feedbackId ? { ...f, visibility: currentVisibility === "public" ? "private" : "public" } : f,
+      )
+      const updatedApproved = approved.map((f) =>
+        f.id === feedbackId ? { ...f, visibility: currentVisibility === "public" ? "private" : "public" } : f,
+      )
+      setPending(updatedPending)
+      setApproved(updatedApproved)
     } catch (error) {
       toast({
         variant: "destructive",
@@ -192,310 +209,340 @@ export default function ReviewList({ pending, approved, profileId }: ReviewListP
     }
   }
 
-  const handleRetryExtraction = async (feedbackId: string, imageUrl: string) => {
-    setProcessingId(feedbackId)
+  const handleRetryExtraction = async (feedbackId: string) => {
     try {
-      const { data: profile } = await fetch("/api/user/profile").then((r) => r.json())
+      setRetryingId(feedbackId)
 
-      const response = await fetch("/api/imported-feedback/process", {
+      const response = await fetch("/api/imported-feedback/retry-extraction", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          imageUrl,
-          profileId: profile.id,
           recordId: feedbackId,
+          profileId: pending.find((f) => f.id === feedbackId)?.profile_id,
         }),
       })
 
       if (!response.ok) {
-        throw new Error("Extraction failed")
+        const error = await response.json()
+        throw new Error(error.error || "Retry failed")
       }
 
-      toast({
-        title: "Extraction retried",
-        description: "Check the updated fields below.",
-      })
+      const result = await response.json()
 
-      router.refresh()
+      console.log("[SCREENSHOT_EXTRACTION] Retry result:", result)
+
+      // Refresh the page to show updated extraction
+      window.location.reload()
     } catch (error) {
-      toast({
-        variant: "destructive",
-        title: "Retry failed",
-        description: "You can still edit details manually.",
-      })
+      console.error("[SCREENSHOT_EXTRACTION] Retry error:", error)
+      alert(`Failed to retry extraction: ${error instanceof Error ? error.message : "Unknown error"}`)
     } finally {
-      setProcessingId(null)
+      setRetryingId(null)
     }
   }
 
   return (
-    <div className="space-y-12">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Pending Review Section */}
       {pending.length > 0 && (
-        <div>
+        <div className="mb-12">
           <h2 className="mb-6 text-2xl font-semibold text-neutral-900">Pending Review ({pending.length})</h2>
 
           <div className="space-y-6">
             {pending.map((feedback) => {
               const isEditing = editingId === feedback.id
               const isProcessing = processingId === feedback.id
-              const requiresReview = (feedback.confidence_score || 0) < 0.6
+              const isRetrying = retryingId === feedback.id
+              const confidencePercent = Math.round((feedback.confidence_score || 0) * 100)
+              const isLowConfidence = confidencePercent < 70
 
               return (
-                <Card key={feedback.id} className={`p-6 ${requiresReview ? "border-amber-300 bg-amber-50/30" : ""}`}>
-                  {requiresReview && (
-                    <div className="mb-4 flex items-center gap-2 rounded-lg bg-blue-50 p-3 text-sm text-blue-800">
-                      <AlertCircle className="h-4 w-4 flex-shrink-0" />
-                      <span>
-                        We pulled what we could — confirm the details below. You can publish with minimal info.
-                      </span>
-                    </div>
-                  )}
+                <Card key={feedback.id} className={isLowConfidence ? "border-orange-200" : ""}>
+                  <div className="p-6">
+                    {isLowConfidence && (
+                      <Alert className="mb-4 border-orange-200 bg-orange-50">
+                        <AlertCircle className="h-4 w-4 text-orange-600" />
+                        <AlertDescription className="text-orange-800">
+                          Low confidence extraction - please review carefully
+                        </AlertDescription>
+                      </Alert>
+                    )}
 
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    {/* Left: Screenshot */}
-                    <div>
-                      <Label className="mb-2 block text-sm font-medium">Screenshot</Label>
-                      <img
-                        src={feedback.raw_image_url || "/placeholder.svg"}
-                        alt="Feedback screenshot"
-                        className="w-full rounded-lg border shadow-sm"
-                      />
-                      <div className="mt-2 text-xs text-neutral-500">
-                        Confidence: {((feedback.confidence_score || 0) * 100).toFixed(0)}%
+                    <div className="grid md:grid-cols-2 gap-6">
+                      {/* Screenshot */}
+                      <div>
+                        <h3 className="mb-3 text-sm font-medium text-neutral-900">Screenshot</h3>
+                        <img
+                          src={feedback.raw_image_url || "/placeholder.svg"}
+                          alt="Feedback screenshot"
+                          className="w-full h-auto rounded-lg border"
+                        />
+                        <p className="mt-2 text-xs text-neutral-500">Confidence: {confidencePercent}%</p>
+
+                        {/* Retry Button */}
+                        {isLowConfidence && (
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="mt-3 w-full bg-transparent"
+                            onClick={() => handleRetryExtraction(feedback.id)}
+                            disabled={isRetrying || isProcessing}
+                          >
+                            {isRetrying ? (
+                              <>
+                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                Retrying...
+                              </>
+                            ) : (
+                              <>
+                                <RefreshCw className="mr-2 h-4 w-4" />
+                                Retry Extraction
+                              </>
+                            )}
+                          </Button>
+                        )}
                       </div>
-                    </div>
 
-                    {/* Right: Extracted Data */}
-                    <div className="space-y-4">
-                      {!isEditing ? (
-                        <>
-                          <div>
-                            <Label className="mb-1 block text-sm font-medium">Extracted Excerpt</Label>
-                            <div className="text-sm text-neutral-700 italic leading-relaxed">
-                              "{(() => {
-                                const keywords = extractKeywordsFromText(
-                                  feedback.ai_extracted_excerpt || "No positive excerpt found",
-                                  feedback.traits || [],
-                                )
-                                return highlightQuote(
-                                  feedback.ai_extracted_excerpt || "No positive excerpt found",
-                                  keywords,
-                                  5,
-                                )
-                              })()}"
+                      {/* Extracted Data */}
+                      <div className="space-y-4">
+                        {!isEditing ? (
+                          <>
+                            <div>
+                              <Label className="mb-1 block text-sm font-medium">Extracted Excerpt</Label>
+                              <div className="text-sm text-neutral-700 italic leading-relaxed">
+                                "{(() => {
+                                  const keywords = extractKeywordsFromText(
+                                    feedback.ai_extracted_excerpt || "No positive excerpt found",
+                                    feedback.traits || [],
+                                  )
+                                  return highlightQuote(
+                                    feedback.ai_extracted_excerpt || "No positive excerpt found",
+                                    keywords,
+                                    5,
+                                  )
+                                })()}"
+                              </div>
                             </div>
-                          </div>
 
-                          <div className="grid grid-cols-2 gap-4">
-                            <div>
-                              <Label className="mb-1 block text-sm font-medium">Giver Name</Label>
-                              <p className="text-sm text-neutral-700">
-                                {feedback.giver_name === "Review needed" || feedback.giver_name === "Unknown"
-                                  ? "Not detected — add manually if known"
-                                  : feedback.giver_name}
-                              </p>
+                            <div className="grid grid-cols-2 gap-4">
+                              <div>
+                                <Label className="mb-1 block text-sm font-medium">Giver Name</Label>
+                                <p className="text-sm text-neutral-700">
+                                  {feedback.giver_name === "Review needed" || feedback.giver_name === "Unknown"
+                                    ? "Not detected — add manually if known"
+                                    : feedback.giver_name}
+                                </p>
+                              </div>
+                              <div>
+                                <Label className="mb-1 block text-sm font-medium">Company</Label>
+                                <p className="text-sm text-neutral-700">{feedback.giver_company || "Not detected"}</p>
+                              </div>
+                              <div>
+                                <Label className="mb-1 block text-sm font-medium">Role</Label>
+                                <p className="text-sm text-neutral-700">{feedback.giver_role || "Not detected"}</p>
+                              </div>
+                              <div>
+                                <Label className="mb-1 block text-sm font-medium">Source</Label>
+                                <div className="flex items-center gap-2">
+                                  {feedback.source_type ? (
+                                    <Badge variant="secondary" className="text-xs">
+                                      {feedback.source_type}
+                                    </Badge>
+                                  ) : (
+                                    <p className="text-sm text-neutral-500">Not detected</p>
+                                  )}
+                                </div>
+                              </div>
                             </div>
+
                             <div>
-                              <Label className="mb-1 block text-sm font-medium">Company</Label>
-                              <p className="text-sm text-neutral-700">{feedback.giver_company || "Not detected"}</p>
-                            </div>
-                            <div>
-                              <Label className="mb-1 block text-sm font-medium">Role</Label>
-                              <p className="text-sm text-neutral-700">{feedback.giver_role || "Not detected"}</p>
-                            </div>
-                            <div>
-                              <Label className="mb-1 block text-sm font-medium">Source</Label>
-                              <div className="flex items-center gap-2">
-                                {feedback.source_type ? (
-                                  <Badge variant="secondary" className="text-xs">
-                                    {feedback.source_type}
-                                  </Badge>
+                              <Label className="mb-2 block text-sm font-medium">Traits</Label>
+                              <div className="flex flex-wrap gap-2">
+                                {feedback.traits && feedback.traits.length > 0 ? (
+                                  feedback.traits.map((trait) => (
+                                    <Badge key={trait} variant="secondary">
+                                      {trait}
+                                    </Badge>
+                                  ))
                                 ) : (
-                                  <p className="text-sm text-neutral-500">Not detected</p>
+                                  <p className="text-sm text-neutral-500">No traits extracted</p>
                                 )}
                               </div>
                             </div>
-                          </div>
 
-                          <div>
-                            <Label className="mb-2 block text-sm font-medium">Traits</Label>
-                            <div className="flex flex-wrap gap-2">
-                              {feedback.traits && feedback.traits.length > 0 ? (
-                                feedback.traits.map((trait) => (
-                                  <Badge key={trait} variant="secondary">
+                            <div className="flex gap-2 pt-4">
+                              <Button
+                                onClick={() => handleRetryExtraction(feedback.id)}
+                                variant="outline"
+                                size="sm"
+                                disabled={isRetrying || isProcessing}
+                              >
+                                {isRetrying ? (
+                                  <>
+                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                    Retrying...
+                                  </>
+                                ) : (
+                                  <>
+                                    <RefreshCw className="mr-2 h-4 w-4" />
+                                    Retry Extraction
+                                  </>
+                                )}
+                              </Button>
+                              <Button onClick={() => handleEdit(feedback)} variant="outline" className="flex-1">
+                                Edit Details
+                              </Button>
+                              <Button
+                                onClick={() => handleApprove(feedback.id)}
+                                disabled={isProcessing}
+                                className="flex-1"
+                              >
+                                {isProcessing ? (
+                                  "Approving..."
+                                ) : (
+                                  <>
+                                    <CheckCircle2 className="mr-2 h-4 w-4" />
+                                    Approve & Publish
+                                  </>
+                                )}
+                              </Button>
+                              <Button
+                                onClick={() => handleDelete(feedback.id)}
+                                disabled={isProcessing}
+                                variant="destructive"
+                                size="icon"
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </>
+                        ) : (
+                          <>
+                            <div>
+                              <Label htmlFor="excerpt" className="mb-1 block text-sm font-medium">
+                                Excerpt (editable)
+                              </Label>
+                              <Textarea
+                                id="excerpt"
+                                value={editForm.excerpt}
+                                onChange={(e) => setEditForm({ ...editForm, excerpt: e.target.value })}
+                                rows={3}
+                                className="text-sm"
+                              />
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-4">
+                              <div>
+                                <Label htmlFor="giverName" className="mb-1 block text-sm font-medium">
+                                  Giver Name
+                                </Label>
+                                <Input
+                                  id="giverName"
+                                  value={editForm.giverName}
+                                  onChange={(e) => setEditForm({ ...editForm, giverName: e.target.value })}
+                                  className="text-sm"
+                                />
+                              </div>
+                              <div>
+                                <Label htmlFor="giverCompany" className="mb-1 block text-sm font-medium">
+                                  Company
+                                </Label>
+                                <Input
+                                  id="giverCompany"
+                                  value={editForm.giverCompany}
+                                  onChange={(e) => setEditForm({ ...editForm, giverCompany: e.target.value })}
+                                  className="text-sm"
+                                />
+                              </div>
+                              <div>
+                                <Label htmlFor="giverRole" className="mb-1 block text-sm font-medium">
+                                  Role
+                                </Label>
+                                <Input
+                                  id="giverRole"
+                                  value={editForm.giverRole}
+                                  onChange={(e) => setEditForm({ ...editForm, giverRole: e.target.value })}
+                                  className="text-sm"
+                                />
+                              </div>
+                              <div>
+                                <Label htmlFor="sourceType" className="mb-1 block text-sm font-medium">
+                                  Source Type
+                                </Label>
+                                <Select
+                                  value={editForm.sourceType}
+                                  onValueChange={(v) => setEditForm({ ...editForm, sourceType: v })}
+                                >
+                                  <SelectTrigger className="text-sm">
+                                    <SelectValue placeholder="Select source" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    {SOURCE_TYPES.map((type) => (
+                                      <SelectItem key={type} value={type}>
+                                        {type}
+                                      </SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+                              </div>
+                            </div>
+
+                            <div>
+                              <Label className="mb-2 block text-sm font-medium">Traits (max 3, toggle on/off)</Label>
+                              <div className="flex flex-wrap gap-2">
+                                {LOCKED_TRAITS.map((trait) => (
+                                  <Badge
+                                    key={trait}
+                                    variant={editForm.traits.includes(trait) ? "default" : "outline"}
+                                    className="cursor-pointer"
+                                    onClick={() => handleTraitToggle(trait)}
+                                  >
                                     {trait}
                                   </Badge>
-                                ))
-                              ) : (
-                                <p className="text-sm text-neutral-500">No traits extracted</p>
-                              )}
+                                ))}
+                              </div>
                             </div>
-                          </div>
 
-                          <div className="flex gap-2 pt-4">
-                            <Button
-                              onClick={() => handleRetryExtraction(feedback.id, feedback.raw_image_url)}
-                              variant="outline"
-                              size="sm"
-                              disabled={isProcessing}
-                            >
-                              <RefreshCw className="mr-2 h-4 w-4" />
-                              Retry Extraction
-                            </Button>
-                            <Button onClick={() => handleEdit(feedback)} variant="outline" className="flex-1">
-                              Edit Details
-                            </Button>
-                            <Button
-                              onClick={() => handleApprove(feedback.id)}
-                              disabled={isProcessing}
-                              className="flex-1"
-                            >
-                              {isProcessing ? (
-                                "Approving..."
-                              ) : (
-                                <>
-                                  <CheckCircle2 className="mr-2 h-4 w-4" />
-                                  Approve & Publish
-                                </>
-                              )}
-                            </Button>
-                            <Button
-                              onClick={() => handleDelete(feedback.id)}
-                              disabled={isProcessing}
-                              variant="destructive"
-                              size="icon"
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        </>
-                      ) : (
-                        <>
-                          <div>
-                            <Label htmlFor="excerpt" className="mb-1 block text-sm font-medium">
-                              Excerpt (editable)
-                            </Label>
-                            <Textarea
-                              id="excerpt"
-                              value={editForm.excerpt}
-                              onChange={(e) => setEditForm({ ...editForm, excerpt: e.target.value })}
-                              rows={3}
-                              className="text-sm"
-                            />
-                          </div>
-
-                          <div className="grid grid-cols-2 gap-4">
                             <div>
-                              <Label htmlFor="giverName" className="mb-1 block text-sm font-medium">
-                                Giver Name
-                              </Label>
-                              <Input
-                                id="giverName"
-                                value={editForm.giverName}
-                                onChange={(e) => setEditForm({ ...editForm, giverName: e.target.value })}
-                                className="text-sm"
-                              />
-                            </div>
-                            <div>
-                              <Label htmlFor="giverCompany" className="mb-1 block text-sm font-medium">
-                                Company
-                              </Label>
-                              <Input
-                                id="giverCompany"
-                                value={editForm.giverCompany}
-                                onChange={(e) => setEditForm({ ...editForm, giverCompany: e.target.value })}
-                                className="text-sm"
-                              />
-                            </div>
-                            <div>
-                              <Label htmlFor="giverRole" className="mb-1 block text-sm font-medium">
-                                Role
-                              </Label>
-                              <Input
-                                id="giverRole"
-                                value={editForm.giverRole}
-                                onChange={(e) => setEditForm({ ...editForm, giverRole: e.target.value })}
-                                className="text-sm"
-                              />
-                            </div>
-                            <div>
-                              <Label htmlFor="sourceType" className="mb-1 block text-sm font-medium">
-                                Source Type
+                              <Label htmlFor="visibility" className="mb-1 block text-sm font-medium">
+                                Visibility
                               </Label>
                               <Select
-                                value={editForm.sourceType}
-                                onValueChange={(v) => setEditForm({ ...editForm, sourceType: v })}
+                                value={editForm.visibility}
+                                onValueChange={(v: "public" | "private") => setEditForm({ ...editForm, visibility: v })}
                               >
                                 <SelectTrigger className="text-sm">
-                                  <SelectValue placeholder="Select source" />
+                                  <SelectValue />
                                 </SelectTrigger>
                                 <SelectContent>
-                                  {SOURCE_TYPES.map((type) => (
-                                    <SelectItem key={type} value={type}>
-                                      {type}
-                                    </SelectItem>
-                                  ))}
+                                  <SelectItem value="public">Public</SelectItem>
+                                  <SelectItem value="private">Private</SelectItem>
                                 </SelectContent>
                               </Select>
                             </div>
-                          </div>
 
-                          <div>
-                            <Label className="mb-2 block text-sm font-medium">Traits (max 3, toggle on/off)</Label>
-                            <div className="flex flex-wrap gap-2">
-                              {LOCKED_TRAITS.map((trait) => (
-                                <Badge
-                                  key={trait}
-                                  variant={editForm.traits.includes(trait) ? "default" : "outline"}
-                                  className="cursor-pointer"
-                                  onClick={() => handleTraitToggle(trait)}
-                                >
-                                  {trait}
-                                </Badge>
-                              ))}
+                            <div className="flex gap-2 pt-4">
+                              <Button onClick={() => setEditingId(null)} variant="outline" className="flex-1">
+                                Cancel
+                              </Button>
+                              <Button
+                                onClick={() => handleApprove(feedback.id)}
+                                disabled={isProcessing}
+                                className="flex-1"
+                              >
+                                {isProcessing ? (
+                                  "Saving..."
+                                ) : (
+                                  <>
+                                    <CheckCircle2 className="mr-2 h-4 w-4" />
+                                    Save & Approve
+                                  </>
+                                )}
+                              </Button>
                             </div>
-                          </div>
-
-                          <div>
-                            <Label htmlFor="visibility" className="mb-1 block text-sm font-medium">
-                              Visibility
-                            </Label>
-                            <Select
-                              value={editForm.visibility}
-                              onValueChange={(v: "public" | "private") => setEditForm({ ...editForm, visibility: v })}
-                            >
-                              <SelectTrigger className="text-sm">
-                                <SelectValue />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="public">Public</SelectItem>
-                                <SelectItem value="private">Private</SelectItem>
-                              </SelectContent>
-                            </Select>
-                          </div>
-
-                          <div className="flex gap-2 pt-4">
-                            <Button onClick={() => setEditingId(null)} variant="outline" className="flex-1">
-                              Cancel
-                            </Button>
-                            <Button
-                              onClick={() => handleApprove(feedback.id)}
-                              disabled={isProcessing}
-                              className="flex-1"
-                            >
-                              {isProcessing ? (
-                                "Saving..."
-                              ) : (
-                                <>
-                                  <CheckCircle2 className="mr-2 h-4 w-4" />
-                                  Save & Approve
-                                </>
-                              )}
-                            </Button>
-                          </div>
-                        </>
-                      )}
+                          </>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </Card>

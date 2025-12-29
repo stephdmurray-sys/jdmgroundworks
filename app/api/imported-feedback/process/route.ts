@@ -134,6 +134,14 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Profile not found" }, { status: 403 })
     }
 
+    const { data: currentRecord } = await supabase
+      .from("imported_feedback")
+      .select("extraction_attempts")
+      .eq("id", recordId)
+      .single()
+
+    const attemptNumber = (currentRecord?.extraction_attempts || 0) + 1
+
     try {
       // Extract feedback using vision model
       const extracted = await extractFeedbackFromImage(imageUrl)
@@ -148,11 +156,11 @@ export async function POST(request: NextRequest) {
 
       console.log("[SCREENSHOT_EXTRACTION] Processing complete:", {
         recordId,
+        attemptNumber,
         shouldIncludeInAnalysis,
         overallConfidence: extracted.confidence.overall,
       })
 
-      // Update database with extracted data
       const { error } = await supabase
         .from("imported_feedback")
         .update({
@@ -168,6 +176,9 @@ export async function POST(request: NextRequest) {
           traits: extracted.traits,
           confidence_score: extracted.confidence.overall,
           confidence_details: extracted.confidence,
+          extraction_attempts: attemptNumber,
+          last_extraction_at: new Date().toISOString(),
+          last_extraction_error: null,
         })
         .eq("id", recordId)
 
@@ -180,6 +191,7 @@ export async function POST(request: NextRequest) {
         id: recordId,
         requiresReview: extracted.confidence.overall < 0.7,
         confidence: extracted.confidence.overall,
+        attemptNumber,
         extracted: {
           excerpt: extracted.excerpt,
           giverName: extracted.giverName,
@@ -196,6 +208,9 @@ export async function POST(request: NextRequest) {
           giver_name: "Review needed",
           confidence_score: 0,
           ocr_text: `Extraction failed: ${processingError instanceof Error ? processingError.message : "Unknown error"}`,
+          extraction_attempts: attemptNumber,
+          last_extraction_at: new Date().toISOString(),
+          last_extraction_error: processingError instanceof Error ? processingError.message : "Unknown error",
         })
         .eq("id", recordId)
 
@@ -203,6 +218,7 @@ export async function POST(request: NextRequest) {
         id: recordId,
         requiresReview: true,
         confidence: 0,
+        attemptNumber,
         message: "We couldn't extract details automatically. You can still publish by adding info manually.",
         error: processingError instanceof Error ? processingError.message : "Extraction failed",
       })
