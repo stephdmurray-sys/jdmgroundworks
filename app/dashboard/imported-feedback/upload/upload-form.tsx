@@ -156,19 +156,26 @@ export default function UploadForm({ profileId, currentCount, limit }: UploadFor
         return updated
       })
 
-      fetch("/api/imported-feedback/process", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          imageUrl: url,
-          profileId,
-          recordId: id,
-        }),
-      }).catch((err) => {
-        console.error("[v0] Background processing error:", err)
-      })
+      try {
+        const processResponse = await fetch("/api/imported-feedback/process", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            imageUrl: url,
+            profileId,
+            recordId: id,
+          }),
+        })
 
-      setTimeout(() => {
+        if (!processResponse.ok) {
+          const errorData = await processResponse.json()
+          throw new Error(errorData.error || "Processing failed")
+        }
+
+        const processResult = await processResponse.json()
+        console.log("[v0] Processing complete:", processResult)
+
+        // Update status to ready for review after successful processing
         setFiles((prev) => {
           const updated = [...prev]
           if (updated[index]?.id === id) {
@@ -176,7 +183,18 @@ export default function UploadForm({ profileId, currentCount, limit }: UploadFor
           }
           return updated
         })
-      }, 2000)
+      } catch (processError) {
+        console.error("[v0] Processing error:", processError)
+        // Still mark as ready for review even if extraction failed
+        // User can manually fill in the fields
+        setFiles((prev) => {
+          const updated = [...prev]
+          if (updated[index]?.id === id) {
+            updated[index] = { ...updated[index], status: "ready_for_review" }
+          }
+          return updated
+        })
+      }
     } catch (error) {
       console.error("[v0] Upload error:", error)
       setFiles((prev) => {
