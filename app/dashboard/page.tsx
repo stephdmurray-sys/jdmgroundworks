@@ -29,9 +29,25 @@ export default async function DashboardPage() {
     .eq("owner_id", profile.id)
     .order("created_at", { ascending: false })
 
+  const { data: importedFeedback } = await supabase
+    .from("imported_feedback")
+    .select("*")
+    .eq("profile_id", profile.id)
+    .order("created_at", { ascending: false })
+
   const allContributions = contributions || []
+  const allImportedFeedback = importedFeedback || []
   const confirmedContributions = allContributions
   const pendingContributions: any[] = []
+
+  const importedStats = {
+    pending: allImportedFeedback.filter((f) => !f.approved_by_owner && f.extraction_status === "completed").length,
+    approved: allImportedFeedback.filter((f) => f.approved_by_owner).length,
+    failed: allImportedFeedback.filter((f) => f.extraction_status === "failed").length,
+    processing: allImportedFeedback.filter(
+      (f) => f.extraction_status === "queued" || f.extraction_status === "processing",
+    ).length,
+  }
 
   const publicUrl = profile.slug ? `https://www.nomee.co/${profile.slug}` : null
   const collectionUrl = profile.slug ? `https://www.nomee.co/c/${profile.slug}` : null
@@ -39,7 +55,7 @@ export default async function DashboardPage() {
   return (
     <div className="min-h-screen bg-neutral-50">
       <nav className="sticky top-0 z-50 border-b bg-white">
-        <div className="mx-auto max-w-7xl px-6 py-4 flex items-center justify-between">
+        <div className="mx-auto max-w-5xl px-6 py-4 flex items-center justify-between">
           <Link href="/" className="text-2xl font-bold hover:opacity-80 transition-opacity">
             Nomee
           </Link>
@@ -59,7 +75,7 @@ export default async function DashboardPage() {
         </div>
       </nav>
 
-      <div className="mx-auto max-w-7xl px-6 py-12">
+      <div className="mx-auto max-w-5xl px-6 py-12">
         <div className="mb-12">
           <h2 className="mb-2 text-4xl font-bold text-neutral-900">
             Welcome back, {profile.full_name?.split(" ")[0] || profile.full_name}
@@ -74,6 +90,8 @@ export default async function DashboardPage() {
           publicUrl={publicUrl}
           collectionUrl={collectionUrl}
           contributions={allContributions}
+          importedFeedback={allImportedFeedback}
+          importedStats={importedStats}
         />
       </div>
     </div>
