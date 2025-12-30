@@ -3,6 +3,14 @@
 import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 
+function safeArray<T>(arr: T[] | null | undefined): T[] {
+  return Array.isArray(arr) ? arr : []
+}
+
+function safeString(str: string | null | undefined): string {
+  return typeof str === "string" ? str : ""
+}
+
 interface Contribution {
   id: string
   written_note: string
@@ -17,73 +25,68 @@ interface Contribution {
 interface RotatingFeaturedQuotesProps {
   contributions: Contribution[]
   heatmapTraits: string[]
-  tier1Traits: string[] // Added Tier 1 traits for filtering
+  tier1Traits: string[]
 }
 
 export function RotatingFeaturedQuotes({ contributions, heatmapTraits, tier1Traits }: RotatingFeaturedQuotesProps) {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isPaused, setIsPaused] = useState(false)
 
+  const safeContributions = safeArray(contributions).filter((c) => c != null)
+  const safeTier1Traits = safeArray(tier1Traits)
+
   const extractShortQuote = (text: string): string => {
-    const sentences = text.match(/[^.!?]+[.!?]+/g) || [text]
-
-    // Return just first sentence
-    const firstSentence = sentences[0].trim()
-
-    // If first sentence is too long, truncate it
+    const safeText = safeString(text)
+    const sentences = safeText.match(/[^.!?]+[.!?]+/g) || [safeText]
+    const firstSentence = sentences[0]?.trim() || ""
     if (firstSentence.length > 120) {
       return firstSentence.substring(0, 120).trim() + "..."
     }
-
     return firstSentence
   }
 
   const selectFeaturedQuotes = () => {
-    const validQuotes = contributions
+    const validQuotes = safeContributions
       .filter((c) => {
-        if (!c.written_note) return false
+        if (!c || !c.written_note) return false
 
         const allTraits = [
-          ...(c.traits_category1 || []),
-          ...(c.traits_category2 || []),
-          ...(c.traits_category3 || []),
-          ...(c.traits_category4 || []),
+          ...safeArray(c.traits_category1),
+          ...safeArray(c.traits_category2),
+          ...safeArray(c.traits_category3),
+          ...safeArray(c.traits_category4),
         ]
 
-        // Must contain at least one Tier 1 trait
-        const hasTier1Match = tier1Traits.some((trait) => allTraits.includes(trait))
-
+        const hasTier1Match = safeTier1Traits.some((trait) => allTraits.includes(trait))
         return hasTier1Match
       })
       .map((c) => {
         const allTraits = [
-          ...(c.traits_category1 || []),
-          ...(c.traits_category2 || []),
-          ...(c.traits_category3 || []),
-          ...(c.traits_category4 || []),
+          ...safeArray(c.traits_category1),
+          ...safeArray(c.traits_category2),
+          ...safeArray(c.traits_category3),
+          ...safeArray(c.traits_category4),
         ]
 
-        const tier1MatchCount = tier1Traits.filter((trait) => allTraits.includes(trait)).length
+        const tier1MatchCount = safeTier1Traits.filter((trait) => allTraits.includes(trait)).length
 
         return { ...c, tier1MatchCount }
       })
       .sort((a, b) => b.tier1MatchCount - a.tier1MatchCount)
 
-    // Try to get diverse relationship types
     const selected: Contribution[] = []
     const usedRelationships = new Set<string>()
 
     for (const quote of validQuotes) {
       if (selected.length >= 3) break
 
-      const relationship = quote.relationship?.toLowerCase() || ""
+      const relationship = safeString(quote.relationship).toLowerCase()
       if (!usedRelationships.has(relationship) || selected.length < 2) {
         selected.push(quote)
         usedRelationships.add(relationship)
       }
     }
 
-    // If we don't have enough, add more
     if (selected.length < 2) {
       validQuotes.slice(0, 3).forEach((q) => {
         if (!selected.find((s) => s.id === q.id)) {
@@ -110,12 +113,15 @@ export function RotatingFeaturedQuotes({ contributions, heatmapTraits, tier1Trai
   if (featuredQuotes.length === 0) return null
 
   const currentQuote = featuredQuotes[currentIndex]
+  if (!currentQuote) return null
+
   const shortQuote = extractShortQuote(currentQuote.written_note)
 
   const highlightText = (text: string) => {
-    const words = text.split(/(\s+)/)
-    const matchedTier1Traits = tier1Traits
-      .filter((trait) => text.toLowerCase().includes(trait.toLowerCase()))
+    const safeText = safeString(text)
+    const words = safeText.split(/(\s+)/)
+    const matchedTier1Traits = safeTier1Traits
+      .filter((trait) => safeText.toLowerCase().includes(trait.toLowerCase()))
       .slice(0, 2)
 
     return words.map((word, index) => {
@@ -137,7 +143,7 @@ export function RotatingFeaturedQuotes({ contributions, heatmapTraits, tier1Trai
   }
 
   const formatRelationship = (relationship: string) => {
-    const rel = relationship?.toLowerCase() || ""
+    const rel = safeString(relationship).toLowerCase()
     if (rel.includes("client")) return "Client"
     if (rel.includes("peer") || rel.includes("together")) return "Peer"
     if (rel.includes("manager")) return "Manager"
@@ -146,11 +152,7 @@ export function RotatingFeaturedQuotes({ contributions, heatmapTraits, tier1Trai
     return "Collaborator"
   }
 
-  const pastelColors = [
-    "bg-neutral-50/80", // light grey
-    "bg-blue-50/50", // light light blue
-    "bg-purple-50/40", // light light purple
-  ]
+  const pastelColors = ["bg-neutral-50/80", "bg-blue-50/50", "bg-purple-50/40"]
 
   const currentColor = pastelColors[currentIndex % pastelColors.length]
 
@@ -173,7 +175,7 @@ export function RotatingFeaturedQuotes({ contributions, heatmapTraits, tier1Trai
             </blockquote>
 
             <div className="flex items-center justify-center gap-2 text-sm text-neutral-400 mb-6">
-              <span>{currentQuote.contributor_name}</span>
+              <span>{safeString(currentQuote.contributor_name)}</span>
               <span>·</span>
               <span>{formatRelationship(currentQuote.relationship)}</span>
             </div>

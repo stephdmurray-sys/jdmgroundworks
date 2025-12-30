@@ -1,57 +1,102 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useMemo } from "react"
 import { ChevronDown } from "lucide-react"
+import { useState } from "react"
+
+function safeArray<T>(arr: T[] | null | undefined): T[] {
+  return Array.isArray(arr) ? arr : []
+}
+
+function safeString(str: string | null | undefined): string {
+  return typeof str === "string" ? str : ""
+}
+
+function safeNumber(num: number | null | undefined, fallback = 0): number {
+  return typeof num === "number" && !isNaN(num) ? num : fallback
+}
 
 export type TraitSignal = { label: string; count: number }
 export type VibeSignal = { label: string; count: number }
 
+interface TraitWithCount {
+  label: string
+  count: number
+  weightedCount?: number
+  category?: string
+  examples?: string[]
+}
+
 interface AiPatternSummaryProps {
-  analysisText: string
-  traitSignals: TraitSignal[]
-  vibeSignals: VibeSignal[]
-  firstName?: string
-  contributionsCount: number
+  // New interface
+  traits?: TraitWithCount[]
+  totalContributions?: number
+  uniqueCompanies?: number
+  interpretationSentence?: string
+  vibeLabels?: string[]
   uploadsCount?: number
+  // Old interface
+  analysisText?: string
+  traitSignals?: TraitSignal[]
+  vibeSignals?: VibeSignal[]
+  firstName?: string
+  contributionsCount?: number
 }
 
 export function AiPatternSummary({
+  // New props
+  traits,
+  totalContributions,
+  uniqueCompanies,
+  interpretationSentence,
+  vibeLabels,
+  uploadsCount = 0,
+  // Old props
   analysisText,
-  traitSignals,
-  vibeSignals,
+  traitSignals: directTraitSignals,
+  vibeSignals: directVibeSignals,
   firstName = "this person",
   contributionsCount,
-  uploadsCount = 0,
 }: AiPatternSummaryProps) {
-  const [summary, setSummary] = useState<{
-    synthesis: string
-    patterns: Array<{ label: string; type: "trait" | "vibe" }>
-  } | null>(null)
   const [isExpanded, setIsExpanded] = useState(false)
 
-  const totalDataCount = contributionsCount + uploadsCount
+  const safeTraits = useMemo(() => safeArray(traits), [traits])
+  const safeVibeLabels = useMemo(() => safeArray(vibeLabels), [vibeLabels])
 
-  useEffect(() => {
-    generateSummary()
-  }, [analysisText, traitSignals, vibeSignals, firstName, contributionsCount, uploadsCount])
+  const traitSignals: TraitSignal[] = useMemo(() => {
+    if (directTraitSignals) return directTraitSignals
+    return safeTraits.map((t) => ({
+      label: safeString(t?.label),
+      count: safeNumber(t?.count, 1),
+    }))
+  }, [directTraitSignals, safeTraits])
 
-  const generateSummary = () => {
+  const vibeSignals: VibeSignal[] = useMemo(() => {
+    if (directVibeSignals) return directVibeSignals
+    return safeVibeLabels.map((v) => ({
+      label: v,
+      count: 1,
+    }))
+  }, [directVibeSignals, safeVibeLabels])
+
+  const effectiveContributionsCount = safeNumber(contributionsCount) || safeNumber(totalContributions, 0)
+  const effectiveAnalysisText = safeString(analysisText) || safeString(interpretationSentence)
+  const totalDataCount = effectiveContributionsCount + safeNumber(uploadsCount, 0)
+
+  const summary = useMemo(() => {
     const hasTraits = traitSignals.length > 0
     const hasVibes = vibeSignals.length > 0
-    const hasText = analysisText.length >= 40
-
-    // Always generate SOMETHING when data exists
+    const hasText = effectiveAnalysisText.length >= 40
 
     const patterns: Array<{ label: string; type: "trait" | "vibe" }> = []
 
-    // Prefer traits for pills, then fill with vibes
     traitSignals.slice(0, 3).forEach((t) => {
-      patterns.push({ label: t.label, type: "trait" })
+      if (t?.label) patterns.push({ label: t.label, type: "trait" })
     })
 
     if (patterns.length < 3) {
       vibeSignals.slice(0, 3 - patterns.length).forEach((v) => {
-        patterns.push({ label: v.label, type: "vibe" })
+        if (v?.label) patterns.push({ label: v.label, type: "vibe" })
       })
     }
 
@@ -59,38 +104,38 @@ export function AiPatternSummary({
     const topThreeTraits = traitSignals.slice(0, 3)
     const topTwoVibes = vibeSignals.slice(0, 2)
 
-    if (topThreeTraits.length > 0) {
+    if (topThreeTraits.length > 0 && topThreeTraits[0]?.label) {
       if (totalDataCount === 1) {
-        if (topThreeTraits.length >= 2) {
-          synthesis = `Early feedback describes ${firstName} as ${topThreeTraits[0].label.toLowerCase()} and ${topThreeTraits[1].label.toLowerCase()}${topThreeTraits.length >= 3 ? `, with a ${topThreeTraits[2].label.toLowerCase()} approach` : ""}.`
+        if (topThreeTraits.length >= 2 && topThreeTraits[1]?.label) {
+          synthesis = `Early feedback describes ${firstName} as ${topThreeTraits[0].label.toLowerCase()} and ${topThreeTraits[1].label.toLowerCase()}${topThreeTraits.length >= 3 && topThreeTraits[2]?.label ? `, with a ${topThreeTraits[2].label.toLowerCase()} approach` : ""}.`
         } else {
           synthesis = `Early feedback describes ${firstName} as ${topThreeTraits[0].label.toLowerCase()}.`
         }
       } else if (totalDataCount === 2) {
-        if (topThreeTraits.length >= 2) {
-          synthesis = `So far, ${firstName} comes through as ${topThreeTraits[0].label.toLowerCase()} and ${topThreeTraits[1].label.toLowerCase()}${topThreeTraits.length >= 3 ? `, with emphasis on ${topThreeTraits[2].label.toLowerCase()}` : ""}.`
+        if (topThreeTraits.length >= 2 && topThreeTraits[1]?.label) {
+          synthesis = `So far, ${firstName} comes through as ${topThreeTraits[0].label.toLowerCase()} and ${topThreeTraits[1].label.toLowerCase()}${topThreeTraits.length >= 3 && topThreeTraits[2]?.label ? `, with emphasis on ${topThreeTraits[2].label.toLowerCase()}` : ""}.`
         } else {
           synthesis = `So far, ${firstName} comes through as ${topThreeTraits[0].label.toLowerCase()}.`
         }
       } else if (totalDataCount >= 3 && totalDataCount < 5) {
-        if (topThreeTraits.length >= 3) {
+        if (topThreeTraits.length >= 3 && topThreeTraits[1]?.label && topThreeTraits[2]?.label) {
           synthesis = `People describe working with ${firstName} as ${topThreeTraits[0].label.toLowerCase()} and ${topThreeTraits[1].label.toLowerCase()}, with a strong emphasis on ${topThreeTraits[2].label.toLowerCase()}.`
-        } else if (topThreeTraits.length === 2) {
+        } else if (topThreeTraits.length >= 2 && topThreeTraits[1]?.label) {
           synthesis = `People describe working with ${firstName} as ${topThreeTraits[0].label.toLowerCase()} and ${topThreeTraits[1].label.toLowerCase()}.`
         } else {
           synthesis = `People describe working with ${firstName} as ${topThreeTraits[0].label.toLowerCase()}.`
         }
       } else if (totalDataCount >= 5) {
-        if (topThreeTraits.length >= 3) {
+        if (topThreeTraits.length >= 3 && topThreeTraits[1]?.label && topThreeTraits[2]?.label) {
           synthesis = `People consistently describe working with ${firstName} as ${topThreeTraits[0].label.toLowerCase()} and ${topThreeTraits[1].label.toLowerCase()}, with a strong emphasis on ${topThreeTraits[2].label.toLowerCase()}.`
-        } else if (topThreeTraits.length === 2) {
+        } else if (topThreeTraits.length >= 2 && topThreeTraits[1]?.label) {
           synthesis = `People consistently describe working with ${firstName} as ${topThreeTraits[0].label.toLowerCase()} and ${topThreeTraits[1].label.toLowerCase()}.`
         } else {
           synthesis = `People consistently describe working with ${firstName} as ${topThreeTraits[0].label.toLowerCase()}.`
         }
       }
-    } else if (hasVibes && topTwoVibes.length > 0) {
-      if (topTwoVibes.length >= 2) {
+    } else if (hasVibes && topTwoVibes.length > 0 && topTwoVibes[0]?.label) {
+      if (topTwoVibes.length >= 2 && topTwoVibes[1]?.label) {
         synthesis = `Working with ${firstName} feels ${topTwoVibes[0].label.toLowerCase()} and ${topTwoVibes[1].label.toLowerCase()}.`
       } else {
         synthesis = `Working with ${firstName} feels ${topTwoVibes[0].label.toLowerCase()}.`
@@ -112,7 +157,7 @@ export function AiPatternSummary({
 
       for (const word of impactWords) {
         const regex = new RegExp(`[^.]*\\b${word}\\b[^.]*\\.`, "i")
-        const match = analysisText.match(regex)
+        const match = effectiveAnalysisText.match(regex)
         if (match && match[0].length <= 120) {
           impactStatement = match[0].trim()
           break
@@ -122,22 +167,29 @@ export function AiPatternSummary({
       if (impactStatement) {
         synthesis = `Feedback highlights that ${firstName} ${impactStatement.charAt(0).toLowerCase()}${impactStatement.slice(1)}`
       } else {
-        synthesis = `${firstName} is building a professional reputation through ${contributionsCount > 0 ? `${contributionsCount} direct contribution${contributionsCount > 1 ? "s" : ""}` : ""}${contributionsCount > 0 && uploadsCount > 0 ? " and " : ""}${uploadsCount > 0 ? `${uploadsCount} imported testimonial${uploadsCount > 1 ? "s" : ""}` : ""}.`
+        synthesis = `${firstName} is building a professional reputation through ${effectiveContributionsCount > 0 ? `${effectiveContributionsCount} direct contribution${effectiveContributionsCount > 1 ? "s" : ""}` : ""}${effectiveContributionsCount > 0 && uploadsCount > 0 ? " and " : ""}${uploadsCount > 0 ? `${uploadsCount} imported testimonial${uploadsCount > 1 ? "s" : ""}` : ""}.`
       }
     } else if (totalDataCount > 0) {
-      synthesis = `${firstName} has ${contributionsCount > 0 ? `${contributionsCount} contribution${contributionsCount > 1 ? "s" : ""}` : ""}${contributionsCount > 0 && uploadsCount > 0 ? " and " : ""}${uploadsCount > 0 ? `${uploadsCount} saved testimonial${uploadsCount > 1 ? "s" : ""}` : ""} building their professional story.`
+      synthesis = `${firstName} has ${effectiveContributionsCount > 0 ? `${effectiveContributionsCount} contribution${effectiveContributionsCount > 1 ? "s" : ""}` : ""}${effectiveContributionsCount > 0 && uploadsCount > 0 ? " and " : ""}${uploadsCount > 0 ? `${uploadsCount} saved testimonial${uploadsCount > 1 ? "s" : ""}` : ""} building their professional story.`
     }
 
     if (totalDataCount === 0 && !hasTraits && !hasVibes && !hasText) {
-      setSummary(null)
-      return
+      return null
     }
 
-    setSummary({
+    return {
       synthesis: synthesis || `${firstName} is gathering feedback to build their professional reputation.`,
       patterns,
-    })
-  }
+    }
+  }, [
+    traitSignals,
+    vibeSignals,
+    effectiveAnalysisText,
+    firstName,
+    totalDataCount,
+    effectiveContributionsCount,
+    uploadsCount,
+  ])
 
   if (!summary && totalDataCount === 0) {
     return (
@@ -151,7 +203,8 @@ export function AiPatternSummary({
     return (
       <div className="space-y-4">
         <p className="text-neutral-700 leading-relaxed text-base sm:text-lg md:text-xl" style={{ lineHeight: "1.7" }}>
-          {firstName} has received feedback from {contributionsCount} {contributionsCount === 1 ? "person" : "people"}
+          {firstName} has received feedback from {effectiveContributionsCount}{" "}
+          {effectiveContributionsCount === 1 ? "person" : "people"}
           {uploadsCount > 0 && ` and saved ${uploadsCount} testimonial${uploadsCount === 1 ? "" : "s"}`}.
         </p>
       </div>

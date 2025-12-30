@@ -3,6 +3,14 @@
 import { useState } from "react"
 import { motion } from "framer-motion"
 
+function safeArray<T>(arr: T[] | null | undefined): T[] {
+  return Array.isArray(arr) ? arr : []
+}
+
+function safeString(str: string | null | undefined): string {
+  return typeof str === "string" ? str : ""
+}
+
 interface ScrollingHighlightPhrasesProps {
   contributions: any[]
   onPhraseClick?: (phrase: string) => void
@@ -16,25 +24,32 @@ export function ScrollingHighlightPhrases({
 }: ScrollingHighlightPhrasesProps) {
   const [isPaused, setIsPaused] = useState(false)
 
+  const safeContributions = safeArray(contributions).filter((c) => c != null)
+
   const extractPhrases = () => {
     const phraseCount: Record<string, number> = {}
-    const allText = contributions
-      .map((c) => c.written_note || "")
+    const allText = safeContributions
+      .map((c) => safeString(c?.written_note))
       .join(" ")
       .toLowerCase()
 
     // Extract all trait mentions
-    contributions.forEach((contribution) => {
+    safeContributions.forEach((contribution) => {
+      if (!contribution) return
+
       const allTraits = [
-        ...(contribution.traits_category1 || []),
-        ...(contribution.traits_category2 || []),
-        ...(contribution.traits_category3 || []),
-        ...(contribution.traits_category4 || []),
+        ...safeArray(contribution?.traits_category1),
+        ...safeArray(contribution?.traits_category2),
+        ...safeArray(contribution?.traits_category3),
+        ...safeArray(contribution?.traits_category4),
       ]
 
       allTraits.forEach((trait) => {
-        const normalizedTrait = trait.toLowerCase()
-        phraseCount[normalizedTrait] = (phraseCount[normalizedTrait] || 0) + 1
+        if (!trait) return
+        const normalizedTrait = safeString(trait).toLowerCase()
+        if (normalizedTrait) {
+          phraseCount[normalizedTrait] = (phraseCount[normalizedTrait] || 0) + 1
+        }
       })
     })
 

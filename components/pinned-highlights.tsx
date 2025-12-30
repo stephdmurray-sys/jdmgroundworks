@@ -11,14 +11,6 @@ interface PinnedItem {
   contributor?: string
 }
 
-interface PinnedHighlightsProps {
-  profileSlug: string
-  isOwner: boolean
-  onPinQuote?: (id: string, content: string, contributor: string) => void
-  onPinVoice?: (id: string, content: string, contributor: string) => void
-  onPinTrait?: (trait: string) => void
-}
-
 const STORAGE_KEY_PREFIX = "nomee_pins_"
 const MAX_QUOTES = 3
 const MAX_VOICE = 1
@@ -28,7 +20,6 @@ export function usePinnedHighlights(profileSlug: string) {
   const [pinnedItems, setPinnedItems] = useState<PinnedItem[]>([])
   const { toast } = useToast()
 
-  // Load from localStorage on mount
   useEffect(() => {
     try {
       const stored = localStorage.getItem(`${STORAGE_KEY_PREFIX}${profileSlug}`)
@@ -36,11 +27,10 @@ export function usePinnedHighlights(profileSlug: string) {
         setPinnedItems(JSON.parse(stored))
       }
     } catch {
-      // localStorage not available, continue with empty
+      // localStorage not available
     }
   }, [profileSlug])
 
-  // Save to localStorage
   const savePins = useCallback(
     (items: PinnedItem[]) => {
       try {
@@ -54,25 +44,18 @@ export function usePinnedHighlights(profileSlug: string) {
   )
 
   const pinQuote = useCallback(
-    (id: string, content: string, contributor: string) => {
+    (id: string, content: string, contributor?: string) => {
       setPinnedItems((prev) => {
         const quotes = prev.filter((p) => p.type === "quote")
         if (quotes.length >= MAX_QUOTES) {
-          toast({
-            title: "Maximum quotes pinned",
-            description: `You can pin up to ${MAX_QUOTES} quotes.`,
-          })
+          toast({ title: "Maximum quotes pinned", description: `You can pin up to ${MAX_QUOTES} quotes.` })
           return prev
         }
         if (prev.some((p) => p.id === id)) return prev
-
         const newItems = [...prev, { id, type: "quote" as const, content, contributor }]
         const saved = savePins(newItems)
         if (!saved) {
-          toast({
-            title: "Pinned locally",
-            description: "Pinned on this device only.",
-          })
+          toast({ title: "Pinned locally", description: "Pinned on this device only." })
         }
         return newItems
       })
@@ -81,18 +64,14 @@ export function usePinnedHighlights(profileSlug: string) {
   )
 
   const pinVoice = useCallback(
-    (id: string, content: string, contributor: string) => {
+    (id: string, content: string, contributor?: string) => {
       setPinnedItems((prev) => {
         const voices = prev.filter((p) => p.type === "voice")
         if (voices.length >= MAX_VOICE) {
-          toast({
-            title: "Maximum voice cards pinned",
-            description: `You can pin up to ${MAX_VOICE} voice card.`,
-          })
+          toast({ title: "Maximum voice cards pinned", description: `You can pin up to ${MAX_VOICE} voice card.` })
           return prev
         }
         if (prev.some((p) => p.id === id)) return prev
-
         const newItems = [...prev, { id, type: "voice" as const, content, contributor }]
         savePins(newItems)
         return newItems
@@ -106,14 +85,10 @@ export function usePinnedHighlights(profileSlug: string) {
       setPinnedItems((prev) => {
         const traits = prev.filter((p) => p.type === "trait")
         if (traits.length >= MAX_TRAITS) {
-          toast({
-            title: "Maximum traits pinned",
-            description: `You can pin up to ${MAX_TRAITS} traits.`,
-          })
+          toast({ title: "Maximum traits pinned", description: `You can pin up to ${MAX_TRAITS} traits.` })
           return prev
         }
         if (prev.some((p) => p.content === trait)) return prev
-
         const newItems = [...prev, { id: `trait-${trait}`, type: "trait" as const, content: trait }]
         savePins(newItems)
         return newItems
@@ -123,7 +98,8 @@ export function usePinnedHighlights(profileSlug: string) {
   )
 
   const unpin = useCallback(
-    (id: string) => {
+    (typeOrId: string, maybeId?: string) => {
+      const id = maybeId || typeOrId
       setPinnedItems((prev) => {
         const newItems = prev.filter((p) => p.id !== id)
         savePins(newItems)
@@ -134,7 +110,8 @@ export function usePinnedHighlights(profileSlug: string) {
   )
 
   const isPinned = useCallback(
-    (id: string) => {
+    (typeOrId: string, maybeId?: string) => {
+      const id = maybeId || typeOrId
       return pinnedItems.some((p) => p.id === id)
     },
     [pinnedItems],
@@ -175,7 +152,6 @@ export function PinnedHighlightsDisplay({
         <h4 className="text-sm font-semibold text-neutral-900">Pinned Highlights</h4>
       </div>
 
-      {/* Pinned Traits */}
       {traits.length > 0 && (
         <div className="flex flex-wrap gap-2">
           {traits.map((item) => (
@@ -198,7 +174,6 @@ export function PinnedHighlightsDisplay({
         </div>
       )}
 
-      {/* Pinned Quotes & Voice */}
       {(quotes.length > 0 || voice.length > 0) && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {quotes.map((item) => (
@@ -237,15 +212,12 @@ export function PinnedHighlightsDisplay({
   )
 }
 
-// Pin button component to add to cards
 export function PinButton({
-  id,
   isPinned,
   onPin,
   onUnpin,
   disabled = false,
 }: {
-  id: string
   isPinned: boolean
   onPin: () => void
   onUnpin: () => void

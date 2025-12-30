@@ -3,6 +3,14 @@
 import { useRef, useState, useEffect } from "react"
 import { motion } from "framer-motion"
 
+function safeArray<T>(arr: T[] | null | undefined): T[] {
+  return Array.isArray(arr) ? arr : []
+}
+
+function safeString(str: string | null | undefined): string {
+  return typeof str === "string" ? str : ""
+}
+
 interface Contribution {
   id: string
   written_note: string
@@ -15,14 +23,14 @@ interface Contribution {
 
 interface ScrollingQuoteSnippetsProps {
   contributions: Contribution[]
-  tier1Traits?: string[] // Make optional with default
+  tier1Traits?: string[]
   selectedTrait?: string | null
   onSnippetClick?: (contributionId: string) => void
 }
 
 export function ScrollingQuoteSnippets({
   contributions,
-  tier1Traits = [], // Add default empty array
+  tier1Traits = [],
   selectedTrait,
   onSnippetClick,
 }: ScrollingQuoteSnippetsProps) {
@@ -31,6 +39,9 @@ export function ScrollingQuoteSnippets({
   const [isPausedTop, setIsPausedTop] = useState(false)
   const [isPausedBottom, setIsPausedBottom] = useState(false)
 
+  const safeContributions = safeArray(contributions).filter((c) => c != null)
+  const safeTier1Traits = safeArray(tier1Traits)
+
   const extractSnippets = () => {
     const snippets: Array<{ text: string; id: string; color: string; traits: string[] }> = []
     const seenSnippets = new Set<string>()
@@ -38,35 +49,37 @@ export function ScrollingQuoteSnippets({
     const colors = ["bg-neutral-50/50", "bg-orange-50/30", "bg-blue-50/30", "bg-green-50/30", "bg-purple-50/30"]
 
     const relevantContributions = selectedTrait
-      ? contributions.filter((c) => {
+      ? safeContributions.filter((c) => {
+          if (!c) return false
           const allTraits = [
-            ...(c.traits_category1 || []),
-            ...(c.traits_category2 || []),
-            ...(c.traits_category3 || []),
-            ...(c.traits_category4 || []),
+            ...safeArray(c.traits_category1),
+            ...safeArray(c.traits_category2),
+            ...safeArray(c.traits_category3),
+            ...safeArray(c.traits_category4),
           ]
           return allTraits.includes(selectedTrait)
         })
-      : contributions
+      : safeContributions
 
     const prioritized = relevantContributions
+      .filter((c) => c != null)
       .map((c) => {
         const allTraits = [
-          ...(c.traits_category1 || []),
-          ...(c.traits_category2 || []),
-          ...(c.traits_category3 || []),
-          ...(c.traits_category4 || []),
+          ...safeArray(c.traits_category1),
+          ...safeArray(c.traits_category2),
+          ...safeArray(c.traits_category3),
+          ...safeArray(c.traits_category4),
         ]
-        const tier1Count = tier1Traits.filter((t) => allTraits.includes(t)).length
+        const tier1Count = safeTier1Traits.filter((t) => allTraits.includes(t)).length
         return { ...c, tier1Count, allTraits }
       })
       .sort((a, b) => b.tier1Count - a.tier1Count)
 
     for (const contribution of prioritized) {
       if (snippets.length >= 20) break
-      if (!contribution.written_note) continue
+      if (!contribution || !contribution.written_note) continue
 
-      const sentences = contribution.written_note.match(/[^.!?]+[.!?]+/g) || []
+      const sentences = safeString(contribution.written_note).match(/[^.!?]+[.!?]+/g) || []
 
       for (const sentence of sentences) {
         if (snippets.length >= 20) break
@@ -110,9 +123,7 @@ export function ScrollingQuoteSnippets({
   useEffect(() => {
     if (!selectedTrait) return
 
-    const timeout = setTimeout(() => {
-      // Interaction timeout - return to mixed mode (parent component handles this)
-    }, 10000)
+    const timeout = setTimeout(() => {}, 10000)
 
     return () => clearTimeout(timeout)
   }, [selectedTrait])

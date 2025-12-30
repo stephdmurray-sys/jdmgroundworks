@@ -13,6 +13,14 @@ import { highlightQuote } from "@/lib/highlight-quote"
 import { extractKeywordsFromText } from "@/lib/extract-keywords-from-text"
 import type { HighlightPattern } from "@/lib/extract-highlight-patterns"
 
+function safeArray<T>(arr: T[] | null | undefined): T[] {
+  return Array.isArray(arr) ? arr : []
+}
+
+function safeString(str: string | null | undefined): string {
+  return typeof str === "string" ? str : ""
+}
+
 interface FloatingQuoteCardsProps {
   contributions: any[]
   selectedPhrase?: string | null
@@ -20,10 +28,10 @@ interface FloatingQuoteCardsProps {
   selectedTraits?: string[]
   hoveredTrait?: string | null
   profileName?: string
-  isFeatured?: boolean // Add featured flag for first card styling
-  isFirstInGroup?: boolean // New prop to identify first group
-  groupIndex?: number // Track which group this is
-  highlightPatterns?: HighlightPattern[] // Add highlightPatterns prop
+  isFeatured?: boolean
+  isFirstInGroup?: boolean
+  groupIndex?: number
+  highlightPatterns?: HighlightPattern[]
 }
 
 export function FloatingQuoteCards({
@@ -40,13 +48,17 @@ export function FloatingQuoteCards({
 }: FloatingQuoteCardsProps) {
   const [expandedId, setExpandedId] = useState<string | null>(null)
 
-  const handleShareQuote = (contribution: any, e: React.MouseEvent) => {
-    e.stopPropagation() // Prevent card expansion
+  const safeContributions = safeArray(contributions).filter((c) => c != null)
 
-    const quote = contribution.written_note?.split(".")[0] + "."
-    const author = contribution.contributor_name
-    const role = contribution.contributor_role || getRelationshipLabel(contribution.relationship)
-    const company = contribution.contributor_company
+  const handleShareQuote = (contribution: any, e: React.MouseEvent) => {
+    e.stopPropagation()
+    if (!contribution) return
+
+    const quote = safeString(contribution.written_note).split(".")[0] + "."
+    const author = safeString(contribution.contributor_name)
+    const role =
+      safeString(contribution.contributor_role) || getRelationshipLabel(safeString(contribution.relationship))
+    const company = safeString(contribution.contributor_company)
 
     const shareText = `"${quote}"\n\n— ${author}${role ? `, ${role}` : ""}${company ? ` at ${company}` : ""}\n\nvia ${profileName}'s Nomee profile`
 
@@ -57,24 +69,23 @@ export function FloatingQuoteCards({
           text: shareText,
           url: window.location.href,
         })
-        .catch(() => {
-          // User cancelled, do nothing
-        })
+        .catch(() => {})
     } else {
       navigator.clipboard.writeText(`${shareText}\n${window.location.href}`)
-      // Could integrate with toast notification system here
       alert("Quote copied to clipboard!")
     }
   }
 
-  const filteredContributions = contributions.filter((contribution) => {
+  const filteredContributions = safeContributions.filter((contribution) => {
+    if (!contribution) return false
+
     if (selectedPhrase) {
-      const text = contribution.written_note?.toLowerCase() || ""
+      const text = safeString(contribution.written_note).toLowerCase()
       if (!text.includes(selectedPhrase.toLowerCase())) return false
     }
 
     if (selectedRelationship && selectedRelationship !== "All") {
-      const relationship = contribution.relationship?.toLowerCase() || ""
+      const relationship = safeString(contribution.relationship).toLowerCase()
       const filter = selectedRelationship.toLowerCase()
 
       if (filter === "clients" && !relationship.includes("client")) return false
@@ -85,10 +96,10 @@ export function FloatingQuoteCards({
 
     if (selectedTraits.length > 0) {
       const allTraits = [
-        ...(contribution.traits_category1 || []),
-        ...(contribution.traits_category2 || []),
-        ...(contribution.traits_category3 || []),
-        ...(contribution.traits_category4 || []),
+        ...safeArray(contribution.traits_category1),
+        ...safeArray(contribution.traits_category2),
+        ...safeArray(contribution.traits_category3),
+        ...safeArray(contribution.traits_category4),
       ]
       const hasSelectedTrait = selectedTraits.some((trait) => allTraits.includes(trait))
       if (!hasSelectedTrait) return false
@@ -98,7 +109,7 @@ export function FloatingQuoteCards({
   })
 
   const getRelationshipLabel = (relationship: string) => {
-    const rel = relationship?.toLowerCase() || ""
+    const rel = safeString(relationship).toLowerCase()
     if (rel.includes("client")) return "Client"
     if (rel.includes("manager") || rel.includes("managed")) return "Manager"
     if (rel.includes("direct report") || rel.includes("report")) return "Direct Report"
@@ -109,64 +120,73 @@ export function FloatingQuoteCards({
   }
 
   const truncateToSentences = (text: string, maxSentences = 2) => {
-    if (!text) return ""
-    const sentences = text.match(/[^.!?]+[.!?]+/g) || [text]
-    if (sentences.length <= maxSentences) return text
+    const safeText = safeString(text)
+    if (!safeText) return ""
+    const sentences = safeText.match(/[^.!?]+[.!?]+/g) || [safeText]
+    if (sentences.length <= maxSentences) return safeText
     return sentences.slice(0, maxSentences).join(" ").trim()
   }
 
   const contributionMatchesHoveredTrait = (contribution: any) => {
+    if (!contribution) return false
     if (!hoveredTrait) return true
     const allTraits = [
-      ...(contribution.traits_category1 || []),
-      ...(contribution.traits_category2 || []),
-      ...(contribution.traits_category3 || []),
-      ...(contribution.traits_category4 || []),
+      ...safeArray(contribution.traits_category1),
+      ...safeArray(contribution.traits_category2),
+      ...safeArray(contribution.traits_category3),
+      ...safeArray(contribution.traits_category4),
     ]
     return allTraits.includes(hoveredTrait)
   }
 
   const getCardTint = (index: number) => {
     const tints = [
-      null, // No tint
-      "rgba(250, 247, 243, 0.06)", // warm-sand at 6%
       null,
-      "rgba(244, 247, 251, 0.06)", // soft-sky at 6%
+      "rgba(250, 247, 243, 0.06)",
       null,
-      "rgba(246, 250, 247, 0.06)", // pale-sage at 6%
+      "rgba(244, 247, 251, 0.06)",
+      null,
+      "rgba(246, 250, 247, 0.06)",
     ]
     return tints[index % tints.length]
+  }
+
+  if (safeContributions.length === 0) {
+    return null
   }
 
   return (
     <>
       {/* Desktop: Unified grid with featured card spanning 2 columns */}
       <div className="hidden md:block columns-1 md:columns-2 lg:columns-3 gap-4">
-        {contributions.map((contribution: any, index: number) => {
+        {safeContributions.map((contribution: any, index: number) => {
+          if (!contribution) return null
+
           const isExpanded = expandedId === contribution.id
           const matchesHovered = contributionMatchesHoveredTrait(contribution)
           const staggerDelay = index * 0.03
           const cardTint = getCardTint(index)
 
           const allTraits = [
-            ...(contribution.traits_category1 || []),
-            ...(contribution.traits_category2 || []),
-            ...(contribution.traits_category3 || []),
-            ...(contribution.traits_category4 || []),
+            ...safeArray(contribution.traits_category1),
+            ...safeArray(contribution.traits_category2),
+            ...safeArray(contribution.traits_category3),
+            ...safeArray(contribution.traits_category4),
           ]
 
           const hasVoice = !!contribution.audio_url || !!contribution.voice_url
 
-          const displayText = isExpanded ? contribution.written_note : truncateToSentences(contribution.written_note, 3)
+          const writtenNote = safeString(contribution.written_note)
+          const displayText = isExpanded ? writtenNote : truncateToSentences(writtenNote, 3)
 
-          const cardPatterns = extractKeywordsFromText(contribution.written_note || "", allTraits)
+          const cardPatterns = extractKeywordsFromText(writtenNote, allTraits)
 
           const renderedText = displayText ? highlightQuote(displayText, cardPatterns, 5) : displayText
 
           return (
             <motion.div
-              key={contribution.id}
-              id={`quote-${contribution.id}`}
+              key={contribution.id || `contrib-${index}`}
+              id={`quote-${contribution.id || index}`}
               layout
               initial={{ opacity: 0, y: 30 }}
               animate={{
@@ -211,7 +231,7 @@ export function FloatingQuoteCards({
                   </div>
                 )}
 
-                {contribution.written_note && (
+                {writtenNote && (
                   <p
                     className="text-sm md:text-base leading-relaxed text-neutral-700 mb-4 max-w-[72ch]"
                     style={{ lineHeight: "1.6" }}
@@ -222,9 +242,9 @@ export function FloatingQuoteCards({
 
                 {allTraits.length > 0 && (
                   <div className="flex flex-wrap gap-1.5 mb-4 pb-4 border-b border-neutral-100">
-                    {allTraits.map((trait) => (
+                    {allTraits.map((trait, traitIdx) => (
                       <Badge
-                        key={trait}
+                        key={`${trait}-${traitIdx}`}
                         variant="outline"
                         className="text-xs bg-neutral-50 text-neutral-600 border-neutral-200"
                       >
@@ -236,7 +256,9 @@ export function FloatingQuoteCards({
 
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1">
-                    <div className="font-medium text-sm text-neutral-900">{contribution.contributor_name}</div>
+                    <div className="font-medium text-sm text-neutral-900">
+                      {safeString(contribution.contributor_name)}
+                    </div>
                     <div className="text-xs text-neutral-500 mt-1">
                       {getRelationshipLabel(contribution.relationship)}
                       {contribution.relationship_context && (
@@ -262,31 +284,32 @@ export function FloatingQuoteCards({
       {/* Mobile: Horizontal scroll carousel with snap */}
       <div className="md:hidden overflow-x-auto snap-x snap-mandatory scrollbar-hide -mx-6 px-6">
         <div className="flex gap-4 pb-4">
-          {contributions.map((contribution: any, index: number) => {
+          {safeContributions.map((contribution: any, index: number) => {
+            if (!contribution) return null
+
             const isExpanded = expandedId === contribution.id
             const matchesHovered = contributionMatchesHoveredTrait(contribution)
             const cardTint = getCardTint(index)
 
             const allTraits = [
-              ...(contribution.traits_category1 || []),
-              ...(contribution.traits_category2 || []),
-              ...(contribution.traits_category3 || []),
-              ...(contribution.traits_category4 || []),
+              ...safeArray(contribution.traits_category1),
+              ...safeArray(contribution.traits_category2),
+              ...safeArray(contribution.traits_category3),
+              ...safeArray(contribution.traits_category4),
             ]
 
             const hasVoice = !!contribution.audio_url || !!contribution.voice_url
 
-            const displayText = isExpanded
-              ? contribution.written_note
-              : truncateToSentences(contribution.written_note, 3)
+            const writtenNote = safeString(contribution.written_note)
+            const displayText = isExpanded ? writtenNote : truncateToSentences(writtenNote, 3)
 
-            const cardPatterns = extractKeywordsFromText(contribution.written_note || "", allTraits)
+            const cardPatterns = extractKeywordsFromText(writtenNote, allTraits)
 
             const renderedText = displayText ? highlightQuote(displayText, cardPatterns, 5) : displayText
 
             return (
               <motion.div
-                key={contribution.id}
+                key={contribution.id || `mobile-contrib-${index}`}
                 className="snap-center flex-shrink-0 w-[85vw] max-w-md cursor-pointer group relative"
                 initial={{ opacity: 0, x: 20 }}
                 animate={{
@@ -326,7 +349,7 @@ export function FloatingQuoteCards({
                     </div>
                   )}
 
-                  {contribution.written_note && (
+                  {writtenNote && (
                     <p
                       className="text-sm md:text-base leading-relaxed text-neutral-700 mb-4 max-w-[72ch]"
                       style={{ lineHeight: "1.6" }}
@@ -337,9 +360,9 @@ export function FloatingQuoteCards({
 
                   {allTraits.length > 0 && (
                     <div className="flex flex-wrap gap-1.5 mb-4 pb-4 border-b border-neutral-100">
-                      {allTraits.map((trait) => (
+                      {allTraits.map((trait, traitIdx) => (
                         <Badge
-                          key={trait}
+                          key={`${trait}-${traitIdx}`}
                           variant="outline"
                           className="text-xs bg-neutral-50 text-neutral-600 border-neutral-200"
                         >
@@ -351,7 +374,9 @@ export function FloatingQuoteCards({
 
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex-1">
-                      <div className="font-medium text-sm text-neutral-900">{contribution.contributor_name}</div>
+                      <div className="font-medium text-sm text-neutral-900">
+                        {safeString(contribution.contributor_name)}
+                      </div>
                       <div className="text-xs text-neutral-500 mt-1">
                         {getRelationshipLabel(contribution.relationship)}
                         {contribution.relationship_context && (
