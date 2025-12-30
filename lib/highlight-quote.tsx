@@ -27,13 +27,19 @@ const IMPACT_PHRASES = [
   "optimized",
   "pioneered",
   "achieved",
+  "tripled",
+  "doubled",
+  "quadrupled",
+  "outperformed",
+  "surpassed",
 ]
 
 export function highlightQuote(
   text: string,
   patterns: HighlightPattern[],
-  maxHighlights = 5,
+  maxHighlights = 8,
   enableTwoTone = true,
+  useMarkerStyle = true, // New: use premium marker style
 ): React.ReactNode {
   if (!text || patterns.length === 0) return text
 
@@ -41,10 +47,10 @@ export function highlightQuote(
 
   if (validPatterns.length === 0) return text
 
-  // Build all matches including trait patterns (blue) and impact patterns (yellow)
-  const matches: { phrase: string; index: number; length: number; tier: string; color: "blue" | "yellow" }[] = []
+  // Build all matches including trait patterns (yellow marker) and impact patterns (yellow highlight)
+  const matches: { phrase: string; index: number; length: number; tier: string; color: "marker" | "impact" }[] = []
 
-  // Find trait matches (blue highlights)
+  // Find trait matches (yellow marker highlights)
   validPatterns.forEach((pattern) => {
     const regex = new RegExp(`\\b${pattern.phrase.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`, "gi")
     let match
@@ -54,14 +60,14 @@ export function highlightQuote(
         index: match.index,
         length: match[0].length,
         tier: pattern.tier,
-        color: "blue",
+        color: "marker",
       })
     }
   })
 
-  // Find impact phrase matches (yellow highlights) if two-tone enabled
+  // Find impact phrase matches (subtle impact highlights) if two-tone enabled
   if (enableTwoTone) {
-    // Also match numbers/percentages
+    // Match numbers/percentages
     const numberRegex = /\b(\d+%|\$[\d,]+|\d+x|\d+\s*(weeks?|months?|days?|years?|hours?))\b/gi
     let numMatch
     while ((numMatch = numberRegex.exec(text)) !== null) {
@@ -70,7 +76,7 @@ export function highlightQuote(
         index: numMatch.index,
         length: numMatch[0].length,
         tier: "impact",
-        color: "yellow",
+        color: "impact",
       })
     }
 
@@ -84,7 +90,7 @@ export function highlightQuote(
           index: match.index,
           length: match[0].length,
           tier: "impact",
-          color: "yellow",
+          color: "impact",
         })
       }
     })
@@ -92,11 +98,11 @@ export function highlightQuote(
 
   if (matches.length === 0) return text
 
-  // Sort by tier priority (blue > yellow) and then by position
+  // Sort by tier priority (marker > impact) and then by position
   matches.sort((a, b) => {
-    // Blue (traits) take priority over yellow (impact)
+    // Marker (traits) take priority over impact
     if (a.color !== b.color) {
-      return a.color === "blue" ? -1 : 1
+      return a.color === "marker" ? -1 : 1
     }
     const tierOrder = { theme: 0, "working-style": 1, contextual: 2, impact: 3 }
     if (a.tier !== b.tier) {
@@ -105,24 +111,24 @@ export function highlightQuote(
     return a.index - b.index
   })
 
-  // Remove overlaps, prioritizing blue highlights
+  // Remove overlaps, prioritizing marker highlights
   const nonOverlapping: typeof matches = []
   let lastEnd = 0
-  let blueCount = 0
-  let yellowCount = 0
-  const maxBlue = maxHighlights
-  const maxYellow = 3 // Cap yellow highlights at 3
+  let markerCount = 0
+  let impactCount = 0
+  const maxMarker = Math.min(maxHighlights, 5) // 3-5 marker highlights
+  const maxImpact = 3 // Cap impact highlights at 3
 
   for (const match of matches) {
     if (match.index >= lastEnd) {
-      if (match.color === "blue" && blueCount >= maxBlue) continue
-      if (match.color === "yellow" && yellowCount >= maxYellow) continue
+      if (match.color === "marker" && markerCount >= maxMarker) continue
+      if (match.color === "impact" && impactCount >= maxImpact) continue
 
       nonOverlapping.push(match)
       lastEnd = match.index + match.length
 
-      if (match.color === "blue") blueCount++
-      else yellowCount++
+      if (match.color === "marker") markerCount++
+      else impactCount++
     }
   }
 
@@ -140,10 +146,20 @@ export function highlightQuote(
       parts.push(text.slice(lastIndex, match.index))
     }
 
-    const className = match.color === "blue" ? "nomee-highlight" : "nomee-highlight-impact"
+    const className = useMarkerStyle
+      ? match.color === "marker"
+        ? "nomee-highlight-marker"
+        : "nomee-highlight-impact"
+      : match.color === "marker"
+        ? "nomee-highlight"
+        : "nomee-highlight-impact"
 
     parts.push(
-      <span key={`highlight-${idx}`} className={className}>
+      <span
+        key={`highlight-${idx}`}
+        className={className}
+        title={match.tier !== "impact" ? `Signal: ${match.tier}` : undefined}
+      >
         {match.phrase}
       </span>,
     )

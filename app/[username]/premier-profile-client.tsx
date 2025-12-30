@@ -13,6 +13,7 @@ import type { ProfileAnalysis } from "@/lib/build-profile-analysis"
 import { highlightQuote } from "@/lib/highlight-quote"
 import { extractKeywordsFromText } from "@/lib/extract-keywords-from-text"
 import { PremierTraitBar } from "@/components/premier-trait-bar"
+import { ProofSnapshot } from "@/components/proof-snapshot"
 
 interface PremierProfileClientProps {
   profile: Profile
@@ -309,6 +310,7 @@ export function PremierProfileClient({
                   vibeSignals={profileAnalysis.vibeSignals}
                   firstName={firstName}
                   contributionsCount={profileAnalysis.counts.contributions}
+                  uploadsCount={profileAnalysis.counts.uploads}
                 />
 
                 <p className="text-xs text-neutral-500 pt-4 border-t border-neutral-100">
@@ -326,7 +328,7 @@ export function PremierProfileClient({
               <div className="h-full rounded-xl border border-neutral-200 bg-neutral-50/50 p-6">
                 <h3 className="text-lg font-semibold text-neutral-900 mb-4">{firstName}'s vibe</h3>
                 {(() => {
-                  if (profileAnalysis.vibeSignals.length === 0) {
+                  if (profileAnalysis.counts.contributions < 2 || profileAnalysis.vibeSignals.length === 0) {
                     return (
                       <p className="text-sm text-neutral-500 leading-relaxed">
                         Vibe appears once 2+ people contribute.
@@ -338,14 +340,14 @@ export function PremierProfileClient({
 
                   return (
                     <div className="space-y-3">
-                      {profileAnalysis.vibeSignals.slice(0, 3).map((vibe, index) => (
+                      {profileAnalysis.vibeSignals.slice(0, 6).map((vibe, index) => (
                         <div
                           key={index}
                           className="flex items-center justify-between px-4 py-3 rounded-lg bg-white border border-purple-100 hover:border-purple-200 hover:shadow-sm transition-all duration-200"
                         >
                           <span className="text-sm font-semibold text-purple-900">{vibe.label}</span>
                           <div className="flex items-center gap-2">
-                            <span className="text-xs font-medium text-purple-700">×{vibe.count}</span>
+                            <span className="text-xs font-medium text-purple-700">{vibe.count}</span>
                             <span className="text-xs text-purple-500">
                               ({Math.round((vibe.count / totalVibeMentions) * 100)}%)
                             </span>
@@ -360,6 +362,19 @@ export function PremierProfileClient({
           </div>
         </div>
       </section>
+
+      {(profileAnalysis.traitSignals.length > 0 || profileAnalysis.vibeSignals.length > 0) && (
+        <section className="w-full bg-neutral-50">
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <ProofSnapshot
+              traitSignals={profileAnalysis.traitSignals}
+              vibeSignals={profileAnalysis.vibeSignals}
+              analysisText={profileAnalysis.analysisText}
+              firstName={firstName}
+            />
+          </div>
+        </section>
+      )}
 
       {/* Voice Notes Section */}
       {voiceContributions.length > 0 && (
@@ -554,6 +569,8 @@ export function PremierProfileClient({
                 onTraitSelect={handleTraitFilterSelect}
                 onClearFilters={handleClearFilters}
                 sourceFilter={sourceFilter}
+                totalPeople={profileAnalysis.counts.contributions}
+                totalUploads={profileAnalysis.counts.uploads}
               />
 
               <div className="flex justify-center gap-2">
@@ -577,7 +594,7 @@ export function PremierProfileClient({
                 ))}
               </div>
 
-              {/* Cards Grid */}
+              {/* Cards Grid - Direct submissions */}
               {(sourceFilter === "all" || sourceFilter === "nomee") && filteredHowItFeels.length > 0 && (
                 <div className="columns-1 sm:columns-2 lg:columns-3 gap-4 space-y-4">
                   {filteredHowItFeels.map((contribution) => {
@@ -587,7 +604,7 @@ export function PremierProfileClient({
                       ...(contribution.traits_category3 || []),
                     ]
                     const keywords = extractKeywordsFromText(contribution.written_note || "", allTraits)
-                    const highlightedText = highlightQuote(contribution.written_note || "", keywords, 4, true)
+                    const highlightedText = highlightQuote(contribution.written_note || "", keywords, 5, true, true)
 
                     return (
                       <div
@@ -646,26 +663,38 @@ export function PremierProfileClient({
                 </div>
               )}
 
-              {/* Imported Cards Grid */}
               {(sourceFilter === "all" || sourceFilter === "imported") && filteredImportedFeedback.length > 0 && (
                 <div className="columns-1 sm:columns-2 lg:columns-3 gap-4 space-y-4">
                   {filteredImportedFeedback.map((feedback) => {
                     const feedbackTraits = feedback.traits || []
                     const keywords = extractKeywordsFromText(feedback.ai_extracted_excerpt || "", feedbackTraits)
-                    const highlightedText = highlightQuote(feedback.ai_extracted_excerpt || "", keywords, 4, true)
+                    const highlightedText = highlightQuote(feedback.ai_extracted_excerpt || "", keywords, 5, true, true)
 
                     return (
                       <div
                         key={feedback.id}
                         className="break-inside-avoid rounded-xl p-6 bg-white border border-neutral-200 hover:border-neutral-300 hover:shadow-sm transition-all relative"
                       >
-                        <div className="absolute top-3 left-3">
+                        <div className="absolute top-3 left-3 flex items-center gap-1.5">
                           <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-neutral-100 text-neutral-600 border border-neutral-200">
                             Imported
                           </span>
+                          {feedback.source_type && (
+                            <span
+                              className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium ${
+                                feedback.source_type === "LinkedIn"
+                                  ? "bg-blue-100 text-blue-700 border border-blue-200"
+                                  : feedback.source_type === "Email"
+                                    ? "bg-neutral-800 text-white border border-neutral-800"
+                                    : "bg-neutral-100 text-neutral-600 border border-neutral-200"
+                              }`}
+                            >
+                              {feedback.source_type}
+                            </span>
+                          )}
                         </div>
 
-                        <div className="pt-4">
+                        <div className="pt-6">
                           <p className="text-sm leading-relaxed text-neutral-700 mb-4">{highlightedText}</p>
 
                           {feedbackTraits.length > 0 && (
@@ -677,8 +706,8 @@ export function PremierProfileClient({
                                     px-3 py-1.5 rounded-full text-xs font-medium border transition-colors cursor-pointer
                                     ${
                                       selectedTraitFilters.includes(trait)
-                                        ? "bg-blue-100 text-blue-800 border-blue-300"
-                                        : "bg-blue-50 text-blue-700 border-blue-100 hover:border-blue-200 hover:bg-blue-100"
+                                        ? "bg-amber-100 text-amber-800 border-amber-300"
+                                        : "bg-amber-50 text-amber-700 border-amber-100 hover:border-amber-200 hover:bg-amber-100"
                                     }
                                   `}
                                   onClick={() => handleTraitFilterSelect(trait)}
@@ -699,7 +728,10 @@ export function PremierProfileClient({
                             ) : (
                               <div className="text-xs text-neutral-400 italic mt-0.5">Company not provided</div>
                             )}
-                            <div className="text-[10px] text-neutral-400 mt-2">Extracted from screenshot</div>
+                            <div className="text-[10px] text-neutral-400 mt-2 flex items-center gap-1">
+                              <span className="inline-block w-1 h-1 bg-neutral-300 rounded-full"></span>
+                              Extracted from screenshot
+                            </div>
                           </div>
                         </div>
                       </div>
