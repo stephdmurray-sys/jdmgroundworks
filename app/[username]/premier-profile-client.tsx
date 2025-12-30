@@ -1045,6 +1045,19 @@ export function PremierProfileClient({
         </section>
       )}
 
+      {/* PremierSignalBar moved to bottom */}
+      {profileAnalysis.counts.contributions + profileAnalysis.counts.uploads >= 3 && (
+        <section className="w-full bg-neutral-900">
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <PremierSignalBar
+              allCards={allCards}
+              traitSignals={profileAnalysis.traitSignals}
+              totalContributions={profileAnalysis.counts.contributions + profileAnalysis.counts.uploads}
+            />
+          </div>
+        </section>
+      )}
+
       {/* Final CTA */}
       <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 md:py-20">
         <div className="text-center space-y-4">
