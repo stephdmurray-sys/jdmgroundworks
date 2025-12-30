@@ -502,7 +502,7 @@ export function PremierProfileClient({
         {/* ============================================ */}
         {voiceContributions.length > 0 && (
           <section className="py-[var(--space-section)] px-4 w-full">
-            <div className="mx-auto w-full max-w-6xl px-6">
+            <div className="max-w-6xl mx-auto">
               <SectionHeading
                 title="In Their Own Words"
                 subtitle={`Unedited voice notes from people who know ${firstName}`}
@@ -517,7 +517,7 @@ export function PremierProfileClient({
                 />
               </div>
 
-              <div className="mt-10 flex flex-wrap justify-center gap-8">
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {filteredVoiceContributions.map((contribution) => {
                   if (!contribution?.id) return null
                   const audioUrl = safeString(contribution.voice_url) || safeString(contribution.audio_url)
@@ -531,7 +531,7 @@ export function PremierProfileClient({
                   const keywords = extractKeywordsFromText(safeString(contribution.written_note), allTraits, topSignals)
 
                   return (
-                    <div key={contribution.id} className="relative group flex-none w-[340px]">
+                    <div key={contribution.id} className="relative group">
                       <CardShell variant="direct" className="w-full">
                         <div className="mb-4">
                           <VoiceCard
@@ -745,7 +745,7 @@ export function PremierProfileClient({
                 />
               </div>
 
-              <div className="mx-auto max-w-6xl flex flex-wrap justify-center gap-8">
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {filteredWrittenContributions
                   .filter((c) => !c.voice_url && !c.audio_url)
                   .map((contribution) => {
@@ -764,7 +764,7 @@ export function PremierProfileClient({
                     )
 
                     return (
-                      <div key={contribution.id} className="relative group flex-[0_1_360px] w-full max-w-[360px]">
+                      <div key={contribution.id} className="relative group">
                         <CardShell variant="direct" className="w-full">
                           <div className="mb-6">
                             <Pill variant="direct" className="text-xs px-2 py-1">
