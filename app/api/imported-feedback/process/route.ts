@@ -187,9 +187,9 @@ export async function POST(request: NextRequest) {
   await supabase.from("imported_feedback").update({ extraction_status: "processing" }).eq("id", recordId)
 
   try {
-    console.log("[v0] Downloading image from storage:", currentRecord.image_url)
+    console.log("[v0] Downloading image from storage:", currentRecord.raw_image_url)
 
-    const imagePath = currentRecord.image_url.split("/").pop()
+    const imagePath = currentRecord.raw_image_url.split("/").pop()
     if (!imagePath) {
       throw new Error("Invalid image URL")
     }

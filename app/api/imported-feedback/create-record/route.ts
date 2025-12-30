@@ -34,6 +34,8 @@ export async function POST(request: NextRequest) {
       .insert({
         profile_id: profileId,
         raw_image_url: imageUrl,
+        extraction_status: "queued", // Initialize with queued status
+        extraction_attempts: 0, // Track attempts
         ocr_text: null,
         ai_extracted_excerpt: "Processing...",
         giver_name: "Processing...",

@@ -157,6 +157,8 @@ export default function UploadForm({ profileId, currentCount, limit }: UploadFor
       })
 
       try {
+        console.log("[v0] Calling process API with:", { imageUrl: url, profileId, recordId: id })
+
         const processResponse = await fetch("/api/imported-feedback/process", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -167,8 +169,11 @@ export default function UploadForm({ profileId, currentCount, limit }: UploadFor
           }),
         })
 
+        console.log("[v0] Process API response status:", processResponse.status)
+
         if (!processResponse.ok) {
           const errorData = await processResponse.json()
+          console.error("[v0] Process API error:", errorData)
           throw new Error(errorData.error || "Processing failed")
         }
 
