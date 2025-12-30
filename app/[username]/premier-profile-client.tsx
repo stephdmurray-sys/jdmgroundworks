@@ -517,7 +517,7 @@ export function PremierProfileClient({
                 />
               </div>
 
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filteredVoiceContributions.map((contribution) => {
                   if (!contribution?.id) return null
                   const audioUrl = safeString(contribution.voice_url) || safeString(contribution.audio_url)
@@ -745,7 +745,7 @@ export function PremierProfileClient({
                 />
               </div>
 
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filteredWrittenContributions
                   .filter((c) => !c.voice_url && !c.audio_url)
                   .map((contribution) => {
