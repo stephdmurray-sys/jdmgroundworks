@@ -24,9 +24,12 @@ export function SiteHeader({ onCreateClick }: SiteHeaderProps) {
             <Link href="/what-is-nomee" className="text-sm text-slate-600 hover:text-slate-900 transition-colors">
               What is Nomee
             </Link>
-            <Link href="/how-it-works" className="text-sm text-slate-600 hover:text-slate-900 transition-colors">
-              How It Works
-            </Link>
+            <a href="#decision-makers" className="text-sm text-slate-600 hover:text-slate-900 transition-colors">
+              For Decision-Makers
+            </a>
+            <a href="#pricing" className="text-sm text-slate-600 hover:text-slate-900 transition-colors">
+              Pricing
+            </a>
             <div className="flex items-center gap-4">
               <Link
                 href="/auth/login"
@@ -39,14 +42,14 @@ export function SiteHeader({ onCreateClick }: SiteHeaderProps) {
                   onClick={onCreateClick}
                   className="bg-slate-900 hover:bg-slate-800 text-white rounded-full px-5 h-9 text-sm font-medium transition-all"
                 >
-                  Create your nomee
+                  Start uploading today
                 </Button>
               ) : (
                 <Button
                   asChild
                   className="bg-slate-900 hover:bg-slate-800 text-white rounded-full px-5 h-9 text-sm font-medium transition-all"
                 >
-                  <Link href="/auth/signup">Create your nomee</Link>
+                  <Link href="/auth/signup">Start uploading today</Link>
                 </Button>
               )}
             </div>
@@ -80,13 +83,20 @@ export function SiteHeader({ onCreateClick }: SiteHeaderProps) {
             >
               What is Nomee
             </Link>
-            <Link
-              href="/how-it-works"
+            <a
+              href="#decision-makers"
               className="text-base text-slate-600 hover:text-slate-900 transition-colors py-2"
               onClick={() => setMobileMenuOpen(false)}
             >
-              How It Works
-            </Link>
+              For Decision-Makers
+            </a>
+            <a
+              href="#pricing"
+              className="text-base text-slate-600 hover:text-slate-900 transition-colors py-2"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Pricing
+            </a>
             <Link
               href="/auth/login"
               className="text-base text-slate-600 hover:text-slate-900 transition-colors font-medium py-2"
@@ -102,7 +112,7 @@ export function SiteHeader({ onCreateClick }: SiteHeaderProps) {
                 }}
                 className="bg-slate-900 hover:bg-slate-800 text-white rounded-full h-11 text-base font-medium transition-all"
               >
-                Create your nomee
+                Start uploading today
               </Button>
             ) : (
               <Button
@@ -110,7 +120,7 @@ export function SiteHeader({ onCreateClick }: SiteHeaderProps) {
                 className="bg-slate-900 hover:bg-slate-800 text-white rounded-full h-11 text-base font-medium transition-all"
               >
                 <Link href="/auth/signup" onClick={() => setMobileMenuOpen(false)}>
-                  Create your nomee
+                  Start uploading today
                 </Link>
               </Button>
             )}

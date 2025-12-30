@@ -16,6 +16,8 @@ export default function Home() {
   const [modalType, setModalType] = useState<"deck" | "recognition">("deck")
   const [expandedOutcome, setExpandedOutcome] = useState<number | null>(null)
   const [expandedFramework, setExpandedFramework] = useState<string | null>(null)
+  const [heroTab, setHeroTab] = useState<"professional" | "decision-maker">("professional")
+  const [showAllTraits, setShowAllTraits] = useState(false)
 
   const openModal = (type: "deck" | "recognition") => {
     setModalType(type)
@@ -37,35 +39,97 @@ export default function Home() {
                 transition={{ duration: 0.6 }}
                 className="space-y-6 lg:pt-8"
               >
-                <h1 className="text-5xl md:text-6xl font-bold text-slate-900 leading-tight tracking-tight">
-                  What it's actually like to work with you.
-                </h1>
-
-                <p className="text-lg text-slate-500 font-medium">Real experiences. Highlighted patterns. Over time.</p>
-
-                <p className="text-xl md:text-2xl text-slate-700 leading-relaxed">
-                  One link that shows how people experience working with you — from real people, over time.
-                </p>
-
-                <br />
-
-                <div className="flex flex-col sm:flex-row items-start gap-4 pt-4">
-                  <Button
-                    onClick={() => openModal("deck")}
-                    size="lg"
-                    className="bg-slate-900 text-white hover:bg-slate-800 rounded-full px-8 py-6 text-base font-medium shadow-lg hover:shadow-xl transition-all"
+                {/* Tab toggle */}
+                <div className="inline-flex items-center gap-2 bg-slate-100 p-1 rounded-full">
+                  <button
+                    onClick={() => setHeroTab("professional")}
+                    className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
+                      heroTab === "professional"
+                        ? "bg-white text-slate-900 shadow-sm"
+                        : "text-slate-600 hover:text-slate-900"
+                    }`}
                   >
-                    Create your Nomee
-                    <ArrowRight className="w-5 h-5 ml-2" />
-                  </Button>
-
-                  <Link
-                    href="/maya-torres"
-                    className="text-slate-600 hover:text-slate-900 font-medium text-base flex items-center gap-2 px-4 py-3"
+                    For Professionals
+                  </button>
+                  <button
+                    onClick={() => setHeroTab("decision-maker")}
+                    className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
+                      heroTab === "decision-maker"
+                        ? "bg-white text-slate-900 shadow-sm"
+                        : "text-slate-600 hover:text-slate-900"
+                    }`}
                   >
-                    See an example →
-                  </Link>
+                    For Decision-Makers
+                  </button>
                 </div>
+
+                {heroTab === "professional" ? (
+                  <>
+                    <h1 className="text-5xl md:text-6xl font-bold text-slate-900 leading-tight tracking-tight">
+                      Don't lose the praise. Turn it into proof.
+                    </h1>
+
+                    <p className="text-xl md:text-2xl text-slate-700 leading-relaxed">
+                      One link to how people experience working with you — for hiring, partnerships, clients, and
+                      promotions.
+                    </p>
+
+                    <p className="text-sm text-slate-500 font-medium">
+                      Trusted by people who make decisions — hiring, partnerships, clients, collaborators.
+                    </p>
+
+                    <br />
+
+                    <div className="flex flex-col sm:flex-row items-start gap-4 pt-4">
+                      <Button
+                        onClick={() => openModal("deck")}
+                        size="lg"
+                        className="bg-slate-900 text-white hover:bg-slate-800 rounded-full px-8 py-6 text-base font-medium shadow-lg hover:shadow-xl transition-all"
+                      >
+                        Start uploading today
+                        <ArrowRight className="w-5 h-5 ml-2" />
+                      </Button>
+
+                      <Link
+                        href="/maya-torres"
+                        className="text-slate-600 hover:text-slate-900 font-medium text-base flex items-center gap-2 px-4 py-3"
+                      >
+                        See an example →
+                      </Link>
+                    </div>
+
+                    <p className="text-sm text-slate-500">Nomee submissions are free forever • 3 uploads included</p>
+                  </>
+                ) : (
+                  <>
+                    <h1 className="text-5xl md:text-6xl font-bold text-slate-900 leading-tight tracking-tight">
+                      See how they actually show up — fast.
+                    </h1>
+
+                    <p className="text-xl md:text-2xl text-slate-700 leading-relaxed">
+                      Nomee surfaces repeated collaboration signals from real perspectives, voice notes, and sourced
+                      screenshots — so you can decide with less guesswork.
+                    </p>
+
+                    <br />
+
+                    <div className="flex flex-col sm:flex-row items-start gap-4 pt-4">
+                      <Link href="/maya-torres">
+                        <Button
+                          size="lg"
+                          className="bg-slate-900 text-white hover:bg-slate-800 rounded-full px-8 py-6 text-base font-medium shadow-lg hover:shadow-xl transition-all"
+                        >
+                          View an example
+                          <ArrowRight className="w-5 h-5 ml-2" />
+                        </Button>
+                      </Link>
+                    </div>
+
+                    <p className="text-sm text-slate-500">
+                      Optional artifact for candidates + creators. Faster than reference checks.
+                    </p>
+                  </>
+                )}
               </motion.div>
 
               {/* Right: Real Nomee Slice (Desktop) */}
@@ -91,6 +155,37 @@ export default function Home() {
           </div>
         </section>
 
+        {/* Added new urgency strip section after hero */}
+        <section className="py-12 px-6 bg-gradient-to-b from-slate-50 to-white border-y border-slate-100">
+          <div className="max-w-3xl mx-auto text-center space-y-3">
+            <motion.h3
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              className="text-xl md:text-2xl font-semibold text-slate-900"
+            >
+              Start uploading today.
+            </motion.h3>
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              className="text-base text-slate-600 leading-relaxed"
+            >
+              Praise gets buried in emails, Slack, and DMs. Save it while it's still easy to find.
+            </motion.p>
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="text-sm text-slate-500 font-medium"
+            >
+              3 uploads free.
+            </motion.p>
+          </div>
+        </section>
+
+        {/* Updated embed section to use "Proof Tiles" terminology */}
         <section className="py-20 px-6 bg-gradient-to-b from-white to-slate-50">
           <div className="max-w-4xl mx-auto">
             <motion.div
@@ -102,11 +197,11 @@ export default function Home() {
             >
               <h2 className="text-2xl md:text-3xl font-semibold text-slate-900">Use your Nomee anywhere</h2>
               <p className="text-lg text-slate-600 max-w-2xl mx-auto">
-                Share your link anywhere for free. Embed quotes and traits with Pro.
+                Share your Proof Link anywhere for free. Embed Proof Tiles on your website with Pro.
               </p>
 
               <p className="text-sm text-slate-500 max-w-xl mx-auto">
-                Sharing your Nomee link is free. Embeds + extra proof tools are Pro.
+                Add 1–3 Proof Tiles to your portfolio, media kit, or About page — auto-updated as praise comes in.
               </p>
 
               {/* Mock embed visual */}
@@ -156,6 +251,49 @@ export default function Home() {
               <p className="text-xs text-slate-500 mt-6 max-w-lg mx-auto">
                 Submissions are tied to real people — one per contributor
               </p>
+            </motion.div>
+          </div>
+        </section>
+
+        {/* Rewritten benefits section with broader messaging */}
+        <section className="py-20 px-6 bg-white">
+          <div className="max-w-6xl mx-auto">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="grid md:grid-cols-3 gap-8"
+            >
+              <div className="space-y-4 text-center p-6">
+                <div className="w-12 h-12 mx-auto bg-blue-100 rounded-full flex items-center justify-center">
+                  <div className="w-6 h-6 bg-blue-600 rounded" />
+                </div>
+                <h3 className="text-xl font-semibold text-slate-900">Decide faster with real signals</h3>
+                <p className="text-slate-600 leading-relaxed">
+                  Hiring, partners, and clients can scan how someone shows up — beyond a resume or pitch.
+                </p>
+              </div>
+
+              <div className="space-y-4 text-center p-6">
+                <div className="w-12 h-12 mx-auto bg-blue-100 rounded-full flex items-center justify-center">
+                  <div className="w-6 h-6 bg-blue-600 rounded-full" />
+                </div>
+                <h3 className="text-xl font-semibold text-slate-900">Get recognized without overselling</h3>
+                <p className="text-slate-600 leading-relaxed">
+                  Let real people describe the impact and working vibe you're known for.
+                </p>
+              </div>
+
+              <div className="space-y-4 text-center p-6">
+                <div className="w-12 h-12 mx-auto bg-blue-100 rounded-full flex items-center justify-center">
+                  <div className="w-6 h-6 bg-blue-600 rounded-sm" />
+                </div>
+                <h3 className="text-xl font-semibold text-slate-900">Save praise before it disappears</h3>
+                <p className="text-slate-600 leading-relaxed">
+                  The best feedback is already in your inbox and messages. Capture it now.
+                </p>
+              </div>
             </motion.div>
           </div>
         </section>
@@ -291,7 +429,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* What a Nomee shows interpretive framing block */}
+        {/* Renamed section to "What your Proof Link shows" and updated item names */}
         <section className="py-24 px-6 bg-white relative overflow-hidden">
           <div className="max-w-4xl mx-auto space-y-12">
             <motion.div
@@ -301,12 +439,10 @@ export default function Home() {
               transition={{ duration: 0.6 }}
               className="space-y-6 text-center"
             >
-              <h2 className="text-2xl md:text-3xl font-semibold text-slate-900">What a Nomee shows</h2>
+              <h2 className="text-2xl md:text-3xl font-semibold text-slate-900">What your Proof Link shows</h2>
 
               <p className="text-lg text-slate-700 leading-relaxed">
-                A Nomee isn't written by the person.
-                <br />
-                It's built from the people who've worked with them.
+                A Proof Link isn't written by you. It's built from people who've worked with you.
               </p>
             </motion.div>
 
@@ -344,7 +480,7 @@ export default function Home() {
                     className="mt-2 p-4 bg-slate-50 rounded-lg border border-slate-200"
                   >
                     <p className="text-sm text-slate-600 leading-relaxed">
-                      Short reflections capture the experience of working together
+                      Short reflections on the experience of working together
                     </p>
                   </motion.div>
                 )}
@@ -376,7 +512,7 @@ export default function Home() {
                     className="mt-2 p-4 bg-slate-50 rounded-lg border border-slate-200"
                   >
                     <p className="text-sm text-slate-600 leading-relaxed">
-                      Key traits are highlighted directly from each contribution
+                      Key traits highlighted from each contribution
                     </p>
                   </motion.div>
                 )}
@@ -408,7 +544,7 @@ export default function Home() {
                     className="mt-2 p-4 bg-slate-50 rounded-lg border border-slate-200"
                   >
                     <p className="text-sm text-slate-600 leading-relaxed">
-                      Patterns emerge as more people share over time
+                      Patterns that emerge as more people share over time
                     </p>
                   </motion.div>
                 )}
@@ -417,6 +553,7 @@ export default function Home() {
           </div>
         </section>
 
+        {/* Updated section intro copy */}
         <section className="py-20 px-6 bg-slate-50">
           <div className="max-w-7xl mx-auto space-y-8">
             <motion.div
@@ -429,11 +566,8 @@ export default function Home() {
               <h2 className="text-3xl md:text-4xl font-semibold text-slate-900">
                 Shared by people who've worked with them
               </h2>
-              <p className="text-sm text-slate-500 font-medium">
-                Each contribution highlights the traits and moments that stood out.
-              </p>
               <p className="text-lg text-slate-600 max-w-2xl mx-auto">
-                Real perspectives from collaborators, clients, and team members.
+                A Proof Link isn't written by the person. It's built from the people who've worked with them.
               </p>
             </motion.div>
 
@@ -497,6 +631,7 @@ export default function Home() {
           </div>
         </section>
 
+        {/* Added expand/collapse functionality to show only top 8 traits by default */}
         <section className="pt-24 pb-24 px-6 bg-white">
           <div className="max-w-4xl mx-auto space-y-10">
             <motion.div
@@ -519,7 +654,7 @@ export default function Home() {
               transition={{ duration: 0.6, delay: 0.2 }}
               className="space-y-4"
             >
-              {/* Top row: Highest frequency (×5-×6) - Larger size */}
+              {/* Top 8 traits (always visible) */}
               <div className="flex flex-wrap justify-center gap-3">
                 {[
                   { trait: "Strategic", count: 6 },
@@ -529,6 +664,7 @@ export default function Home() {
                   { trait: "Detail-oriented", count: 5 },
                   { trait: "Reliable", count: 5 },
                   { trait: "Calm under pressure", count: 5 },
+                  { trait: "Patient", count: 4 },
                 ].map((item, idx) => (
                   <button
                     key={idx}
@@ -539,22 +675,39 @@ export default function Home() {
                 ))}
               </div>
 
-              {/* Bottom row: Lower frequency (×3-×4) - Smaller size */}
-              <div className="flex flex-wrap justify-center gap-2.5">
-                {[
-                  { trait: "Patient", count: 4 },
-                  { trait: "Proactive", count: 4 },
-                  { trait: "Empathetic", count: 4 },
-                  { trait: "Organized", count: 3 },
-                  { trait: "Analytical", count: 3 },
-                ].map((item, idx) => (
-                  <button
-                    key={idx}
-                    className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-full text-sm font-semibold transition-colors"
-                  >
-                    {item.trait} ×{item.count}
-                  </button>
-                ))}
+              {/* Additional traits (shown when expanded) */}
+              {showAllTraits && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  exit={{ opacity: 0, height: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="flex flex-wrap justify-center gap-2.5"
+                >
+                  {[
+                    { trait: "Proactive", count: 4 },
+                    { trait: "Empathetic", count: 4 },
+                    { trait: "Organized", count: 3 },
+                    { trait: "Analytical", count: 3 },
+                  ].map((item, idx) => (
+                    <button
+                      key={idx}
+                      className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-full text-sm font-semibold transition-colors"
+                    >
+                      {item.trait} ×{item.count}
+                    </button>
+                  ))}
+                </motion.div>
+              )}
+
+              {/* View all / Show less button */}
+              <div className="text-center pt-4">
+                <button
+                  onClick={() => setShowAllTraits(!showAllTraits)}
+                  className="text-blue-600 hover:text-blue-700 font-medium text-sm transition-colors"
+                >
+                  {showAllTraits ? "Show less" : "View all signals"}
+                </button>
               </div>
             </motion.div>
           </div>
@@ -689,6 +842,221 @@ export default function Home() {
           </div>
         </section>
 
+        <section id="decision-makers" className="py-24 px-6 bg-slate-50">
+          <div className="max-w-5xl mx-auto space-y-12">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="text-center space-y-4"
+            >
+              <h2 className="text-3xl md:text-4xl font-semibold text-slate-900">For decision-makers</h2>
+              <p className="text-xl text-slate-600">A faster way to validate working style.</p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="grid md:grid-cols-3 gap-8"
+            >
+              <div className="space-y-3 text-center">
+                <h3 className="text-lg font-semibold text-slate-900">Hiring</h3>
+                <p className="text-slate-600">Skim the signals before interviews.</p>
+              </div>
+
+              <div className="space-y-3 text-center">
+                <h3 className="text-lg font-semibold text-slate-900">Partnerships</h3>
+                <p className="text-slate-600">Confirm reliability and collaboration vibe.</p>
+              </div>
+
+              <div className="space-y-3 text-center">
+                <h3 className="text-lg font-semibold text-slate-900">Clients & collaborators</h3>
+                <p className="text-slate-600">Know what it's like to work together before money changes hands.</p>
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              className="max-w-2xl mx-auto space-y-4"
+            >
+              <div className="bg-white rounded-lg border border-slate-200 p-6 space-y-3">
+                <p className="text-sm font-medium text-slate-700">Copy/paste options for applications:</p>
+                <div className="space-y-2 text-sm text-slate-600">
+                  <p className="font-mono bg-slate-50 px-3 py-2 rounded border border-slate-200">
+                    Optional: Nomee Proof Link (collaboration signals)
+                  </p>
+                  <p className="font-mono bg-slate-50 px-3 py-2 rounded border border-slate-200">
+                    Optional: Partnership proof link
+                  </p>
+                  <p className="font-mono bg-slate-50 px-3 py-2 rounded border border-slate-200">
+                    Optional: Working style evidence link
+                  </p>
+                </div>
+              </div>
+
+              <div className="text-center pt-4">
+                <Link href="/maya-torres">
+                  <Button
+                    size="lg"
+                    className="bg-slate-900 text-white hover:bg-slate-800 rounded-full px-8 py-6 text-base font-medium shadow-lg hover:shadow-xl transition-all"
+                  >
+                    View an example Proof Link
+                    <ArrowRight className="w-5 h-5 ml-2" />
+                  </Button>
+                </Link>
+              </div>
+            </motion.div>
+          </div>
+        </section>
+
+        <section id="pricing" className="py-24 px-6 bg-white">
+          <div className="max-w-6xl mx-auto space-y-12">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="text-center space-y-4"
+            >
+              <h2 className="text-3xl md:text-4xl font-semibold text-slate-900">Pricing</h2>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="grid md:grid-cols-3 gap-8"
+            >
+              {/* Free Plan */}
+              <div className="border border-slate-200 rounded-xl p-8 bg-white space-y-6 hover:shadow-lg transition-shadow">
+                <div className="space-y-2">
+                  <h3 className="text-2xl font-bold text-slate-900">Free</h3>
+                  <p className="text-4xl font-bold text-slate-900">$0</p>
+                  <p className="text-base font-semibold text-slate-700">Submissions free forever</p>
+                </div>
+
+                <ul className="space-y-3 text-slate-600">
+                  <li className="flex items-start gap-2">
+                    <span className="text-blue-600 mt-1">✓</span>
+                    <span>Unlimited Nomee submissions (your link)</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-blue-600 mt-1">✓</span>
+                    <span>AI Summary + Pattern Recognition + Top 3 Vibes</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-blue-600 mt-1">✓</span>
+                    <span>3 uploads included</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-blue-600 mt-1">✓</span>
+                    <span>Share your Proof Link anywhere</span>
+                  </li>
+                </ul>
+
+                <Button
+                  onClick={() => openModal("deck")}
+                  className="w-full bg-slate-900 text-white hover:bg-slate-800 rounded-full py-6 text-base font-medium transition-all"
+                >
+                  Start free
+                </Button>
+              </div>
+
+              {/* Pro Plan */}
+              <div className="border-2 border-blue-600 rounded-xl p-8 bg-white space-y-6 shadow-lg relative">
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-blue-600 text-white px-4 py-1 rounded-full text-xs font-semibold">
+                  POPULAR
+                </div>
+                <div className="space-y-2">
+                  <h3 className="text-2xl font-bold text-slate-900">Pro</h3>
+                  <p className="text-4xl font-bold text-slate-900">
+                    $7<span className="text-lg font-normal text-slate-600">/month</span>
+                  </p>
+                  <p className="text-sm text-slate-500">or $77/year</p>
+                  <p className="text-base font-semibold text-slate-700">Unlimited uploads + embeds</p>
+                </div>
+
+                <ul className="space-y-3 text-slate-600">
+                  <li className="flex items-start gap-2">
+                    <span className="text-blue-600 mt-1">✓</span>
+                    <span>Unlimited uploads (past praise)</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-blue-600 mt-1">✓</span>
+                    <span>Better extraction + cleaner excerpts</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-blue-600 mt-1">✓</span>
+                    <span>Pin your strongest proof</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-blue-600 mt-1">✓</span>
+                    <span>Embed Proof Tiles on your website (portfolio, media kit, About page)</span>
+                  </li>
+                </ul>
+
+                <Button className="w-full bg-blue-600 text-white hover:bg-blue-700 rounded-full py-6 text-base font-medium transition-all">
+                  Go Pro
+                </Button>
+              </div>
+
+              {/* Premier Plan */}
+              <div className="border border-slate-200 rounded-xl p-8 bg-white space-y-6 hover:shadow-lg transition-shadow">
+                <div className="space-y-2">
+                  <h3 className="text-2xl font-bold text-slate-900">Premier</h3>
+                  <p className="text-4xl font-bold text-slate-900">
+                    $14<span className="text-lg font-normal text-slate-600">/month</span>
+                  </p>
+                  <p className="text-sm text-slate-500">or $149/year</p>
+                  <p className="text-base font-semibold text-slate-700">Decision-Maker View</p>
+                </div>
+
+                <ul className="space-y-3 text-slate-600">
+                  <li className="flex items-start gap-2">
+                    <span className="text-blue-600 mt-1">✓</span>
+                    <span>Everything in Pro</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-blue-600 mt-1">✓</span>
+                    <span>Decision-Maker View (skim mode)</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-blue-600 mt-1">✓</span>
+                    <span>Stronger credibility signals (role mix, recency)</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-blue-600 mt-1">✓</span>
+                    <span>Basic analytics (views / clicks)</span>
+                  </li>
+                </ul>
+
+                <Button className="w-full bg-slate-900 text-white hover:bg-slate-800 rounded-full py-6 text-base font-medium transition-all">
+                  Go Premier
+                </Button>
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              className="text-center pt-8"
+            >
+              <p className="text-sm text-slate-500 max-w-2xl mx-auto">
+                Uploads require processing — that's why Pro exists. Submissions stay free forever.
+              </p>
+            </motion.div>
+          </div>
+        </section>
+
         {/* Final CTA */}
         <section className="py-32 px-6 bg-slate-900">
           <div className="max-w-3xl mx-auto text-center space-y-8">
@@ -723,7 +1091,7 @@ export default function Home() {
                 size="lg"
                 className="bg-white text-slate-900 hover:bg-slate-100 rounded-full px-8 py-6 text-base font-medium shadow-lg hover:shadow-xl transition-all"
               >
-                Create your Nomee
+                Start uploading today
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
             </motion.div>

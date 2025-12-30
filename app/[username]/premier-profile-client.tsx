@@ -465,7 +465,7 @@ export function PremierProfileClient({
               </CardShell>
 
               {computedVibes.length > 0 && (
-                <CardShell className="mt-6 bg-gradient-to-br from-blue-50/50 to-indigo-50/30 border-2 border-blue-100">
+                <CardShell className="mt-6 bg-white border border-neutral-200">
                   <div className="flex items-center justify-between mb-6">
                     <h3 className="text-[1.75rem] font-serif font-semibold text-[var(--nomee-near-black)]">Vibe</h3>
                     <p className="text-sm text-neutral-500">How it feels to work together</p>
@@ -475,18 +475,18 @@ export function PremierProfileClient({
                     {computedVibes.map((vibe) => (
                       <div
                         key={vibe.label}
-                        className="group px-6 py-4 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+                        className="group px-6 py-4 rounded-2xl bg-blue-50/70 text-[var(--nomee-near-black)] shadow-sm hover:shadow-md transition-all duration-300"
                       >
                         <div className="flex items-center gap-3">
                           <span className="text-lg font-semibold">{vibe.label}</span>
-                          <span className="text-sm opacity-90">·</span>
-                          <span className="text-lg font-bold">{vibe.count}</span>
+                          <span className="text-sm opacity-70">·</span>
+                          <span className="text-lg font-semibold text-blue-600">{vibe.count}</span>
                         </div>
                       </div>
                     ))}
                   </div>
 
-                  <p className="text-[var(--text-micro)] text-neutral-500 pt-4 border-t border-blue-100">
+                  <p className="text-[var(--text-micro)] text-neutral-500 pt-4 border-t border-neutral-200">
                     Based on patterns across {totalContributions}{" "}
                     {totalContributions === 1 ? "perspective" : "perspectives"}
                     {totalUploads > 0 && ` + ${totalUploads} upload${totalUploads === 1 ? "" : "s"}`}
