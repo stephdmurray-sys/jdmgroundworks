@@ -2,56 +2,107 @@
 
 import { useState, useMemo, useEffect } from "react"
 import { Button } from "@/components/ui/button"
-import { Share2, Copy, MessageSquare, Upload, Info } from "lucide-react"
+import { MessageSquare, Upload, Info } from "lucide-react"
 import { VoiceCard } from "@/components/voice-card"
 import { AiPatternSummary } from "@/components/ai-pattern-summary"
 import { RelationshipFilter } from "@/components/relationship-filter"
 import type { RelationshipFilterCategory } from "@/lib/relationship-filter"
 import { dedupeContributions } from "@/lib/dedupe-contributions"
-import type { Profile, Contribution, ImportedFeedback } from "@/lib/types"
-import type { ProfileAnalysis } from "@/lib/build-profile-analysis"
 import { highlightQuote } from "@/lib/highlight-quote"
 import { extractKeywordsFromText } from "@/lib/extract-keywords-from-text"
 import { PremierTraitBar } from "@/components/premier-trait-bar"
-import { ProofSnapshot } from "@/components/proof-snapshot"
 import { PremierSignalBar } from "@/components/premier-signal-bar"
-import { usePinnedHighlights, PinnedHighlightsDisplay, PinButton } from "@/components/pinned-highlights"
+import { usePinnedHighlights, PinButton } from "@/components/pinned-highlights"
 import { SmartVibePills } from "@/components/smart-vibe-pills"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import Link from "next/link"
+
+interface Profile {
+  id: string
+  slug: string
+  full_name?: string | null
+  title?: string | null
+  avatar_url?: string | null
+  tier?: string | null
+}
+
+interface Contribution {
+  id: string
+  contributor_name?: string | null
+  contributor_company?: string | null
+  written_note?: string | null
+  voice_url?: string | null
+  audio_url?: string | null
+  traits_category1?: string[] | null
+  traits_category2?: string[] | null
+  traits_category3?: string[] | null
+  traits_category4?: string[] | null
+  relationship?: string | null
+  relationship_category?: string | null
+  contributor_id?: string | null
+  created_at?: string | null
+}
+
+interface ImportedFeedback {
+  id: string
+  giver_name?: string | null
+  giver_company?: string | null
+  ai_extracted_excerpt?: string | null
+  traits?: string[] | null
+  source_type?: string | null
+  confidence_score?: number | null
+  included_in_analysis?: boolean | null
+  ocr_text?: string | null
+  approved_by_owner?: boolean | null
+  visibility?: string | null
+}
+
+interface TraitWithCount {
+  label: string
+  count: number
+  weightedCount: number
+  category: "leadership" | "execution" | "collaboration" | "eq"
+  examples: string[]
+}
+
+interface ProfileAnalysis {
+  traitSignals: Array<{ label: string; count: number; sources: string[] }>
+  vibeSignals: Array<{ label: string; count: number }>
+  impactSignals: Array<{ label: string; count: number; phrases: string[] }>
+  totalDataCount: number
+}
 
 interface PremierProfileClientProps {
   profile: Profile
   contributions: Contribution[]
   importedFeedback: ImportedFeedback[]
+  traits: TraitWithCount[]
   totalContributions: number
-  uniqueCompanies: string[]
+  uniqueCompanies: number
   interpretationSentence: string
+  vibeLabels: string[]
   anchorQuote: string
   profileAnalysis: ProfileAnalysis
-  isOwner: boolean
+  isOwner?: boolean
 }
 
 export function PremierProfileClient({
   profile,
   contributions: rawContributions,
   importedFeedback: rawImportedFeedback,
+  traits,
   totalContributions,
   uniqueCompanies,
   interpretationSentence,
+  vibeLabels,
   anchorQuote,
   profileAnalysis,
-  isOwner,
+  isOwner = false,
 }: PremierProfileClientProps) {
   const contributions = dedupeContributions(rawContributions)
-  const voiceContributions = contributions.filter((c) => c.voice_url)
+  const voiceContributions = contributions.filter((c) => c.voice_url || c.audio_url)
   const voiceNotesCount = useMemo(() => {
-    const count = rawContributions.filter((c) => c.voice_url).length
-    console.log("[VOICE] Profile: Voice contributions detected", {
-      totalContributions: rawContributions.length,
-      voiceCount: count,
-      voiceContributionIds: rawContributions.filter((c) => c.voice_url).map((c) => c.id),
-    })
+    const count = rawContributions.filter((c) => c.voice_url || c.audio_url).length
     return count
   }, [rawContributions])
 
@@ -106,27 +157,34 @@ export function PremierProfileClient({
   }, [contributions])
 
   const allCards = useMemo(() => {
-    // Only include Nomee submissions in allCards for "How it feels" section
     const nomeeCards = howItFeelsContributions.map((c) => ({
       id: c.id,
-      excerpt: c.feedback_text, // Changed from c.written_note
-      traits: c.traits || [], // Assuming traits exist on Contribution, adjust if not
+      excerpt: c.written_note || "",
+      traits: [
+        ...(c.traits_category1 || []),
+        ...(c.traits_category2 || []),
+        ...(c.traits_category3 || []),
+        ...(c.traits_category4 || []),
+      ],
       type: "nomee" as const,
-      contributorId: c.contributor_id, // Assuming contributor_id exists on Contribution
+      contributorId: c.contributor_id,
     }))
 
-    // Imported cards are handled separately in "Past Praise" section
-    // DO NOT merge them here - this was causing duplication
     return nomeeCards
   }, [howItFeelsContributions])
 
   const allCardsForSignals = useMemo(() => {
     const nomeeCards = howItFeelsContributions.map((c) => ({
       id: c.id,
-      excerpt: c.feedback_text, // Changed from c.written_note
-      traits: c.traits || [], // Assuming traits exist on Contribution, adjust if not
+      excerpt: c.written_note || "",
+      traits: [
+        ...(c.traits_category1 || []),
+        ...(c.traits_category2 || []),
+        ...(c.traits_category3 || []),
+        ...(c.traits_category4 || []),
+      ],
       type: "nomee" as const,
-      contributorId: c.contributor_id, // Assuming contributor_id exists on Contribution
+      contributorId: c.contributor_id,
     }))
 
     const importedCards = importedFeedback.map((f) => ({
@@ -144,15 +202,14 @@ export function PremierProfileClient({
 
     return cards.filter((card) => {
       const text = (card.excerpt || "").toLowerCase()
-      const traits = card.traits || []
+      const cardTraits = card.traits || []
 
       if (snapshotFilter.type === "trait") {
-        return traits.some((t) => t.toLowerCase().includes(snapshotFilter.value.toLowerCase()))
+        return cardTraits.some((t) => t.toLowerCase().includes(snapshotFilter.value.toLowerCase()))
       } else if (snapshotFilter.type === "vibe") {
-        // Check if vibe word appears in text or traits
         return (
           text.includes(snapshotFilter.value.toLowerCase()) ||
-          traits.some((t) => t.toLowerCase().includes(snapshotFilter.value.toLowerCase()))
+          cardTraits.some((t) => t.toLowerCase().includes(snapshotFilter.value.toLowerCase()))
         )
       } else if (snapshotFilter.type === "outcome") {
         return text.includes(snapshotFilter.value.toLowerCase())
@@ -190,7 +247,7 @@ export function PremierProfileClient({
       if (prev.includes(trait)) {
         return prev.filter((t) => t !== trait)
       }
-      if (prev.length >= 2) return prev // Block 3rd selection
+      if (prev.length >= 2) return prev
       return [...prev, trait]
     })
   }
@@ -200,928 +257,467 @@ export function PremierProfileClient({
       if (prev.includes(vibe)) {
         return prev.filter((v) => v !== vibe)
       }
+      if (prev.length >= 2) return prev
       return [...prev, vibe]
     })
   }
 
-  const handleClearFilters = () => {
-    setSelectedTraitFilters([])
+  const handleSnapshotFilter = (type: "trait" | "vibe" | "outcome", value: string) => {
+    if (snapshotFilter?.type === type && snapshotFilter?.value === value) {
+      setSnapshotFilter(null)
+    } else {
+      setSnapshotFilter({ type, value })
+    }
   }
-
-  // Clear vibe filters
-  const handleClearVibes = () => {
-    setSelectedVibeFilters([])
-  }
-
-  const vibeFilteredHowItFeels = useMemo(() => {
-    if (selectedVibeFilters.length === 0) return filteredHowItFeels
-
-    return filteredHowItFeels.filter((c) => {
-      const allTraits = [
-        ...(c.traits_category1 || []),
-        ...(c.traits_category2 || []),
-        ...(c.traits_category3 || []),
-        ...(c.traits_category4 || []),
-      ]
-      const textLower = (c.written_note || "").toLowerCase()
-
-      return selectedVibeFilters.some((vibe) => {
-        if (allTraits.some((t) => t.toLowerCase() === vibe.toLowerCase())) return true
-        return textLower.includes(vibe.toLowerCase())
-      })
-    })
-  }, [filteredHowItFeels, selectedVibeFilters])
-
-  const vibeFilteredImported = useMemo(() => {
-    if (selectedVibeFilters.length === 0) return filteredImportedFeedback
-
-    return filteredImportedFeedback.filter((f) => {
-      const textLower = (f.ai_extracted_excerpt || "").toLowerCase()
-      return selectedVibeFilters.some((vibe) => {
-        if (f.traits?.some((t) => t.toLowerCase() === vibe.toLowerCase())) return true
-        return textLower.includes(vibe.toLowerCase())
-      })
-    })
-  }, [filteredImportedFeedback, selectedVibeFilters])
 
   useEffect(() => {
-    const timer = setTimeout(() => setHeroVisible(true), 100)
-    return () => clearTimeout(timer)
+    setHeroVisible(true)
   }, [])
 
   const handleCopyLink = () => {
-    navigator.clipboard.writeText(window.location.href)
+    navigator.clipboard.writeText(`https://www.nomee.co/${profile.slug}`)
     setShowCopied(true)
     setTimeout(() => setShowCopied(false), 2000)
   }
 
-  const handleShareProfile = () => {
-    if (navigator.share) {
-      navigator
-        .share({
-          title: `${profile.full_name}'s Nomee Profile`,
-          text: `Check out ${profile.full_name}'s professional feedback on Nomee`,
-          url: window.location.href,
-        })
-        .catch(() => {})
-    } else {
-      handleCopyLink()
-    }
-  }
+  const firstName = profile.full_name?.split(" ")[0] || "This person"
 
-  const confidenceLevel = profileAnalysis.confidenceLevel
-  const firstName = profile.full_name?.split(" ")[0] || "this person"
+  const confidenceLevel = useMemo(() => {
+    const nomeeCount = howItFeelsContributions.length
+    const importedCount = importedFeedback.length
+    const total = nomeeCount + importedCount
 
-  // Combine filtered 'how it feels' and 'imported' for snapshot filtering
-  const combinedFeedback = useMemo(() => {
-    const nomeeFeedback = vibeFilteredHowItFeels.map((c) => ({
-      id: c.id,
-      excerpt: c.written_note || "",
-      traits: [...(c.traits_category1 || []), ...(c.traits_category2 || []), ...(c.traits_category3 || [])],
-      type: "nomee" as const,
-    }))
+    if (total >= 10 || nomeeCount >= 7) return "High"
+    if (total >= 5 || nomeeCount >= 3) return "Medium"
+    return "Low"
+  }, [howItFeelsContributions.length, importedFeedback.length])
 
-    const importedFeedbackMapped = vibeFilteredImported.map((f) => ({
-      id: f.id,
-      excerpt: f.ai_extracted_excerpt || "",
-      traits: f.traits || [],
-      type: "imported" as const,
-    }))
-
-    return [...nomeeFeedback, ...importedFeedbackMapped]
-  }, [vibeFilteredHowItFeels, vibeFilteredImported])
-
-  // In the "How it feels" section, use filtered cards
-  // Around line 650 where filteredRecognitions is used, add snapshot filtering
-  const displayCards = snapshotFilter ? getFilteredCards(combinedFeedback) : combinedFeedback
+  const confidenceColor =
+    confidenceLevel === "High"
+      ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+      : confidenceLevel === "Medium"
+        ? "bg-amber-50 text-amber-700 border-amber-200"
+        : "bg-slate-50 text-slate-600 border-slate-200"
 
   return (
-    <div className="min-h-screen bg-warm-sand">
-      {/* Floating share cluster - Desktop only */}
-      <div className="hidden sm:block fixed right-8 top-1/2 -translate-y-1/2 z-40">
-        <div className="flex flex-col gap-3">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={handleShareProfile}
-            className="h-10 w-10 rounded-full bg-white/80 backdrop-blur-sm border border-neutral-200 hover:border-neutral-400 hover:bg-white shadow-sm opacity-50 hover:opacity-100 transition-all"
-            title="Share profile"
-          >
-            <Share2 className="h-4 w-4 text-neutral-600" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={handleCopyLink}
-            className="h-10 w-10 rounded-full bg-white/80 backdrop-blur-sm border border-neutral-200 hover:border-neutral-400 hover:bg-white shadow-sm opacity-50 hover:opacity-100 transition-all"
-            title={showCopied ? "Copied!" : "Copy link"}
-          >
-            <Copy className="h-4 w-4 text-neutral-600" />
-          </Button>
-        </div>
-      </div>
-
-      {/* Hero Section */}
-      <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 md:py-16">
-        <div
-          className={`mb-8 sm:mb-10 md:mb-12 transition-all duration-700 ${heroVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
+    <TooltipProvider>
+      <main className="min-h-screen bg-[#FAF9F7]">
+        {/* Hero Section */}
+        <section
+          className={`pt-12 pb-8 px-4 transition-all duration-700 ${heroVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
         >
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-neutral-900 mb-2 tracking-tight leading-[1.1]">
-            {profile.full_name}
-          </h1>
+          <div className="max-w-4xl mx-auto text-center">
+            <h1 className="text-4xl md:text-5xl font-serif text-neutral-900 mb-3">{profile.full_name}</h1>
+            {profile.title && <p className="text-lg text-neutral-600 mb-6">{profile.title}</p>}
 
-          {profile.headline && (
-            <p className="text-base sm:text-lg md:text-xl text-neutral-600 mb-3 leading-relaxed">{profile.headline}</p>
-          )}
-
-          <div className="flex flex-wrap items-center gap-3 py-3">
-            <p className="text-sm text-neutral-500 uppercase tracking-wide font-medium">Nomee Profile</p>
-            <span className="text-neutral-300">·</span>
-            <p className="text-sm text-neutral-700 font-medium">
-              {profileAnalysis.counts.contributions} {profileAnalysis.counts.contributions === 1 ? "person" : "people"}
-            </p>
-            {profileAnalysis.counts.voiceNotes > 0 && (
-              <>
-                <span className="text-neutral-300">·</span>
-                <p className="text-sm text-neutral-700 font-medium">
-                  {profileAnalysis.counts.voiceNotes} voice {profileAnalysis.counts.voiceNotes === 1 ? "note" : "notes"}
-                </p>
-              </>
-            )}
-            {profileAnalysis.counts.uploads > 0 && (
-              <>
-                <span className="text-neutral-300">·</span>
-                <p className="text-sm text-neutral-700 font-medium">
-                  {profileAnalysis.counts.uploads} {profileAnalysis.counts.uploads === 1 ? "screenshot" : "screenshots"}
-                </p>
-              </>
-            )}
-            <span className="text-neutral-300">·</span>
-            <div
-              className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border ${confidenceLevel.bgColor} ${confidenceLevel.borderColor}`}
-            >
-              <div className={`w-1.5 h-1.5 rounded-full ${confidenceLevel.color.replace("text-", "bg-")}`}></div>
-              <span className={`text-xs font-semibold ${confidenceLevel.color}`}>{confidenceLevel.label}</span>
+            {/* Stats row */}
+            <div className="flex items-center justify-center gap-2 text-sm text-neutral-500 mb-4 flex-wrap">
+              <span className="font-medium text-neutral-700">NOMEE PROFILE</span>
+              <span className="text-neutral-300">·</span>
+              <span>{totalContributions} people</span>
+              {voiceNotesCount > 0 && (
+                <>
+                  <span className="text-neutral-300">·</span>
+                  <span>{voiceNotesCount} voice notes</span>
+                </>
+              )}
+              {totalUploads > 0 && (
+                <>
+                  <span className="text-neutral-300">·</span>
+                  <span>{totalUploads} screenshots</span>
+                </>
+              )}
+              <span className="text-neutral-300">·</span>
+              <span className={`px-2 py-0.5 rounded-full text-xs font-medium border ${confidenceColor}`}>
+                {confidenceLevel} confidence
+              </span>
             </div>
-          </div>
 
-          <p className="text-xs text-neutral-500 mt-1">Each contributor can submit once.</p>
-
-          {/* Mobile share buttons */}
-          <div className="flex gap-3 mt-4 sm:hidden">
-            <button
-              onClick={handleShareProfile}
-              className="flex items-center gap-2 px-4 py-2.5 min-h-[44px] rounded-full bg-white border border-neutral-200 hover:border-neutral-400 hover:bg-neutral-50 active:bg-neutral-100 text-sm font-medium text-neutral-700 transition-colors"
-            >
-              <Share2 className="h-4 w-4" />
-              Share
-            </button>
-            <button
-              onClick={handleCopyLink}
-              className="flex items-center gap-2 px-4 py-2.5 min-h-[44px] rounded-full bg-white border border-neutral-200 hover:border-neutral-400 hover:bg-neutral-50 active:bg-neutral-100 text-sm font-medium text-neutral-700 transition-colors"
-            >
-              <Copy className="h-4 w-4" />
-              {showCopied ? "Copied!" : "Copy link"}
-            </button>
-          </div>
-        </div>
-      </section>
-
-      {/* The section that was here (lines ~370-383) has been removed */}
-
-      {pinnedItems.length > 0 && (
-        <section className="w-full bg-amber-50/30 border-b border-amber-100">
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <PinnedHighlightsDisplay pinnedItems={pinnedItems} onUnpin={unpin} isOwner={isOwner} />
+            <p className="text-xs text-neutral-400 mb-6">Each contributor can submit once.</p>
           </div>
         </section>
-      )}
 
-      {/* Hero section with Summary + Vibe side-by-side */}
-      <section className="w-full bg-white border-y border-neutral-100">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 md:py-20">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
-            {/* Left: AI Summary (2/3 width) */}
-            <div className="lg:col-span-2">
-              <div className="border-l-4 border-blue-500 pl-6 sm:pl-8 space-y-6">
-                <div className="space-y-3">
-                  <h3 className="text-2xl sm:text-3xl font-semibold text-neutral-900 leading-tight">
-                    Summary of working with {firstName}
-                  </h3>
-
-                  <div className="flex flex-wrap items-center gap-3 text-xs text-neutral-500">
-                    <span className="uppercase tracking-wide font-medium text-neutral-400">Updated automatically</span>
-                    <div className="flex flex-wrap items-center gap-2 text-neutral-600">
-                      <span>
-                        {profileAnalysis.counts.contributions}{" "}
-                        {profileAnalysis.counts.contributions === 1 ? "contribution" : "contributions"}
-                      </span>
-                      {profileAnalysis.counts.voiceNotes > 0 && (
-                        <>
-                          <span>•</span>
-                          <span>
-                            {profileAnalysis.counts.voiceNotes} voice{" "}
-                            {profileAnalysis.counts.voiceNotes === 1 ? "note" : "notes"}
-                          </span>
-                        </>
-                      )}
-                      {profileAnalysis.counts.uploads > 0 && (
-                        <>
-                          <span>•</span>
-                          <span>
-                            {profileAnalysis.counts.uploads}{" "}
-                            {profileAnalysis.counts.uploads === 1 ? "upload" : "uploads"}
-                          </span>
-                        </>
-                      )}
-                    </div>
-                  </div>
-                </div>
-
-                <AiPatternSummary
-                  analysisText={profileAnalysis.analysisText}
-                  traitSignals={profileAnalysis.traitSignals}
-                  vibeSignals={profileAnalysis.vibeSignals}
-                  firstName={firstName}
-                  contributionsCount={profileAnalysis.counts.contributions}
-                  uploadsCount={profileAnalysis.counts.uploads}
-                />
-
-                <p className="text-xs text-neutral-500 pt-4 border-t border-neutral-100">
-                  Generated from {profileAnalysis.counts.contributions}{" "}
-                  {profileAnalysis.counts.contributions === 1 ? "contribution" : "contributions"}
-                  {profileAnalysis.counts.uploads > 0 &&
-                    ` and ${profileAnalysis.counts.uploads} ${profileAnalysis.counts.uploads === 1 ? "upload" : "uploads"}`}
-                  {" • "}Updates as more people contribute
-                </p>
-              </div>
+        {/* Vibe Pills Section */}
+        {vibeLabels && vibeLabels.length > 0 && (
+          <section className="pb-8 px-4">
+            <div className="max-w-4xl mx-auto">
+              <SmartVibePills
+                vibes={vibeLabels}
+                traits={traits}
+                selectedVibes={selectedVibeFilters}
+                onVibeSelect={handleVibeSelect}
+                contributions={howItFeelsContributions}
+                importedFeedback={importedFeedback}
+              />
             </div>
+          </section>
+        )}
 
-            {/* Right: Vibe Card (1/3 width) - ALWAYS VISIBLE */}
-            <div className="lg:col-span-1">
-              <div className="h-full rounded-xl border border-neutral-200 bg-neutral-50/50 p-6">
-                <h3 className="text-lg font-semibold text-neutral-900 mb-4">{firstName}'s vibe</h3>
-                {(() => {
-                  if (profileAnalysis.counts.contributions < 2 || profileAnalysis.vibeSignals.length === 0) {
-                    return (
-                      <p className="text-sm text-neutral-500 leading-relaxed">
-                        Vibe appears once 2+ people contribute.
-                      </p>
-                    )
-                  }
+        {/* AI Summary Section */}
+        {profileAnalysis.totalDataCount >= 1 && (
+          <section className="pb-8 px-4">
+            <div className="max-w-4xl mx-auto">
+              <AiPatternSummary
+                traits={traits}
+                totalContributions={totalContributions}
+                uniqueCompanies={uniqueCompanies}
+                interpretationSentence={interpretationSentence}
+                vibeLabels={vibeLabels}
+                uploadsCount={totalUploads}
+              />
+            </div>
+          </section>
+        )}
 
-                  const totalVibeMentions = profileAnalysis.vibeSignals.reduce((sum, v) => sum + v.count, 0)
+        {/* Trait Bar Section */}
+        {traits.length > 0 && (
+          <section className="pb-8 px-4">
+            <div className="max-w-4xl mx-auto">
+              <PremierTraitBar
+                traits={traits}
+                selectedTraits={selectedTraitFilters}
+                onTraitSelect={handleTraitFilterSelect}
+                contributions={howItFeelsContributions}
+                importedFeedback={importedFeedback}
+              />
+            </div>
+          </section>
+        )}
 
-                  return (
-                    <div className="space-y-3">
-                      {profileAnalysis.vibeSignals.slice(0, 6).map((vibe, index) => (
-                        <div
-                          key={index}
-                          className="flex items-center justify-between px-4 py-3 rounded-lg bg-white border border-purple-100 hover:border-purple-200 hover:shadow-sm transition-all duration-200"
-                        >
-                          <span className="text-sm font-semibold text-purple-900">{vibe.label}</span>
-                          <div className="flex items-center gap-2">
-                            <span className="text-xs font-medium text-purple-700">{vibe.count}</span>
-                            <span className="text-xs text-purple-500">
-                              ({Math.round((vibe.count / totalVibeMentions) * 100)}%)
-                            </span>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )
-                })()}
-              </div>
+        {/* Source Filter Tabs */}
+        <section className="pb-4 px-4">
+          <div className="max-w-4xl mx-auto flex justify-center">
+            <div className="inline-flex items-center gap-1 p-1 bg-white rounded-full border border-neutral-200 shadow-sm">
+              <button
+                onClick={() => setSourceFilter("all")}
+                className={`px-4 py-2 text-sm font-medium rounded-full transition-all ${
+                  sourceFilter === "all" ? "bg-neutral-900 text-white" : "text-neutral-600 hover:bg-neutral-100"
+                }`}
+              >
+                All ({howItFeelsContributions.length + importedFeedback.length})
+              </button>
+              <button
+                onClick={() => setSourceFilter("nomee")}
+                className={`px-4 py-2 text-sm font-medium rounded-full transition-all ${
+                  sourceFilter === "nomee" ? "bg-neutral-900 text-white" : "text-neutral-600 hover:bg-neutral-100"
+                }`}
+              >
+                Direct ({howItFeelsContributions.length})
+              </button>
+              <button
+                onClick={() => setSourceFilter("imported")}
+                className={`px-4 py-2 text-sm font-medium rounded-full transition-all ${
+                  sourceFilter === "imported" ? "bg-neutral-900 text-white" : "text-neutral-600 hover:bg-neutral-100"
+                }`}
+              >
+                Imported ({importedFeedback.length})
+              </button>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {(profileAnalysis.traitSignals.length > 0 || profileAnalysis.vibeSignals.length > 0) && (
-        <section className="w-full bg-neutral-50">
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <ProofSnapshot
-              traitSignals={profileAnalysis.traitSignals}
-              vibeSignals={profileAnalysis.vibeSignals}
-              analysisText={profileAnalysis.analysisText}
-              firstName={firstName}
-              onFilterChange={setSnapshotFilter}
-            />
+        {/* How It Feels Section */}
+        <section className="py-12 px-4">
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-8">
+              <h2 className="text-2xl font-serif text-neutral-900 mb-2">How it feels</h2>
+              <p className="text-neutral-500">Day-to-day collaboration style and working patterns</p>
+              <div className="w-16 h-px bg-neutral-300 mx-auto mt-4" />
+            </div>
 
-            {snapshotFilter && (
-              <div className="mt-4 flex items-center justify-center gap-3">
-                <span className="text-sm text-neutral-600">
-                  Showing {getFilteredCards(combinedFeedback).length} matches for "{snapshotFilter.value}"
-                </span>
+            {/* Relationship Filter */}
+            {(sourceFilter === "all" || sourceFilter === "nomee") && howItFeelsContributions.length > 0 && (
+              <div className="flex justify-center mb-6">
+                <RelationshipFilter
+                  selectedCategory={howItFeelsRelationshipFilter}
+                  onCategoryChange={setHowItFeelsRelationshipFilter}
+                  contributions={howItFeelsContributions}
+                />
+              </div>
+            )}
+
+            {/* Masonry Grid of Cards */}
+            <div className="columns-1 md:columns-2 lg:columns-3 gap-4 space-y-4">
+              {/* Direct/Nomee Cards */}
+              {(sourceFilter === "all" || sourceFilter === "nomee") &&
+                filteredHowItFeels.map((contribution) => {
+                  const allTraits = [
+                    ...(contribution.traits_category1 || []),
+                    ...(contribution.traits_category2 || []),
+                    ...(contribution.traits_category3 || []),
+                    ...(contribution.traits_category4 || []),
+                  ]
+                  const keywords = extractKeywordsFromText(contribution.written_note || "", allTraits, topSignals)
+
+                  return (
+                    <div
+                      key={contribution.id}
+                      className="break-inside-avoid mb-4 bg-gradient-to-br from-sky-50/50 to-white border border-sky-100 rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow relative group"
+                    >
+                      {/* Source Badge */}
+                      <div className="absolute top-3 left-3 flex items-center gap-1 px-2 py-1 bg-sky-100/80 rounded-full">
+                        <MessageSquare className="w-3 h-3 text-sky-600" />
+                        <span className="text-[10px] font-medium text-sky-700">Nomee Submission</span>
+                      </div>
+
+                      {/* Pin Button */}
+                      {isOwner && (
+                        <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <PinButton
+                            isPinned={isPinned("quote", contribution.id)}
+                            onPin={() => pinQuote(contribution.id, contribution.written_note || "")}
+                            onUnpin={() => unpin("quote", contribution.id)}
+                          />
+                        </div>
+                      )}
+
+                      <div className="pt-8">
+                        <p className="text-neutral-700 text-sm leading-relaxed mb-4">
+                          {highlightQuote(contribution.written_note || "", keywords)}
+                        </p>
+
+                        {/* Trait Pills */}
+                        {allTraits.length > 0 && (
+                          <div className="flex flex-wrap gap-1.5 mb-4">
+                            {allTraits.slice(0, 4).map((trait) => (
+                              <Tooltip key={trait}>
+                                <TooltipTrigger asChild>
+                                  <span
+                                    className={`px-2 py-0.5 text-xs rounded-full border cursor-default transition-all ${
+                                      selectedTraitFilters.includes(trait)
+                                        ? "bg-sky-100 text-sky-800 border-sky-300"
+                                        : "bg-neutral-50 text-neutral-600 border-neutral-200 hover:bg-neutral-100"
+                                    }`}
+                                  >
+                                    {trait}
+                                  </span>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  <p>Appears in {traits.find((t) => t.label === trait)?.count || 1} contributions</p>
+                                </TooltipContent>
+                              </Tooltip>
+                            ))}
+                          </div>
+                        )}
+
+                        {/* Contributor Info */}
+                        <div className="pt-3 border-t border-neutral-100">
+                          <p className="font-medium text-neutral-900 text-sm">{contribution.contributor_name}</p>
+                          {contribution.relationship && contribution.relationship !== "0" && (
+                            <p className="text-xs text-neutral-500">
+                              {contribution.relationship}
+                              {contribution.contributor_company &&
+                                contribution.contributor_company.trim() !== "" &&
+                                ` · ${contribution.contributor_company}`}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  )
+                })}
+
+              {/* Imported Cards */}
+              {(sourceFilter === "all" || sourceFilter === "imported") &&
+                filteredImportedFeedback.map((feedback) => {
+                  const keywords = extractKeywordsFromText(
+                    feedback.ai_extracted_excerpt || "",
+                    feedback.traits || [],
+                    topSignals,
+                  )
+
+                  return (
+                    <div
+                      key={feedback.id}
+                      className="break-inside-avoid mb-4 bg-gradient-to-br from-amber-50/50 to-white border border-amber-100 rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow relative group"
+                    >
+                      {/* Source Badge */}
+                      <div className="absolute top-3 left-3 flex items-center gap-1.5">
+                        <span className="flex items-center gap-1 px-2 py-1 bg-amber-100/80 rounded-full">
+                          <Upload className="w-3 h-3 text-amber-600" />
+                          <span className="text-[10px] font-medium text-amber-700">Imported</span>
+                        </span>
+                        {feedback.source_type && (
+                          <span className="px-2 py-1 bg-blue-100 text-blue-700 text-[10px] font-medium rounded-full">
+                            {feedback.source_type}
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Pin Button */}
+                      {isOwner && (
+                        <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <PinButton
+                            isPinned={isPinned("quote", feedback.id)}
+                            onPin={() => pinQuote(feedback.id, feedback.ai_extracted_excerpt || "")}
+                            onUnpin={() => unpin("quote", feedback.id)}
+                          />
+                        </div>
+                      )}
+
+                      <div className="pt-8">
+                        <p className="text-neutral-700 text-sm leading-relaxed mb-4">
+                          {highlightQuote(feedback.ai_extracted_excerpt || "", keywords)}
+                        </p>
+
+                        {/* Trait Pills */}
+                        {feedback.traits && feedback.traits.length > 0 && (
+                          <div className="flex flex-wrap gap-1.5 mb-4">
+                            {feedback.traits.slice(0, 4).map((trait) => (
+                              <Tooltip key={trait}>
+                                <TooltipTrigger asChild>
+                                  <span
+                                    className={`px-2 py-0.5 text-xs rounded-full border cursor-default transition-all ${
+                                      selectedTraitFilters.includes(trait)
+                                        ? "bg-amber-100 text-amber-800 border-amber-300"
+                                        : "bg-neutral-50 text-neutral-600 border-neutral-200 hover:bg-neutral-100"
+                                    }`}
+                                  >
+                                    {trait}
+                                  </span>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  <p>Appears in {traits.find((t) => t.label === trait)?.count || 1} contributions</p>
+                                </TooltipContent>
+                              </Tooltip>
+                            ))}
+                          </div>
+                        )}
+
+                        {/* Contributor Info */}
+                        <div className="pt-3 border-t border-neutral-100 flex items-center justify-between">
+                          <div>
+                            <p className="font-medium text-neutral-900 text-sm">{feedback.giver_name || "Anonymous"}</p>
+                            {feedback.giver_company && feedback.giver_company.trim() !== "" && (
+                              <p className="text-xs text-neutral-500">{feedback.giver_company}</p>
+                            )}
+                          </div>
+                          {feedback.source_type && (
+                            <span className="px-2 py-1 bg-blue-600 text-white text-[10px] font-medium rounded">
+                              {feedback.source_type}
+                            </span>
+                          )}
+                        </div>
+
+                        {/* Extraction confidence */}
+                        {feedback.confidence_score && (
+                          <div className="mt-3 pt-3 border-t border-amber-100/50">
+                            <div className="flex items-center gap-1 text-[10px] text-amber-600">
+                              <span>Extraction confidence: {Math.round(feedback.confidence_score * 100)}%</span>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Info className="w-3 h-3 cursor-help" />
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  <p className="max-w-xs">
+                                    How confident we are that the screenshot text was read correctly (OCR + parsing)
+                                  </p>
+                                </TooltipContent>
+                              </Tooltip>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )
+                })}
+            </div>
+
+            {/* Empty State */}
+            {filteredHowItFeels.length === 0 && filteredImportedFeedback.length === 0 && (
+              <div className="text-center py-12">
+                <p className="text-neutral-500">No contributions match your filters.</p>
                 <button
-                  onClick={() => setSnapshotFilter(null)}
-                  className="text-sm text-blue-600 hover:text-blue-700 font-medium"
+                  onClick={() => {
+                    setSelectedTraitFilters([])
+                    setHowItFeelsRelationshipFilter("All")
+                    setSourceFilter("all")
+                  }}
+                  className="mt-2 text-sm text-sky-600 hover:underline"
                 >
-                  Clear filter
+                  Clear all filters
                 </button>
               </div>
             )}
           </div>
         </section>
-      )}
 
-      {/* Voice Notes Section */}
-      {voiceContributions.length > 0 && (
-        <section className="w-full bg-white">
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 md:py-20">
-            <div className="space-y-6">
-              <div className="space-y-3 max-w-2xl mx-auto text-center">
-                <h3 className="text-2xl sm:text-3xl md:text-4xl font-semibold text-neutral-900">In Their Own Words</h3>
-                <p className="text-sm text-neutral-500 leading-relaxed">
-                  Unedited voice notes from people who know {firstName}
-                </p>
+        {/* Voice Notes Section */}
+        {voiceContributions.length > 0 && (
+          <section className="py-12 px-4 bg-white">
+            <div className="max-w-4xl mx-auto">
+              <div className="text-center mb-8">
+                <h2 className="text-2xl font-serif text-neutral-900 mb-2">In their own words</h2>
+                <p className="text-neutral-500">Voice notes from people who know {firstName}</p>
               </div>
 
-              <div className="flex justify-center">
+              {/* Voice Relationship Filter */}
+              <div className="flex justify-center mb-6">
                 <RelationshipFilter
-                  contributions={voiceContributions}
                   selectedCategory={voiceRelationshipFilter}
                   onCategoryChange={setVoiceRelationshipFilter}
+                  contributions={voiceContributions}
                 />
               </div>
 
-              {filteredVoiceContributions.length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {filteredVoiceContributions.slice(0, 3).map((contribution) => {
-                    console.log("[VOICE] Profile: Rendering voice card", {
-                      contributionId: contribution.id,
-                      hasVoiceUrl: !!contribution.voice_url,
-                      voiceUrl: contribution.voice_url,
-                    })
-                    return (
-                      <VoiceCard key={contribution.id} contribution={contribution} profileName={profile.full_name} />
-                    )
-                  })}
-                </div>
-              ) : (
-                <div className="text-center py-8">
-                  <p className="text-neutral-600">No perspectives yet from {voiceRelationshipFilter.toLowerCase()}.</p>
-                  <button
-                    onClick={() => setVoiceRelationshipFilter("All")}
-                    className="mt-2 text-blue-600 hover:text-blue-700 text-sm font-medium min-h-[44px] px-4"
-                  >
-                    View all perspectives
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* Pattern Recognition Section - Enhanced with trust-blue transparency WOW factor */}
-      {profileAnalysis.traitSignals.length > 0 && (
-        <section className="w-full bg-white">
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 md:py-20">
-            <div className="space-y-6">
-              <div className="space-y-3 max-w-3xl mx-auto text-center">
-                <h3 className="text-2xl sm:text-3xl md:text-4xl font-semibold text-neutral-900">Pattern Recognition</h3>
-                <p className="text-sm text-neutral-500 leading-relaxed">
-                  Not hand-picked — patterns emerge as more people contribute.
-                </p>
-
-                <div
-                  className={`inline-flex items-center gap-2 px-4 py-2 rounded-full border ${confidenceLevel.bgColor} ${confidenceLevel.borderColor} mt-3`}
-                >
-                  <div className={`w-2 h-2 rounded-full ${confidenceLevel.color.replace("text-", "bg-")}`}></div>
-                  <span className={`text-xs font-semibold ${confidenceLevel.color}`}>{confidenceLevel.label}</span>
-                </div>
-
-                <p className="text-xs text-neutral-500 pt-2 max-w-md mx-auto leading-relaxed">
-                  {confidenceLevel.description}
-                </p>
-
-                {profileAnalysis.counts.contributions >= 3 && (
-                  <p className="text-xs text-neutral-400 pt-1">Darker = mentioned more often</p>
-                )}
-              </div>
-
-              {profileAnalysis.counts.contributions < 3 ? (
-                <div className="max-w-2xl mx-auto">
-                  <div className="p-5 sm:p-6 rounded-xl border border-neutral-200 bg-white">
-                    <h4 className="text-xs sm:text-sm font-semibold text-neutral-600 uppercase tracking-wider mb-4">
-                      Top signals
-                    </h4>
-                    <div className="space-y-2">
-                      {profileAnalysis.traitSignals.slice(0, 5).map((trait) => {
-                        const maxCount = Math.max(...profileAnalysis.traitSignals.map((t) => t.count))
-                        const bgOpacity = 0.4 + (trait.count / maxCount) * 0.3
-
-                        return (
-                          <div
-                            key={trait.label}
-                            className="flex items-center justify-between px-4 py-3 rounded-lg border border-blue-100 transition-all hover:border-blue-200 hover:shadow-sm"
-                            style={{ backgroundColor: `rgba(219, 234, 254, ${bgOpacity})` }}
-                          >
-                            <span className="font-semibold text-sm sm:text-base text-neutral-900">{trait.label}</span>
-                            <span className="text-xs font-semibold text-neutral-700">×{trait.count}</span>
-                          </div>
-                        )
-                      })}
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 max-w-5xl mx-auto">
-                  <div className="p-5 sm:p-6 rounded-xl border border-neutral-200 bg-white">
-                    <h4 className="text-xs sm:text-sm font-semibold text-neutral-600 uppercase tracking-wider mb-4">
-                      Top signals
-                    </h4>
-                    <div className="space-y-2">
-                      {profileAnalysis.traitSignals.slice(0, 5).map((trait) => {
-                        const isSelected = selectedHeatmapTrait === trait.label
-                        const maxCount = Math.max(...profileAnalysis.traitSignals.map((t) => t.count))
-                        const bgOpacity = 0.4 + (trait.count / maxCount) * 0.3
-
-                        return (
-                          <button
-                            key={trait.label}
-                            onClick={() =>
-                              setSelectedHeatmapTrait(selectedHeatmapTrait === trait.label ? null : trait.label)
-                            }
-                            className={`w-full flex items-center justify-between px-4 py-3 rounded-lg border transition-all ${
-                              isSelected
-                                ? "border-blue-400 shadow-md scale-[1.02] bg-blue-100"
-                                : "border-blue-100 hover:border-blue-200 hover:shadow-sm hover:scale-[1.01]"
-                            }`}
-                            style={{
-                              backgroundColor: isSelected ? undefined : `rgba(219, 234, 254, ${bgOpacity})`,
-                            }}
-                          >
-                            <span className="font-semibold text-sm sm:text-base text-neutral-900">{trait.label}</span>
-                            <span className="text-xs font-semibold text-neutral-700">×{trait.count}</span>
-                          </button>
-                        )
-                      })}
-                    </div>
-                  </div>
-
-                  <div className="p-5 sm:p-6 rounded-xl border border-neutral-200 bg-white">
-                    <h4 className="text-xs sm:text-sm font-semibold text-neutral-600 uppercase tracking-wider mb-4">
-                      Emerging signals
-                    </h4>
-                    <div className="flex flex-wrap gap-2">
-                      {profileAnalysis.traitSignals.slice(5, 15).map((trait) => {
-                        const isSelected = selectedHeatmapTrait === trait.label
-                        const maxCount = Math.max(...profileAnalysis.traitSignals.slice(5, 15).map((t) => t.count))
-                        const bgOpacity = 0.3 + (trait.count / maxCount) * 0.25
-
-                        return (
-                          <button
-                            key={trait.label}
-                            onClick={() =>
-                              setSelectedHeatmapTrait(selectedHeatmapTrait === trait.label ? null : trait.label)
-                            }
-                            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
-                              isSelected
-                                ? "border-blue-400 shadow-md scale-105 bg-blue-100"
-                                : "border-blue-100/70 hover:border-blue-200 hover:shadow-sm hover:scale-105"
-                            }`}
-                            style={{
-                              backgroundColor: isSelected ? undefined : `rgba(239, 246, 255, ${bgOpacity})`,
-                            }}
-                          >
-                            <span className="text-neutral-800">{trait.label}</span>
-                            <span className="text-xs font-semibold text-neutral-600">×{trait.count}</span>
-                          </button>
-                        )
-                      })}
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* How it feels Section */}
-      {(howItFeelsContributions.length > 0 || importedFeedback.length > 0) && (
-        <section className="w-full bg-neutral-50">
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 md:py-20">
-            <div className="space-y-8">
-              <div className="space-y-3 max-w-2xl mx-auto text-center">
-                <h3 className="text-2xl sm:text-3xl font-semibold text-neutral-900">How it feels</h3>
-                <p className="text-sm text-neutral-500 leading-relaxed">
-                  Day-to-day collaboration style and working patterns
-                </p>
-                <div className="w-16 h-0.5 bg-neutral-200 mx-auto mt-4"></div>
-              </div>
-
-              <SmartVibePills
-                vibeSignals={profileAnalysis.vibeSignals}
-                traitSignals={profileAnalysis.traitSignals}
-                allCards={allCards} // Use allCards here which now only contains nomee cards
-                selectedVibes={selectedVibeFilters}
-                onVibeSelect={handleVibeSelect}
-                onClearVibes={handleClearVibes}
-              />
-
-              {/* Existing trait bar - kept exactly as-is */}
-              <PremierTraitBar
-                allCards={allCards} // Use allCards here which now only contains nomee cards
-                selectedTraits={selectedTraitFilters}
-                onTraitSelect={handleTraitFilterSelect}
-                onClearFilters={handleClearFilters}
-                sourceFilter={sourceFilter} // This is still used for filtering within the "How it feels" section
-                totalPeople={profileAnalysis.counts.contributions}
-                totalUploads={profileAnalysis.counts.uploads}
-              />
-
-              {/* Source filter is no longer needed - Direct in "How it feels", Imported in "Past Praise" */}
-
-              {/* Cards Grid - Direct submissions */}
-              {(sourceFilter === "all" || sourceFilter === "nomee") &&
-                displayCards.filter((card) => card.type === "nomee").length > 0 && (
-                  <div className="columns-1 sm:columns-2 lg:columns-3 gap-4 space-y-4">
-                    {displayCards
-                      .filter((card) => card.type === "nomee")
-                      .map((contribution) => {
-                        const allTraits = [
-                          ...(contribution.traits_category1 || []),
-                          ...(contribution.traits_category2 || []),
-                          ...(contribution.traits_category3 || []),
-                        ]
-                        const keywords = extractKeywordsFromText(contribution.excerpt || "", allTraits)
-                        const highlightedText = highlightQuote(
-                          contribution.excerpt || "",
-                          keywords,
-                          8,
-                          true,
-                          true,
-                          selectedVibeFilters,
-                          topSignals,
-                        )
-
-                        return (
-                          <div
-                            key={contribution.id}
-                            className="break-inside-avoid rounded-xl p-6 bg-gradient-to-br from-sky-50/50 to-white border border-sky-100 hover:border-sky-200 hover:shadow-sm transition-all relative group"
-                          >
-                            {isOwner && (
-                              <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
-                                <PinButton
-                                  id={contribution.id}
-                                  isPinned={isPinned(contribution.id)}
-                                  onPin={() =>
-                                    pinQuote(
-                                      contribution.id,
-                                      contribution.excerpt || "",
-                                      contribution.contributor_name || "Anonymous",
-                                    )
-                                  }
-                                  onUnpin={() => unpin(contribution.id)}
-                                />
-                              </div>
-                            )}
-
-                            <div className="absolute top-3 left-3">
-                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-sky-100 text-sky-700 border border-sky-200">
-                                <MessageSquare className="w-2.5 h-2.5" />
-                                Direct
-                              </span>
-                            </div>
-
-                            <div className="pt-6">
-                              <p className="text-sm leading-relaxed text-neutral-700 mb-4">{highlightedText}</p>
-
-                              {allTraits.length > 0 && (
-                                <div className="flex flex-wrap gap-2 mb-4">
-                                  {allTraits.slice(0, 5).map((trait, idx) => {
-                                    const traitCount =
-                                      profileAnalysis.traitSignals.find(
-                                        (s) => s.label.toLowerCase() === trait.toLowerCase(),
-                                      )?.count || 1
-                                    return (
-                                      <TooltipProvider key={idx} delayDuration={200}>
-                                        <Tooltip>
-                                          <TooltipTrigger asChild>
-                                            <span
-                                              className={`
-                                                px-3 py-1.5 rounded-full text-xs font-medium border transition-all cursor-pointer
-                                                shadow-sm hover:shadow
-                                                ${
-                                                  selectedTraitFilters.includes(trait)
-                                                    ? "bg-blue-100 text-blue-800 border-blue-300 shadow-blue-100"
-                                                    : "bg-blue-50 text-blue-700 border-blue-100 hover:border-blue-200 hover:bg-blue-100"
-                                                }
-                                              `}
-                                              onClick={() => handleTraitFilterSelect(trait)}
-                                            >
-                                              {trait}
-                                            </span>
-                                          </TooltipTrigger>
-                                          <TooltipContent side="top" className="max-w-xs p-2">
-                                            <p className="text-xs">
-                                              Appears in {traitCount} contribution{traitCount !== 1 ? "s" : ""}
-                                            </p>
-                                          </TooltipContent>
-                                        </Tooltip>
-                                      </TooltipProvider>
-                                    )
-                                  })}
-                                </div>
-                              )}
-
-                              <div className="border-t border-neutral-100 pt-3">
-                                <div className="text-sm font-semibold text-neutral-900">
-                                  {contribution.contributor_name || "Anonymous"}
-                                </div>
-                                {contribution.relationship && contribution.relationship !== "0" && (
-                                  <div className="text-xs text-neutral-600 capitalize mt-0.5">
-                                    {contribution.relationship.replace(/_/g, " ")}
-                                  </div>
-                                )}
-                                {contribution.contributor_company &&
-                                contribution.contributor_company !== "0" &&
-                                contribution.contributor_company.trim() !== "" ? (
-                                  <div className="text-xs text-neutral-500 mt-0.5">
-                                    {contribution.contributor_company}
-                                  </div>
-                                ) : null}
-                              </div>
-                            </div>
-                          </div>
-                        )
-                      })}
-                  </div>
-                )}
-
-              {/* Imported Feedback Grid */}
-              {(sourceFilter === "all" || sourceFilter === "imported") &&
-                displayCards.filter((card) => card.type === "imported").length > 0 && (
-                  <div className="columns-1 sm:columns-2 lg:columns-3 gap-4 space-y-4">
-                    {displayCards
-                      .filter((card) => card.type === "imported")
-                      .map((feedback) => {
-                        const keywords = extractKeywordsFromText(feedback.excerpt || "", feedback.traits || [])
-                        const highlightedText = highlightQuote(
-                          feedback.excerpt || "",
-                          keywords,
-                          8,
-                          true,
-                          true,
-                          selectedVibeFilters,
-                          topSignals,
-                        )
-
-                        return (
-                          <div
-                            key={feedback.id}
-                            className="break-inside-avoid rounded-xl p-6 bg-gradient-to-br from-amber-50/50 to-white border border-amber-100 hover:border-amber-200 hover:shadow-sm transition-all relative group"
-                          >
-                            {isOwner && (
-                              <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
-                                <PinButton
-                                  id={feedback.id}
-                                  isPinned={isPinned(feedback.id)}
-                                  onPin={() =>
-                                    pinQuote(feedback.id, feedback.excerpt || "", feedback.giver_name || "Unknown")
-                                  }
-                                  onUnpin={() => unpin(feedback.id)}
-                                />
-                              </div>
-                            )}
-
-                            <div className="absolute top-3 left-3 flex items-center gap-1.5">
-                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-amber-100 text-amber-700 border border-amber-200">
-                                <Upload className="w-2.5 h-2.5" />
-                                Imported
-                              </span>
-                              {feedback.source_type && feedback.source_type !== "0" && (
-                                <span
-                                  className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium ${
-                                    feedback.source_type === "LinkedIn"
-                                      ? "bg-blue-100 text-blue-700 border border-blue-200"
-                                      : feedback.source_type === "Email"
-                                        ? "bg-neutral-800 text-white border border-neutral-800"
-                                        : "bg-neutral-100 text-neutral-600 border border-neutral-200"
-                                  }`}
-                                >
-                                  {feedback.source_type}
-                                </span>
-                              )}
-                            </div>
-
-                            <div className="pt-8">
-                              <p className="text-sm leading-relaxed text-neutral-700 mb-4">{highlightedText}</p>
-
-                              {feedback.traits && feedback.traits.length > 0 && (
-                                <div className="flex flex-wrap gap-2 mb-4">
-                                  {feedback.traits.slice(0, 4).map((trait, idx) => {
-                                    const traitCount =
-                                      profileAnalysis.traitSignals.find(
-                                        (s) => s.label.toLowerCase() === trait.toLowerCase(),
-                                      )?.count || 1
-                                    return (
-                                      <TooltipProvider key={idx} delayDuration={200}>
-                                        <Tooltip>
-                                          <TooltipTrigger asChild>
-                                            <span
-                                              className={`
-                                                px-3 py-1.5 rounded-full text-xs font-medium border transition-all cursor-pointer
-                                                shadow-sm hover:shadow
-                                                ${
-                                                  selectedTraitFilters.includes(trait)
-                                                    ? "bg-amber-100 text-amber-800 border-amber-300 shadow-amber-100"
-                                                    : "bg-amber-50 text-amber-700 border-amber-100 hover:border-amber-200 hover:bg-amber-100"
-                                                }
-                                              `}
-                                              onClick={() => handleTraitFilterSelect(trait)}
-                                            >
-                                              {trait}
-                                            </span>
-                                          </TooltipTrigger>
-                                          <TooltipContent side="top" className="max-w-xs p-2">
-                                            <p className="text-xs">
-                                              Appears in {traitCount} contribution{traitCount !== 1 ? "s" : ""}
-                                            </p>
-                                          </TooltipContent>
-                                        </Tooltip>
-                                      </TooltipProvider>
-                                    )
-                                  })}
-                                </div>
-                              )}
-
-                              <div className="border-t border-neutral-100 pt-3">
-                                {feedback.giver_name && feedback.giver_name !== "0" && (
-                                  <div className="text-sm font-semibold text-neutral-900">{feedback.giver_name}</div>
-                                )}
-                                {feedback.giver_title &&
-                                  feedback.giver_title !== "0" &&
-                                  feedback.giver_title.trim() !== "" && (
-                                    <div className="text-xs text-neutral-600 mt-0.5">{feedback.giver_title}</div>
-                                  )}
-                                {feedback.giver_company &&
-                                feedback.giver_company !== "0" &&
-                                feedback.giver_company.trim() !== "" ? (
-                                  <div className="text-xs text-neutral-500 mt-0.5">{feedback.giver_company}</div>
-                                ) : null}
-                                {feedback.extraction_confidence && feedback.extraction_confidence > 0 && (
-                                  <div className="text-[10px] text-neutral-400 mt-2 flex items-center gap-1.5">
-                                    <TooltipProvider delayDuration={200}>
-                                      <Tooltip>
-                                        <TooltipTrigger asChild>
-                                          <span className="inline-flex items-center gap-1 cursor-help">
-                                            <span className="inline-block w-1 h-1 bg-amber-400 rounded-full"></span>
-                                            Extraction confidence: {Math.round(feedback.extraction_confidence * 100)}%
-                                            <Info className="w-3 h-3 text-neutral-400" />
-                                          </span>
-                                        </TooltipTrigger>
-                                        <TooltipContent side="top" className="max-w-xs p-2">
-                                          <p className="text-xs">
-                                            How confident we are that the screenshot text was read correctly (OCR +
-                                            parsing).
-                                          </p>
-                                        </TooltipContent>
-                                      </Tooltip>
-                                    </TooltipProvider>
-                                  </div>
-                                )}
-                              </div>
-                            </div>
-                          </div>
-                        )
-                      })}
-                  </div>
-                )}
-
-              {/* Empty state */}
-              {displayCards.length === 0 && (
-                <div className="text-center py-8">
-                  <p className="text-neutral-600">No perspectives match the selected filters.</p>
-                  <button
-                    onClick={() => {
-                      handleClearFilters()
-                      handleClearVibes()
-                      setSnapshotFilter(null)
-                    }}
-                    className="mt-2 text-blue-600 hover:text-blue-700 text-sm font-medium"
-                  >
-                    Clear filters
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* Screenshots & Highlights - Always render when data exists */}
-      {importedFeedback.length > 0 && (
-        <section className="w-full bg-white">
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 md:py-20">
-            <div className="space-y-6">
-              <div className="space-y-2 max-w-2xl mx-auto text-center">
-                <h3 className="text-2xl sm:text-3xl font-semibold text-neutral-900">Past Praise</h3>
-                <p className="text-sm text-neutral-500 leading-relaxed">
-                  {profile.full_name?.split(" ")[0]} saved {importedFeedback.length} piece
-                  {importedFeedback.length === 1 ? "" : "s"} of feedback
-                </p>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {importedFeedback.map((feedback) => {
-                  const feedbackTraits = feedback.traits || []
-                  const keywords = extractKeywordsFromText(feedback.ai_extracted_excerpt || "", feedbackTraits)
-                  const highlightedText = highlightQuote(feedback.ai_extracted_excerpt || "", keywords, 4)
-
-                  return (
-                    <div
-                      key={feedback.id}
-                      className="rounded-xl p-6 bg-white border border-neutral-200 hover:border-neutral-300 hover:shadow-sm transition-all relative"
-                    >
-                      <p className="text-sm leading-relaxed text-neutral-700 mb-4">{highlightedText}</p>
-
-                      {feedbackTraits.length > 0 && (
-                        <div className="flex flex-wrap gap-2 mb-4">
-                          {feedbackTraits.slice(0, 4).map((trait, idx) => (
-                            <span
-                              key={idx}
-                              className="px-3 py-1.5 rounded-full bg-blue-50 text-blue-700 text-xs font-medium border border-blue-100"
-                            >
-                              {trait}
-                            </span>
-                          ))}
-                        </div>
-                      )}
-
-                      <div className="border-t border-neutral-100 pt-3">
-                        <div className="text-sm font-semibold text-neutral-900">{feedback.giver_name}</div>
-                        {feedback.giver_title && (
-                          <div className="text-xs text-neutral-600 mt-0.5">{feedback.giver_title}</div>
-                        )}
-                        {feedback.giver_company ? (
-                          <div className="text-xs text-neutral-500 mt-0.5">{feedback.giver_company}</div>
-                        ) : (
-                          <div className="text-xs text-neutral-400 italic mt-0.5">Company not provided</div>
-                        )}
+              <div className="grid gap-4 md:grid-cols-2">
+                {filteredVoiceContributions.map((contribution) => (
+                  <div key={contribution.id} className="relative group">
+                    <VoiceCard
+                      audioUrl={contribution.voice_url || contribution.audio_url || ""}
+                      contributorName={contribution.contributor_name || "Anonymous"}
+                      relationship={contribution.relationship || ""}
+                    />
+                    {isOwner && (
+                      <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <PinButton
+                          isPinned={isPinned("voice", contribution.id)}
+                          onPin={() =>
+                            pinVoice(
+                              contribution.id,
+                              contribution.voice_url || contribution.audio_url || "",
+                              contribution.contributor_name || "",
+                            )
+                          }
+                          onUnpin={() => unpin("voice", contribution.id)}
+                        />
                       </div>
-
-                      {feedback.source_type && (
-                        <div className="absolute bottom-4 right-4">
-                          <span
-                            className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border ${
-                              feedback.source_type === "Email"
-                                ? "bg-neutral-900 text-white border-neutral-900"
-                                : feedback.source_type === "LinkedIn"
-                                  ? "bg-blue-600 text-white border-blue-600"
-                                  : feedback.source_type === "DM"
-                                    ? "bg-black text-white border-black"
-                                    : "bg-neutral-100 text-neutral-700 border-neutral-200"
-                            }`}
-                          >
-                            {feedback.source_type}
-                          </span>
-                        </div>
-                      )}
-                    </div>
-                  )
-                })}
+                    )}
+                  </div>
+                ))}
               </div>
             </div>
-          </div>
-        </section>
-      )}
+          </section>
+        )}
 
-      {/* PremierSignalBar moved to bottom */}
-      {profileAnalysis.counts.contributions + profileAnalysis.counts.uploads >= 3 && (
-        <section className="w-full bg-white border-t border-neutral-100">
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
-            <div className="space-y-2 max-w-2xl mx-auto text-center mb-8">
-              <h3 className="text-xl sm:text-2xl font-semibold text-neutral-900">Signals people repeat</h3>
-              <p className="text-sm text-neutral-500">A quick read of patterns across feedback</p>
+        {/* Signals Section */}
+        {profileAnalysis.traitSignals.length > 0 && (
+          <section className="py-12 px-4 bg-white">
+            <div className="max-w-5xl mx-auto">
+              <PremierSignalBar
+                traitSignals={profileAnalysis.traitSignals}
+                impactSignals={profileAnalysis.impactSignals}
+                allCards={allCardsForSignals}
+                firstName={firstName}
+              />
             </div>
-            <PremierSignalBar
-              allCards={allCardsForSignals} // Use allCardsForSignals here
-              traitSignals={profileAnalysis.traitSignals}
-              totalContributions={profileAnalysis.counts.contributions + profileAnalysis.counts.uploads}
-            />
+          </section>
+        )}
+
+        {/* Final CTA Section */}
+        <section className="py-16 px-4 bg-neutral-900">
+          <div className="max-w-2xl mx-auto text-center">
+            <h2 className="text-3xl font-serif text-white mb-4">Build your own Nomee profile</h2>
+            <p className="text-neutral-300 mb-8">
+              Get feedback from people you've worked with. Create a profile that shows how you collaborate, solve
+              problems, and make an impact.
+            </p>
+            <Button asChild size="lg" className="bg-white text-neutral-900 hover:bg-neutral-100">
+              <Link href="/auth/sign-up">Get started for free</Link>
+            </Button>
           </div>
         </section>
-      )}
-
-      <section className="w-full bg-neutral-900">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 md:py-24 text-center">
-          <h3 className="text-2xl sm:text-3xl font-semibold text-white mb-4">Build your own Nomee profile</h3>
-          <p className="text-neutral-400 text-lg max-w-xl mx-auto mb-8">
-            Get feedback from people you've worked with. Create a profile that shows how you collaborate, solve
-            problems, and make an impact.
-          </p>
-          <Link
-            href="/signup"
-            className="inline-flex items-center justify-center px-8 py-4 bg-white text-neutral-900 font-semibold rounded-full hover:bg-neutral-100 transition-colors shadow-lg"
-          >
-            Get started for free
-          </Link>
-        </div>
-      </section>
-    </div>
+      </main>
+    </TooltipProvider>
   )
 }
