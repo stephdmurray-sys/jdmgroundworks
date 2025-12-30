@@ -165,7 +165,7 @@ export async function POST(request: NextRequest) {
 
   console.log("[v0] Processing extraction request:", { imageUrl, profileId, recordId })
 
-  if (!imageUrl || !profileId || !recordId) {
+  if (!profileId || !recordId) {
     return NextResponse.json({ error: "Missing required fields" }, { status: 400 })
   }
 
@@ -187,27 +187,48 @@ export async function POST(request: NextRequest) {
   await supabase.from("imported_feedback").update({ extraction_status: "processing" }).eq("id", recordId)
 
   try {
-    console.log("[v0] Downloading image from storage:", currentRecord.raw_image_url)
+    let imagePath = currentRecord.raw_image_path
 
-    const imagePath = currentRecord.raw_image_url.split("/").pop()
-    if (!imagePath) {
-      throw new Error("Invalid image URL")
+    // Backwards compatibility: parse path from URL if raw_image_path is missing
+    if (!imagePath && currentRecord.raw_image_url) {
+      console.log("[v0] raw_image_path missing, parsing from URL for backwards compatibility")
+      const urlParts = currentRecord.raw_image_url.split("/object/imported-feedback/")
+      if (urlParts[1]) {
+        imagePath = decodeURIComponent(urlParts[1])
+        console.log("[v0] Parsed image path:", imagePath)
+      }
     }
+
+    if (!imagePath) {
+      throw new Error("No image path available (raw_image_path and raw_image_url both missing)")
+    }
+
+    console.log("[v0] Downloading image from storage using SDK:", imagePath)
 
     const { data: imageData, error: downloadError } = await supabase.storage
       .from("imported-feedback")
       .download(imagePath)
 
     if (downloadError || !imageData) {
-      throw new Error(`Failed to download image: ${downloadError?.message || "No data"}`)
+      const errorMsg = `Failed to download image: ${JSON.stringify({ url: currentRecord.raw_image_url, path: imagePath, error: downloadError?.message })}`
+      throw new Error(errorMsg)
     }
 
-    console.log("[v0] Image downloaded, size:", imageData.size)
-
     const imageBuffer = Buffer.from(await imageData.arrayBuffer())
+    const bytesDownloaded = imageBuffer.length
+
+    console.log("[v0] Image downloaded successfully, bytes:", bytesDownloaded)
+
+    await supabase
+      .from("imported_feedback")
+      .update({
+        bytes_downloaded: bytesDownloaded,
+      })
+      .eq("id", recordId)
+
     const processedBuffer = await sharp(imageBuffer)
-      .resize({ width: 1800, withoutEnlargement: true }) // Resize to max 1800px width
-      .sharpen() // Sharpen slightly
+      .resize({ width: 1800, withoutEnlargement: true })
+      .sharpen()
       .toBuffer()
 
     const imageBase64 = `data:image/jpeg;base64,${processedBuffer.toString("base64")}`
@@ -220,8 +241,15 @@ export async function POST(request: NextRequest) {
       confidence: transcription_confidence,
     })
 
+    await supabase
+      .from("imported_feedback")
+      .update({
+        transcription_len: transcription_text.length,
+      })
+      .eq("id", recordId)
+
     if (transcription_text.length < 80) {
-      const error = "No readable text extracted (image inaccessible / too small / not passed to model)"
+      const error = "No readable text extracted (image too small, blurry, or no text visible)"
       console.error("[v0] Transcription failed:", error)
 
       await supabase
@@ -266,7 +294,7 @@ export async function POST(request: NextRequest) {
       giver_company: extracted.company,
       ai_extracted_excerpt: extracted.excerpt,
       traits: extracted.traits,
-      source_type: extracted.source_type || currentRecord.source_type, // Keep user-selected if AI can't determine
+      source_type: extracted.source_type || currentRecord.source_type,
       approx_date: extracted.approx_date,
       confidence_score: extracted.confidence.overall,
       confidence_details: extracted.confidence as any,

@@ -1,5 +1,4 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { put } from "@vercel/blob"
 import { createClient } from "@/lib/supabase/server"
 
 export async function POST(request: NextRequest) {
@@ -31,13 +30,31 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "File too large. Maximum size is 10MB" }, { status: 400 })
     }
 
-    const blob = await put(`imported-feedback/${user.id}/${Date.now()}-${file.name}`, file, {
-      access: "public",
+    const fileName = `${user.id}/${Date.now()}-${file.name}`
+    const fileBuffer = await file.arrayBuffer()
+
+    const { data: uploadData, error: uploadError } = await supabase.storage
+      .from("imported-feedback")
+      .upload(fileName, fileBuffer, {
+        contentType: file.type,
+        upsert: false,
+      })
+
+    if (uploadError) {
+      console.error("[v0] Supabase storage upload error:", uploadError)
+      return NextResponse.json({ error: "Upload to storage failed" }, { status: 500 })
+    }
+
+    // Get public URL for preview (won't work for private buckets, but stored for reference)
+    const { data: urlData } = supabase.storage.from("imported-feedback").getPublicUrl(fileName)
+
+    console.log("[v0] File uploaded successfully to Supabase Storage:", fileName)
+
+    // Return both path (for SDK downloads) and URL (for backwards compatibility)
+    return NextResponse.json({
+      path: fileName,
+      url: urlData.publicUrl,
     })
-
-    console.log("[v0] File uploaded successfully:", blob.url)
-
-    return NextResponse.json({ url: blob.url })
   } catch (error) {
     console.error("[v0] Upload error:", error)
 

@@ -12,9 +12,9 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    const { imageUrl, profileId, sourceType } = await request.json()
+    const { imageUrl, imagePath, profileId, sourceType } = await request.json()
 
-    if (!imageUrl || !profileId) {
+    if ((!imageUrl && !imagePath) || !profileId) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 })
     }
 
@@ -33,9 +33,10 @@ export async function POST(request: NextRequest) {
       .from("imported_feedback")
       .insert({
         profile_id: profileId,
-        raw_image_url: imageUrl,
-        extraction_status: "queued", // Initialize with queued status
-        extraction_attempts: 0, // Track attempts
+        raw_image_url: imageUrl || null,
+        raw_image_path: imagePath || null, // Storage path for SDK downloads
+        extraction_status: "queued",
+        extraction_attempts: 0,
         ocr_text: null,
         ai_extracted_excerpt: "Processing...",
         giver_name: "Processing...",
@@ -56,7 +57,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Failed to create record" }, { status: 500 })
     }
 
-    console.log("[v0] Created imported_feedback record:", importedFeedback.id, "with source:", sourceType || "none")
+    console.log("[v0] Created imported_feedback record:", importedFeedback.id, "with path:", imagePath || "from URL")
 
     return NextResponse.json({
       id: importedFeedback.id,

@@ -125,7 +125,7 @@ export default function UploadForm({ profileId, currentCount, limit }: UploadFor
         throw new Error(errorData.error || "Upload failed")
       }
 
-      const { url } = await uploadResponse.json()
+      const { url, path } = await uploadResponse.json()
 
       setFiles((prev) => {
         const updated = [...prev]
@@ -138,6 +138,7 @@ export default function UploadForm({ profileId, currentCount, limit }: UploadFor
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           imageUrl: url,
+          imagePath: path, // Storage path for SDK downloads
           profileId,
           sourceType: fileData.sourceType || null,
         }),
@@ -180,7 +181,6 @@ export default function UploadForm({ profileId, currentCount, limit }: UploadFor
         const processResult = await processResponse.json()
         console.log("[v0] Processing complete:", processResult)
 
-        // Update status to ready for review after successful processing
         setFiles((prev) => {
           const updated = [...prev]
           if (updated[index]?.id === id) {
@@ -190,8 +190,6 @@ export default function UploadForm({ profileId, currentCount, limit }: UploadFor
         })
       } catch (processError) {
         console.error("[v0] Processing error:", processError)
-        // Still mark as ready for review even if extraction failed
-        // User can manually fill in the fields
         setFiles((prev) => {
           const updated = [...prev]
           if (updated[index]?.id === id) {
