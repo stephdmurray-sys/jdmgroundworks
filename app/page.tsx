@@ -436,12 +436,13 @@ export default function Home() {
               className="text-center space-y-6"
             >
               <h2 className="text-2xl md:text-3xl font-semibold text-slate-900">Use your Proof Link anywhere</h2>
-              <p className="text-lg text-slate-600 max-w-2xl mx-auto">
+              <p className="text-lg text-slate-600 max-w-3xl mx-auto">
                 Share your Proof Link anywhere for free. Embed Proof Tiles on your website with Pro.
               </p>
 
               <p className="text-sm text-slate-500 max-w-xl mx-auto">
-                Add 1–3 Proof Tiles to your portfolio, media kit, or About page — auto-updated as praise comes in.
+                Add your proof tiles to any website, your portfolio, media kit, brand kit, Linktree -- it will auto
+                update as new ones come in.
               </p>
 
               {/* Mock embed visual */}
