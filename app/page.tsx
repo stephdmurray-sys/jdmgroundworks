@@ -723,7 +723,7 @@ export default function Home() {
 
             <div className="relative">
               {/* Two Input Cards - Side by Side */}
-              <div className="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto mb-6">
+              <div className="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto mb-3 relative">
                 {/* Input 1: Contributions */}
                 <motion.div
                   initial={{ opacity: 0, x: -20 }}
@@ -738,6 +738,7 @@ export default function Home() {
                     <p className="text-slate-600 text-sm leading-relaxed">
                       People you've worked with describe the experience.
                     </p>
+                    <p className="text-xs text-slate-500 pt-1">Written once. Never edited.</p>
                   </div>
                 </motion.div>
 
@@ -753,53 +754,20 @@ export default function Home() {
                     <div className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Input 2</div>
                     <h3 className="text-lg font-semibold text-slate-900">Uploaded proof</h3>
                     <p className="text-slate-600 text-sm leading-relaxed">Save praise from email, Slack, and DMs.</p>
+                    <p className="text-xs text-slate-500 pt-1">Saved exactly as received.</p>
                   </div>
                 </motion.div>
+
+                <div className="hidden md:flex absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 items-center justify-center">
+                  <div className="bg-white px-3 py-2 rounded-full">
+                    <div className="text-slate-300 text-3xl font-light">+</div>
+                  </div>
+                </div>
               </div>
 
-              <div className="hidden md:block relative h-8 max-w-3xl mx-auto mb-4">
-                {/* Left arrow from Input 1 */}
-                <svg
-                  className="absolute left-1/4 top-0 text-slate-300"
-                  width="100"
-                  height="40"
-                  viewBox="0 0 100 40"
-                  fill="none"
-                >
-                  <path
-                    d="M10 0 Q40 20, 90 40"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    fill="none"
-                    strokeLinecap="round"
-                  />
-                  <path d="M90 40 L86 35 M90 40 L85 40" stroke="currentColor" strokeWidth="1.5" />
-                </svg>
-
-                {/* Right arrow from Input 2 */}
-                <svg
-                  className="absolute right-1/4 top-0 text-slate-300"
-                  width="100"
-                  height="40"
-                  viewBox="0 0 100 40"
-                  fill="none"
-                >
-                  <path
-                    d="M90 0 Q60 20, 10 40"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    fill="none"
-                    strokeLinecap="round"
-                  />
-                  <path d="M10 40 L14 35 M10 40 L15 40" stroke="currentColor" strokeWidth="1.5" />
-                </svg>
-              </div>
-
-              {/* Mobile simple arrow */}
-              <div className="md:hidden flex items-center justify-center mb-6">
-                <svg width="2" height="24" viewBox="0 0 2 24" fill="none" className="text-slate-300">
-                  <path d="M1 0V20M1 20L-3 16M1 20L5 16" stroke="currentColor" strokeWidth="1.5" />
-                </svg>
+              {/* Subtle divider line to show transformation */}
+              <div className="max-w-md mx-auto my-4 flex items-center gap-4">
+                <div className="flex-1 h-px bg-gradient-to-r from-transparent via-slate-200 to-transparent" />
               </div>
 
               <motion.div
@@ -807,12 +775,12 @@ export default function Home() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: 0.2 }}
-                className="bg-white rounded-2xl p-10 shadow-[0_10px_40px_rgba(0,0,0,0.08)] border-2 border-blue-100/50 max-w-2xl mx-auto"
+                className="bg-white rounded-2xl p-12 shadow-[0_12px_48px_rgba(0,0,0,0.1)] border-2 border-blue-100/50 max-w-2xl mx-auto"
               >
                 <div className="space-y-5">
                   <div className="space-y-3">
                     <div className="text-xs font-semibold text-blue-600 uppercase tracking-wider">Output</div>
-                    <h3 className="text-2xl md:text-3xl font-semibold text-slate-900">Your Personal Nomee Link</h3>
+                    <h3 className="text-2xl md:text-3xl font-semibold text-slate-900">Your Proof Link</h3>
                     <p className="text-slate-600 text-lg leading-relaxed">
                       A single link that shows patterns + proof — in their words.
                     </p>
@@ -826,6 +794,10 @@ export default function Home() {
                       <li className="flex items-start gap-3">
                         <span className="text-blue-500 mt-0.5">✓</span>
                         <span>Share anywhere, forever</span>
+                      </li>
+                      <li className="flex items-start gap-3">
+                        <span className="text-blue-500 mt-0.5">✓</span>
+                        <span>Store all positive feedback, in one place</span>
                       </li>
                     </ul>
                   </div>
@@ -860,13 +832,12 @@ export default function Home() {
                   </div>
                 </div>
 
-                {/* Uploaded proof preview - clearly documentation */}
-                <div className="bg-slate-50/80 rounded-xl p-5 border border-slate-200 space-y-4 hover:shadow-md transition-shadow">
+                <div className="bg-slate-50/80 rounded-xl p-5 border border-slate-200 space-y-4 hover:shadow-md transition-shadow max-w-[95%] md:max-w-[92%] md:mt-2">
                   <div className="flex items-start gap-2">
                     <div className="px-2 py-0.5 rounded bg-blue-100 text-blue-700 text-[10px] font-semibold uppercase tracking-wide flex-shrink-0 mt-0.5">
                       Email
                     </div>
-                    <p className="text-sm text-slate-700 leading-relaxed">
+                    <p className="text-sm text-slate-700 leading-snug">
                       "This campaign exceeded our goals by 40%. Jordan's attention to detail made all the difference."
                     </p>
                   </div>
@@ -875,13 +846,12 @@ export default function Home() {
               </div>
             </motion.div>
 
-            {/* Authority line */}
             <motion.p
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.6 }}
-              className="text-sm text-slate-500 text-center max-w-2xl mx-auto"
+              className="text-base md:text-lg font-medium text-slate-600 text-center max-w-2xl mx-auto leading-relaxed"
             >
               This is the context people usually wait until the reference check to get — now it's visible upfront.
             </motion.p>
