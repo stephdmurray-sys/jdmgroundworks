@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { useToast } from "@/hooks/use-toast"
 import Link from "next/link"
 import { useState } from "react"
 import { Copy, Check, Star, Upload, FileSearch, ImageIcon, Mic, MessageSquare, Eye } from "lucide-react"
@@ -30,7 +31,7 @@ type DashboardClientProps = {
 
 type FilterType = "all" | "nomee" | "imported"
 
-export default function DashboardClient({
+export function DashboardClient({
   profile,
   confirmedCount,
   pendingCount,
@@ -46,6 +47,7 @@ export default function DashboardClient({
   const [togglingId, setTogglingId] = useState<string | null>(null)
   const [showOnboarding, setShowOnboarding] = useState(!profile.slug)
   const [activeFilter, setActiveFilter] = useState<FilterType>("all")
+  const { toast } = useToast()
 
   const plan = profile.plan || "free"
   const featuredLimit = plan === "free" ? 1 : plan === "starter" ? 3 : Number.POSITIVE_INFINITY
@@ -78,7 +80,25 @@ export default function DashboardClient({
   }
 
   const handleToggleFeatured = async (contributionId: string, currentlyFeatured: boolean) => {
+    if (process.env.NODE_ENV === "development") {
+      console.log("[v0] Featuring contribution:", {
+        contributionId,
+        currentlyFeatured,
+        willBeFeatured: !currentlyFeatured,
+      })
+    }
+
     setTogglingId(contributionId)
+
+    const newFeaturedState = !currentlyFeatured
+    const optimisticContributions = contributions.map((c) =>
+      c.id === contributionId ? { ...c, is_featured: newFeaturedState } : c,
+    )
+
+    const contributionIndex = contributions.findIndex((c) => c.id === contributionId)
+    if (contributionIndex !== -1) {
+      contributions[contributionIndex].is_featured = newFeaturedState
+    }
 
     try {
       const response = await fetch("/api/contributions/toggle-featured", {
@@ -86,18 +106,53 @@ export default function DashboardClient({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           contributionId,
-          isFeatured: !currentlyFeatured,
+          isFeatured: newFeaturedState,
         }),
       })
 
+      const data = await response.json()
+
       if (response.ok) {
+        toast({
+          title: newFeaturedState ? "Added to Featured" : "Removed from Featured",
+          description: newFeaturedState
+            ? "This perspective now appears first on your Proof Link."
+            : "This perspective has been unfeatured.",
+        })
         window.location.reload()
       } else {
-        const data = await response.json()
-        alert(data.error || "Failed to update featured status")
+        if (contributionIndex !== -1) {
+          contributions[contributionIndex].is_featured = currentlyFeatured
+        }
+
+        if (response.status === 404) {
+          toast({
+            title: "This item couldn't be found",
+            description: "Refresh and try again.",
+            variant: "destructive",
+          })
+        } else {
+          toast({
+            title: "Couldn't update Featured",
+            description: data.error || "Please try again.",
+            variant: "destructive",
+          })
+        }
       }
     } catch (error) {
-      alert("Failed to update featured status")
+      if (contributionIndex !== -1) {
+        contributions[contributionIndex].is_featured = currentlyFeatured
+      }
+
+      toast({
+        title: "Couldn't update Featured",
+        description: "Please check your connection and try again.",
+        variant: "destructive",
+      })
+
+      if (process.env.NODE_ENV === "development") {
+        console.error("[v0] Feature toggle error:", error)
+      }
     } finally {
       setTogglingId(null)
     }
@@ -117,7 +172,6 @@ export default function DashboardClient({
       />
 
       <div className="space-y-8">
-        {/* Username claim card */}
         {!profile.slug && (
           <Card className="p-6 border-2 border-blue-200 bg-blue-50/40">
             <div className="flex items-start justify-between gap-4">
@@ -132,7 +186,6 @@ export default function DashboardClient({
           </Card>
         )}
 
-        {/* Stats row - tighter spacing */}
         <section>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
             <Card className="p-4">
@@ -212,14 +265,13 @@ export default function DashboardClient({
           </div>
         </section>
 
-        {/* Phrase Summary Section */}
         {confirmedCount > 0 && topPhrases.length > 0 && (
           <section>
             <Card className="p-6 border-2 border-blue-100 bg-blue-50/20">
               <h3 className="text-base font-semibold text-neutral-900 mb-1">
                 What people consistently say about working with you
               </h3>
-              <p className="text-xs text-neutral-500 mb-3">Based on patterns across independent contributions.</p>
+              <p className="mb-4 text-sm text-neutral-500">Based on patterns across independent contributions.</p>
               <div className="flex flex-wrap gap-2">
                 {topPhrases.map((item, idx) => (
                   <div
@@ -300,7 +352,6 @@ export default function DashboardClient({
                         isFeatured ? "ring-2 ring-blue-300 bg-blue-50/30" : ""
                       }`}
                     >
-                      {/* Top row: badge + feature button */}
                       <div className="flex items-center justify-between mb-3">
                         <div className="flex items-center gap-2">
                           <Badge variant="outline" className="text-xs border-neutral-300 text-neutral-600 bg-white">
@@ -337,14 +388,12 @@ export default function DashboardClient({
                         </Button>
                       </div>
 
-                      {/* Voice player as hero element */}
                       {contribution.voice_url && (
                         <div className="mb-3 p-3 bg-purple-50 rounded-lg border border-purple-100">
                           <IntimateAudioPlayer audioUrl={contribution.voice_url} />
                         </div>
                       )}
 
-                      {/* Excerpt - quote style for text submissions */}
                       <div className="flex-1 mb-3">
                         {contribution.voice_url ? (
                           <p className="text-sm leading-relaxed text-neutral-700 line-clamp-3">{highlightedText}</p>
@@ -355,7 +404,6 @@ export default function DashboardClient({
                         )}
                       </div>
 
-                      {/* Traits pills - max 2 lines with truncation */}
                       {submissionPhrases.length > 0 && (
                         <div className="mb-3 flex flex-wrap gap-1 max-h-14 overflow-hidden">
                           {submissionPhrases.map((phrase, idx) => (
@@ -374,13 +422,25 @@ export default function DashboardClient({
                         </div>
                       )}
 
-                      {/* Bottom: contributor info */}
-                      <div className="pt-2 border-t border-neutral-100 text-xs text-neutral-500">
+                      <div className="pt-2 border-t border-neutral-200 text-xs text-neutral-500">
                         <div className="font-medium text-neutral-800 truncate">{contribution.contributor_name}</div>
                         <div className="truncate">
-                          {contribution.relationship}
-                          {contribution.contributor_company && contribution.contributor_company !== "Unknown" && (
-                            <span> · {contribution.contributor_company}</span>
+                          {contribution.relationship && (
+                            <span className="text-neutral-600">
+                              {contribution.relationship === "teammate"
+                                ? "Teammate"
+                                : contribution.relationship === "mentor"
+                                  ? "Mentor"
+                                  : contribution.relationship === "brand_partner"
+                                    ? "Brand Partner"
+                                    : contribution.relationship}
+                            </span>
+                          )}
+                          {contribution.contributor_role && (
+                            <span className="text-neutral-500">
+                              {contribution.relationship && " · "}
+                              {contribution.contributor_role}
+                            </span>
                           )}
                         </div>
                       </div>
@@ -403,7 +463,6 @@ export default function DashboardClient({
               </Card>
             )}
 
-            {/* View all link */}
             {contributions.length > 9 && (
               <div className="text-center pt-3">
                 <Button variant="link" className="text-neutral-600 text-sm">
@@ -412,7 +471,6 @@ export default function DashboardClient({
               </div>
             )}
 
-            {/* Upsell notice */}
             {!canAddMoreFeatured && contributions.length > 0 && (
               <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg text-center">
                 <p className="text-sm text-blue-900">
@@ -448,7 +506,6 @@ export default function DashboardClient({
               </div>
             </div>
 
-            {/* Approved imported items grid */}
             {approvedImportedItems.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
                 {approvedImportedItems.slice(0, 9).map((item) => (
@@ -456,7 +513,6 @@ export default function DashboardClient({
                     key={item.id}
                     className="p-4 flex flex-col h-full bg-gradient-to-br from-slate-50 to-neutral-50 border-slate-200"
                   >
-                    {/* Top row: badge with source */}
                     <div className="flex items-center gap-2 mb-3">
                       <Badge variant="outline" className="text-xs border-slate-300 text-slate-600 bg-white">
                         <ImageIcon className="mr-1 h-3 w-3" />
@@ -468,9 +524,7 @@ export default function DashboardClient({
                       <Badge className="ml-auto text-xs bg-green-100 text-green-700 border-0">Approved</Badge>
                     </div>
 
-                    {/* Content row with thumbnail */}
                     <div className="flex gap-3 flex-1 mb-3">
-                      {/* Thumbnail */}
                       <div className="flex-shrink-0 w-16 h-16 bg-white rounded-lg overflow-hidden border border-slate-200 shadow-sm">
                         {item.raw_image_url ? (
                           <img
@@ -485,7 +539,6 @@ export default function DashboardClient({
                         )}
                       </div>
 
-                      {/* Excerpt */}
                       <div className="flex-1 min-w-0">
                         {item.ai_extracted_excerpt && (
                           <p className="text-sm text-neutral-700 line-clamp-3 leading-relaxed">
@@ -495,7 +548,6 @@ export default function DashboardClient({
                       </div>
                     </div>
 
-                    {/* Bottom: giver info */}
                     <div className="pt-2 border-t border-slate-200 text-xs text-slate-500">
                       <div className="font-medium text-slate-800 truncate">{item.giver_name || "Unknown"}</div>
                       <div className="truncate">
@@ -524,7 +576,6 @@ export default function DashboardClient({
               </Card>
             )}
 
-            {/* View all link */}
             {approvedImportedItems.length > 9 && (
               <div className="text-center pt-3">
                 <Button variant="link" asChild className="text-neutral-600 text-sm">
@@ -537,7 +588,6 @@ export default function DashboardClient({
           </section>
         )}
 
-        {/* Premier Embed Code */}
         {plan === "premier" && publicUrl && (
           <section>
             <Card className="p-6 border-2 border-purple-200 bg-gradient-to-br from-purple-50 to-indigo-50">
@@ -574,3 +624,5 @@ export default function DashboardClient({
     </>
   )
 }
+
+export default DashboardClient
