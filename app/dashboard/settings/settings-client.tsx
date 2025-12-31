@@ -128,7 +128,7 @@ export default function SettingsClient({ profile, userEmail }: { profile: Profil
         <div className="mb-12">
           <h1 className="mb-3 text-4xl font-bold text-neutral-900">Settings</h1>
           <p className="text-lg text-neutral-600 leading-relaxed">
-            Manage how your Nomee appears, how people contribute, and how your reputation is shared.
+            Manage how your Nomee appears, how people contribute, and how your Proof Link is shared.
           </p>
         </div>
 
