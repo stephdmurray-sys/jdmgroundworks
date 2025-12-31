@@ -253,36 +253,60 @@ export default function Home() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
-              className="grid md:grid-cols-3 gap-8"
+              className="max-w-6xl mx-auto"
             >
-              <div className="space-y-4 text-center p-6">
-                <div className="w-12 h-12 mx-auto bg-blue-100 rounded-full flex items-center justify-center">
-                  <div className="w-6 h-6 bg-blue-600 rounded" />
-                </div>
-                <h3 className="text-xl font-semibold text-slate-900">Decide faster with real signals</h3>
-                <p className="text-slate-600 leading-relaxed">
-                  Hiring, partners, and clients can scan how someone shows up — beyond a resume or pitch.
-                </p>
-              </div>
+              <div className="bg-gradient-to-br from-slate-50 to-blue-50/30 rounded-2xl border border-slate-200/60 shadow-sm p-8 md:p-12">
+                <div className="grid md:grid-cols-3 gap-8">
+                  <div className="space-y-4 text-center p-6">
+                    <div className="w-12 h-12 mx-auto bg-blue-100 rounded-full flex items-center justify-center">
+                      <div className="w-6 h-6 bg-blue-600 rounded" />
+                    </div>
+                    <h3 className="text-xl font-semibold text-slate-900">Make decisions easier.</h3>
+                    <p className="text-slate-600 leading-relaxed">
+                      A single link that shows how people actually experience working with you — beyond a resume,
+                      portfolio, or pitch.
+                    </p>
+                  </div>
 
-              <div className="space-y-4 text-center p-6">
-                <div className="w-12 h-12 mx-auto bg-blue-100 rounded-full flex items-center justify-center">
-                  <div className="w-6 h-6 bg-blue-600 rounded-full" />
-                </div>
-                <h3 className="text-xl font-semibold text-slate-900">Get recognized without overselling</h3>
-                <p className="text-slate-600 leading-relaxed">
-                  Let real people describe the impact and working vibe you're known for.
-                </p>
-              </div>
+                  <div className="space-y-4 text-center p-6">
+                    <div className="w-12 h-12 mx-auto bg-blue-100 rounded-full flex items-center justify-center">
+                      <div className="w-6 h-6 bg-blue-600 rounded-full" />
+                    </div>
+                    <h3 className="text-xl font-semibold text-slate-900">Turn praise into proof.</h3>
+                    <p className="text-slate-600 leading-relaxed">
+                      Collect real perspectives and highlights you can share in proposals, applications, brand decks,
+                      and intros.
+                    </p>
+                  </div>
 
-              <div className="space-y-4 text-center p-6">
-                <div className="w-12 h-12 mx-auto bg-blue-100 rounded-full flex items-center justify-center">
-                  <div className="w-6 h-6 bg-blue-600 rounded-sm" />
+                  <div className="space-y-4 text-center p-6">
+                    <div className="w-12 h-12 mx-auto bg-blue-100 rounded-full flex items-center justify-center">
+                      <div className="w-6 h-6 bg-blue-600 rounded-sm" />
+                    </div>
+                    <h3 className="text-xl font-semibold text-slate-900">Stop losing the good stuff.</h3>
+                    <p className="text-slate-600 leading-relaxed">
+                      Save the feedback already sitting in email, Slack, and DMs — so it's ready when opportunity shows
+                      up.
+                    </p>
+                  </div>
                 </div>
-                <h3 className="text-xl font-semibold text-slate-900">Save praise before it disappears</h3>
-                <p className="text-slate-600 leading-relaxed">
-                  The best feedback is already in your inbox and messages. Capture it now.
-                </p>
+
+                <div className="mt-8 space-y-4 text-center">
+                  <p className="text-sm text-slate-600">
+                    Unlimited Nomee contributions are free forever. Includes 3 saved highlights to start.
+                  </p>
+                  <div className="flex flex-wrap items-center justify-center gap-2 text-xs text-slate-500">
+                    <span>Job search</span>
+                    <span>·</span>
+                    <span>Brand deals</span>
+                    <span>·</span>
+                    <span>Client work</span>
+                    <span>·</span>
+                    <span>Promotions</span>
+                    <span>·</span>
+                    <span>Founder intros</span>
+                  </div>
+                </div>
               </div>
             </motion.div>
           </div>
