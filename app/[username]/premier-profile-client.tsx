@@ -530,7 +530,7 @@ export function PremierProfileClient({
             <h1 className="text-7xl font-serif text-[var(--nomee-near-black)] mb-3 leading-tight">
               {safeString(profile.full_name, "Anonymous")}
             </h1>
-            <p className="text-[var(--text-body)] text-neutral-600 mb-6">
+            <p className="text-[var(--text-body)] text-neutral-700 font-medium mb-6 tracking-tight">
               This is a Proof Link — showing what it's actually like to work with {firstName}, based on real
               experiences.
             </p>
@@ -539,8 +539,9 @@ export function PremierProfileClient({
               <p className="text-[var(--text-subhead)] text-neutral-600 mb-4">{profile.headline}</p>
             )}
 
-            <div className="flex items-center gap-2 text-sm text-neutral-500 mb-3 flex-wrap opacity-70">
+            <div className="flex items-center gap-2 text-sm text-neutral-500 mb-3 flex-wrap opacity-60">
               <span className="font-medium text-neutral-600 uppercase tracking-wide text-xs">NOMEE PROFILE</span>
+
               <span className="text-neutral-300">·</span>
               <span className="uppercase tracking-wide text-xs">
                 BASED ON FEEDBACK FROM {safeNumber(totalContributions, 0)} PEOPLE
@@ -553,7 +554,7 @@ export function PremierProfileClient({
               )}
             </div>
 
-            <div className="flex items-center gap-3 mb-2 opacity-70">
+            <div className="flex justify-center mt-4 mb-8 opacity-60">
               <Pill variant="direct">
                 <span
                   className={`w-1.5 h-1.5 rounded-full ${
@@ -568,7 +569,7 @@ export function PremierProfileClient({
               </Pill>
             </div>
 
-            <p className="text-xs text-neutral-400 opacity-70">Each contributor can submit once.</p>
+            <p className="text-xs text-neutral-400 opacity-60">Each contributor can submit once.</p>
             {/* </CHANGE> */}
           </div>
         </section>
@@ -744,7 +745,7 @@ export function PremierProfileClient({
               />
               {/* </CHANGE> */}
 
-              <div className="flex justify-center mt-4 mb-8 opacity-70">
+              <div className="flex justify-center mt-4 mb-8 opacity-60">
                 <Pill variant="direct">
                   <span
                     className={`w-1.5 h-1.5 rounded-full ${
@@ -763,10 +764,10 @@ export function PremierProfileClient({
               <CardShell>
                 <div className="grid md:grid-cols-2 gap-8">
                   <div>
-                    <h3 className="text-[var(--text-micro)] font-semibold text-neutral-500 uppercase tracking-wider mb-4">
+                    <h3 className="text-[var(--text-micro)] font-semibold text-neutral-500 uppercase tracking-wider mb-4 opacity-75">
                       TOP SIGNALS
                     </h3>
-                    <div className="space-y-2">
+                    <div className="flex flex-wrap gap-3">
                       {topTraits.map((trait) => {
                         if (!trait?.label) return null
                         const tier = getStrengthTier(trait.count, maxTraitCount)
@@ -793,14 +794,15 @@ export function PremierProfileClient({
                         )
                       })}
                     </div>
+                    {/* </CHANGE> */}
                   </div>
 
                   {/* EMERGING SIGNALS */}
                   <div>
-                    <h3 className="text-[var(--text-micro)] font-semibold text-neutral-500 uppercase tracking-wider mb-4">
+                    <h3 className="text-[var(--text-micro)] font-semibold text-neutral-500 uppercase tracking-wider mb-4 opacity-75">
                       EMERGING SIGNALS
                     </h3>
-                    <div className="flex flex-wrap gap-2">
+                    <div className="flex flex-wrap gap-3">
                       {emergingTraits.map((trait) => {
                         if (!trait?.label) return null
                         const tier = getStrengthTier(trait.count, maxTraitCount)
@@ -819,6 +821,7 @@ export function PremierProfileClient({
                         )
                       })}
                     </div>
+                    {/* </CHANGE> */}
                   </div>
                 </div>
               </CardShell>

@@ -9,7 +9,7 @@ export function SectionHeading({ title, subtitle, align = "center" }: SectionHea
 
   return (
     <div className={`mb-8 ${alignClass}`}>
-      <h2 className="text-[2rem] font-serif text-[var(--nomee-near-black)] mb-2">{title}</h2>
+      <h2 className="text-[2.25rem] font-serif font-medium text-[var(--nomee-near-black)] mb-2">{title}</h2>
       {subtitle && <p className="text-[var(--nomee-near-black)] opacity-60 text-[1rem]">{subtitle}</p>}
     </div>
   )
