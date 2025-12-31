@@ -40,7 +40,8 @@ export default function Home() {
                 className="space-y-6 lg:pt-8"
               >
                 <p className="text-sm text-slate-600 font-medium">
-                  Trusted by people who make decisions — hiring, partnerships, clients, collaborators.
+                  Trusted by the person on the other side of the decision — hiring, clients, collaborators,
+                  partnerships.
                 </p>
 
                 <h1 className="text-5xl md:text-6xl font-bold text-slate-900 leading-tight tracking-tight">
@@ -49,6 +50,11 @@ export default function Home() {
 
                 <p className="text-xl md:text-2xl text-slate-700 leading-relaxed">
                   One Proof Link that shows how people experience working with you — in their words.
+                </p>
+
+                <p className="text-base text-slate-600 leading-relaxed">
+                  For anyone who works with people — operators, managers, recruiters, contractors, nurses, teachers,
+                  sales, support, creatives.
                 </p>
 
                 <p className="text-sm text-slate-600 font-medium">
@@ -176,6 +182,9 @@ export default function Home() {
                 <p className="text-sm text-slate-600 leading-relaxed">
                   Your Proof Link shows patterns across all perspectives — ready for any opportunity.
                 </p>
+                <p className="text-sm text-slate-500 leading-relaxed italic">
+                  In plain terms: it shows what it's actually like to work with you — day to day.
+                </p>
               </motion.div>
             </div>
 
@@ -275,8 +284,8 @@ export default function Home() {
                             <span className="text-[10px] text-slate-500">11:23 AM</span>
                           </div>
                           <p className="text-xs leading-relaxed text-slate-700">
-                            Just wrapped the client call — they were so impressed by how you handled their concerns.
-                            That's the kind of thinking we need more of. 💯
+                            Just wrapped the client call — they were so impressed by how you handled their questions and
+                            concerns. That's the kind of thinking we need more of. 💯
                           </p>
                         </div>
                       </div>
@@ -346,7 +355,7 @@ export default function Home() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                     </svg>
                   </Link>
-                  <p className="text-xs text-slate-500">Free forever • No credit card required</p>
+                  <p className="text-xs text-slate-500">No credit card required</p>
                 </motion.div>
               </div>
             </div>
@@ -439,7 +448,7 @@ export default function Home() {
             >
               <h2 className="text-2xl md:text-3xl font-semibold text-slate-900">Use your Proof Link anywhere</h2>
               <p className="text-lg text-slate-600 max-w-3xl mx-auto">
-                Share your Proof Link anywhere for free. Embed Proof Tiles on your website with Pro.
+                Share your Proof Link anywhere for free. Add Proof Tiles to your website (copy/paste) with Pro.
               </p>
 
               <p className="text-sm text-slate-500 max-w-xl mx-auto">
@@ -743,6 +752,9 @@ export default function Home() {
                       People you've worked with describe the experience.
                     </p>
                     <p className="text-xs text-slate-500 pt-1">Written once. Never edited.</p>
+                    <p className="text-xs text-slate-500 leading-relaxed font-medium">
+                      You don't write it. You can't edit it.
+                    </p>
                   </div>
                 </motion.div>
 
@@ -1147,7 +1159,7 @@ export default function Home() {
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-blue-600 mt-1">✓</span>
-                    <span>Embed Proof Tiles on your website (portfolio, media kit, About page)</span>
+                    <span>Add Proof Tiles to your website (copy/paste)</span>
                   </li>
                 </ul>
 
