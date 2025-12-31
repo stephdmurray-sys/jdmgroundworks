@@ -8,6 +8,7 @@ import { SiteHeader } from "@/components/site-header"
 import { ArrowRight } from "lucide-react"
 import Link from "next/link"
 import { RealNomeeSlice } from "@/components/real-nomee-slice"
+import { BadgeCheck, FileCheck2, Bookmark } from "lucide-react"
 
 export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -99,87 +100,326 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Added new urgency strip section after hero */}
-        <section className="py-12 px-6 bg-gradient-to-b from-slate-50 to-white border-y border-slate-100">
-          <div className="max-w-3xl mx-auto text-center space-y-3">
+        <section className="relative py-24 px-6 bg-gradient-to-b from-slate-50 to-white overflow-hidden">
+          {/* Subtle background decoration */}
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(59,130,246,0.03),transparent_50%)]" />
+
+          <div className="relative max-w-7xl mx-auto">
+            {/* Headline + Subheadline */}
+            <div className="text-center mb-16 space-y-4">
+              <motion.h3
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                className="text-4xl md:text-5xl font-semibold text-slate-900 tracking-tight"
+              >
+                You already have proof.
+              </motion.h3>
+
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+                className="text-lg md:text-xl text-slate-600 leading-relaxed max-w-3xl mx-auto"
+              >
+                Praise already exists in your emails, Slack, texts, and DMs. Nomee helps you save the moments that show
+                how people experience working with you — then turns them into something you can actually use.
+              </motion.p>
+            </div>
+
+            {/* Three-column process flow */}
+            <div className="grid md:grid-cols-3 gap-8 mb-16 max-w-5xl mx-auto">
+              {/* Step 1: Save */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+                className="text-center space-y-3"
+              >
+                <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-blue-100 text-blue-600 font-semibold text-lg mb-2">
+                  1
+                </div>
+                <h4 className="text-lg font-semibold text-slate-900">Save praise from anywhere</h4>
+                <p className="text-sm text-slate-600 leading-relaxed">
+                  Forward emails, upload screenshots, paste messages — capture feedback before it disappears.
+                </p>
+              </motion.div>
+
+              {/* Step 2: Extract */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                className="text-center space-y-3"
+              >
+                <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-blue-100 text-blue-600 font-semibold text-lg mb-2">
+                  2
+                </div>
+                <h4 className="text-lg font-semibold text-slate-900">Pull out the signal</h4>
+                <p className="text-sm text-slate-600 leading-relaxed">
+                  Nomee automatically extracts what people value — no formatting, no manual work.
+                </p>
+              </motion.div>
+
+              {/* Step 3: Share */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                className="text-center space-y-3"
+              >
+                <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-blue-100 text-blue-600 font-semibold text-lg mb-2">
+                  3
+                </div>
+                <h4 className="text-lg font-semibold text-slate-900">Share one link when it matters</h4>
+                <p className="text-sm text-slate-600 leading-relaxed">
+                  Your Proof Link shows patterns across all perspectives — ready for any opportunity.
+                </p>
+              </motion.div>
+            </div>
+
+            {/* Visual demonstration: Three realistic snippets with arrows flowing to CTA */}
+            <div className="relative max-w-6xl mx-auto">
+              {/* Three message snippets */}
+              <div className="grid md:grid-cols-3 gap-6 mb-12">
+                {/* iMessage snippet */}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                  className="relative group"
+                >
+                  <div className="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                    {/* iMessage header */}
+                    <div className="bg-[#f5f5f7] border-b border-slate-200 px-4 py-3 flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-full bg-slate-300 flex items-center justify-center text-white text-xs font-semibold">
+                        JL
+                      </div>
+                      <div>
+                        <div className="text-xs font-medium text-slate-900">Jessica Liu</div>
+                        <div className="text-[10px] text-slate-500">iMessage</div>
+                      </div>
+                    </div>
+                    {/* iMessage content */}
+                    <div className="p-4 space-y-2 h-32 flex flex-col justify-end">
+                      <div className="bg-blue-500 text-white rounded-2xl rounded-br-sm px-4 py-2 text-sm ml-auto max-w-[85%]">
+                        Thanks again for yesterday!
+                      </div>
+                      <div className="bg-slate-200 text-slate-900 rounded-2xl rounded-bl-sm px-4 py-2.5 text-sm max-w-[85%] leading-snug">
+                        You totally saved us. Your ability to see three steps ahead is exactly what we needed. 🙏
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+
+                {/* Email snippet */}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                  className="relative group"
+                >
+                  <div className="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                    {/* Gmail header */}
+                    <div className="bg-white border-b border-slate-200 px-4 py-3">
+                      <div className="flex items-start gap-3">
+                        <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs font-semibold mt-0.5">
+                          MK
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="text-xs font-medium text-slate-900">Marcus Kim</div>
+                          <div className="text-[10px] text-slate-500 truncate">Re: Q4 Strategy Review</div>
+                        </div>
+                        <div className="text-[10px] text-slate-400">2:14 PM</div>
+                      </div>
+                    </div>
+                    {/* Email content */}
+                    <div className="p-4 h-32 flex items-center">
+                      <p className="text-xs leading-relaxed text-slate-700">
+                        The way you reframed our approach completely shifted the conversation. I've worked with a lot of
+                        consultants, and your clarity stands out. Let's definitely work together again next quarter.
+                      </p>
+                    </div>
+                  </div>
+                </motion.div>
+
+                {/* Slack snippet */}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.7, ease: [0.16, 1, 0.3, 1] }}
+                  className="relative group"
+                >
+                  <div className="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                    {/* Slack header */}
+                    <div className="bg-[#4a154b] px-4 py-3 flex items-center gap-2">
+                      <div className="flex items-center gap-2 flex-1">
+                        <div className="text-white text-xs font-semibold">#project-team</div>
+                      </div>
+                      <svg className="w-4 h-4 text-white/70" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M6 10.5C6 9.67157 6.67157 9 7.5 9C8.32843 9 9 9.67157 9 10.5C9 11.3284 8.32843 12 7.5 12H6V10.5Z" />
+                        <path d="M6 13.5C6 12.6716 6.67157 12 7.5 12C8.32843 12 9 12.6716 9 13.5V15C9 15.8284 8.32843 16.5 7.5 16.5C6.67157 16.5 6 15.8284 6 15V13.5Z" />
+                        <path d="M10.5 6C9.67157 6 9 6.67157 9 7.5C9 8.32843 9.67157 9 10.5 9H12V7.5C12 6.67157 11.3284 6 10.5 6Z" />
+                        <path d="M13.5 6C12.6716 6 12 6.67157 12 7.5C12 8.32843 12.6716 9 13.5 9H15C15.8284 9 16.5 8.32843 16.5 7.5C16.5 6.67157 15.8284 6 15 6H13.5Z" />
+                      </svg>
+                    </div>
+                    {/* Slack content */}
+                    <div className="p-4 space-y-3 h-32 flex flex-col justify-center">
+                      <div className="flex items-start gap-2">
+                        <div className="w-6 h-6 rounded bg-teal-500 flex items-center justify-center text-white text-[10px] font-semibold flex-shrink-0 mt-0.5">
+                          AS
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-baseline gap-2 mb-1">
+                            <span className="text-xs font-semibold text-slate-900">Aisha Singh</span>
+                            <span className="text-[10px] text-slate-500">11:23 AM</span>
+                          </div>
+                          <p className="text-xs leading-relaxed text-slate-700">
+                            Just wrapped the client call — they were so impressed by how you handled their concerns.
+                            That's the kind of thinking we need more of. 💯
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              </div>
+
+              {/* Three-way arrow convergence to CTA */}
+              <div className="relative">
+                {/* Decorative flow lines */}
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.8, delay: 0.9 }}
+                  className="absolute -top-6 left-0 right-0 h-12 hidden md:flex items-center justify-center"
+                >
+                  <svg className="w-full h-full" style={{ maxWidth: "600px" }}>
+                    {/* Left arrow */}
+                    <path
+                      d="M 100 0 Q 150 30, 250 40"
+                      stroke="rgba(59, 130, 246, 0.3)"
+                      strokeWidth="2"
+                      fill="none"
+                      strokeDasharray="4 4"
+                    />
+                    {/* Center arrow */}
+                    <path
+                      d="M 300 0 L 300 40"
+                      stroke="rgba(59, 130, 246, 0.3)"
+                      strokeWidth="2"
+                      fill="none"
+                      strokeDasharray="4 4"
+                    />
+                    {/* Right arrow */}
+                    <path
+                      d="M 500 0 Q 450 30, 350 40"
+                      stroke="rgba(59, 130, 246, 0.3)"
+                      strokeWidth="2"
+                      fill="none"
+                      strokeDasharray="4 4"
+                    />
+                  </svg>
+                </motion.div>
+
+                {/* Primary CTA */}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 1, ease: [0.16, 1, 0.3, 1] }}
+                  className="flex flex-col items-center gap-4"
+                >
+                  <Link
+                    href="/auth/signup"
+                    className="group relative inline-flex items-center justify-center px-10 py-4 bg-slate-900 text-white rounded-full font-medium text-base hover:bg-slate-800 transition-all duration-300 shadow-lg hover:shadow-2xl hover:scale-105"
+                  >
+                    <span>Start saving your proof</span>
+                    <svg
+                      className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform duration-300"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                    </svg>
+                  </Link>
+                  <p className="text-xs text-slate-500">Free forever • No credit card required</p>
+                </motion.div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="py-16 px-6 bg-slate-50 border-b border-slate-100">
+          <div className="max-w-3xl mx-auto text-center space-y-6">
             <motion.h3
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
-              className="text-xl md:text-2xl font-semibold text-slate-900"
+              className="text-3xl md:text-4xl font-semibold text-slate-900"
             >
-              Don't let your proof get buried.
+              How Nomee works.
             </motion.h3>
+
             <motion.p
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.5, delay: 0.1 }}
-              className="text-base text-slate-600 leading-relaxed"
+              className="text-base text-slate-600 leading-relaxed max-w-2xl mx-auto"
             >
-              Praise gets buried in emails, Slack, and DMs. Save it while it's still easy to find.
+              Send your unique link to people you've collaborated with directly. They write 1–3 sentences with optional
+              voice note — <span className="font-medium">~2 minutes</span>.
             </motion.p>
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              className="text-sm text-slate-500 font-medium"
-            >
-              3 uploads free.
-            </motion.p>
-          </div>
-        </section>
 
-        <section className="py-16 px-6 bg-gradient-to-br from-slate-50 via-blue-50/30 to-slate-50 border-y border-slate-200/60">
-          <div className="max-w-3xl mx-auto">
-            <div className="bg-white/80 backdrop-blur-sm rounded-2xl border border-slate-200/80 shadow-lg shadow-slate-200/50 p-8 md:p-12">
-              <div className="text-center space-y-6">
-                <motion.h3
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5 }}
-                  className="text-2xl md:text-3xl font-semibold text-slate-900 leading-tight"
-                >
-                  Save your praise before it disappears.
-                </motion.h3>
-                <motion.p
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.5, delay: 0.1 }}
-                  className="text-base md:text-lg text-slate-600 leading-relaxed max-w-2xl mx-auto"
-                >
-                  Compliments get buried in emails, Slack, and DMs. Capture the best ones now — then share one Proof
-                  Link that shows how people experience working with you.
-                </motion.p>
+            {/* Three-column process flow */}
+            <div className="grid md:grid-cols-3 gap-8 mb-16 max-w-5xl mx-auto">
+              {/* Step 1: Share */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+                className="text-center space-y-3"
+              >
+                <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-blue-100 text-blue-600 font-semibold text-lg mb-2">
+                  1
+                </div>
+                <h4 className="text-lg font-semibold text-slate-900">Share your Nomee link</h4>
+                <p className="text-sm text-slate-600 leading-relaxed">
+                  Send your unique link to people you've collaborated with directly.
+                </p>
+              </motion.div>
 
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.2 }}
-                  className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4"
-                >
-                  <Link
-                    href="/auth/signup"
-                    className="inline-flex items-center justify-center px-6 py-3 bg-slate-900 text-white rounded-lg font-medium hover:bg-slate-800 transition-colors shadow-md hover:shadow-lg w-full sm:w-auto"
-                  >
-                    Start saving praise
-                  </Link>
-                  <Link
-                    href="/maya-torres"
-                    className="inline-flex items-center justify-center px-6 py-3 bg-white border border-slate-300 text-slate-700 rounded-lg font-medium hover:bg-slate-50 transition-colors w-full sm:w-auto"
-                  >
-                    See an example
-                  </Link>
-                </motion.div>
+              {/* Step 2: Contribute */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.3 }}
+                className="text-center space-y-3"
+              >
+                <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-blue-100 text-blue-600 font-semibold text-lg mb-2">
+                  2
+                </div>
+                <h4 className="text-lg font-semibold text-slate-900">People contribute their perspective</h4>
+                <p className="text-sm text-slate-600 leading-relaxed">
+                  They write 1–3 sentences with optional voice note — <span className="font-medium">~2 minutes</span>.
+                </p>
+              </motion.div>
 
-                <motion.p
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.5, delay: 0.3 }}
-                  className="text-xs text-slate-500 pt-2"
-                >
-                  Nomee submissions are free forever • 3 uploads included
-                </motion.p>
-              </div>
+              {/* Step 3: Patterns */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.4 }}
+                className="text-center space-y-3"
+              >
+                <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-blue-100 text-blue-600 font-semibold text-lg mb-2">
+                  3
+                </div>
+                <h4 className="text-lg font-semibold text-slate-900">Patterns form over time</h4>
+                <p className="text-sm text-slate-600 leading-relaxed">
+                  Traits and highlighted phrases emerge as more people share their experience.
+                </p>
+              </motion.div>
             </div>
           </div>
         </section>
@@ -258,8 +498,8 @@ export default function Home() {
               <div className="bg-gradient-to-br from-slate-50 to-blue-50/30 rounded-2xl border border-slate-200/60 shadow-sm p-8 md:p-12">
                 <div className="grid md:grid-cols-3 gap-8">
                   <div className="space-y-4 text-center p-6">
-                    <div className="w-12 h-12 mx-auto bg-blue-100 rounded-full flex items-center justify-center">
-                      <div className="w-6 h-6 bg-blue-600 rounded" />
+                    <div className="w-11 h-11 mx-auto bg-blue-50 rounded-full border border-blue-200 flex items-center justify-center">
+                      <BadgeCheck className="w-5 h-5 text-blue-600" strokeWidth={2} />
                     </div>
                     <h3 className="text-xl font-semibold text-slate-900">Make decisions easier.</h3>
                     <p className="text-slate-600 leading-relaxed">
@@ -269,8 +509,8 @@ export default function Home() {
                   </div>
 
                   <div className="space-y-4 text-center p-6">
-                    <div className="w-12 h-12 mx-auto bg-blue-100 rounded-full flex items-center justify-center">
-                      <div className="w-6 h-6 bg-blue-600 rounded-full" />
+                    <div className="w-11 h-11 mx-auto bg-blue-50 rounded-full border border-blue-200 flex items-center justify-center">
+                      <FileCheck2 className="w-5 h-5 text-blue-600" strokeWidth={2} />
                     </div>
                     <h3 className="text-xl font-semibold text-slate-900">Turn praise into proof.</h3>
                     <p className="text-slate-600 leading-relaxed">
@@ -280,8 +520,8 @@ export default function Home() {
                   </div>
 
                   <div className="space-y-4 text-center p-6">
-                    <div className="w-12 h-12 mx-auto bg-blue-100 rounded-full flex items-center justify-center">
-                      <div className="w-6 h-6 bg-blue-600 rounded-sm" />
+                    <div className="w-11 h-11 mx-auto bg-blue-50 rounded-full border border-blue-200 flex items-center justify-center">
+                      <Bookmark className="w-5 h-5 text-blue-600" strokeWidth={2} />
                     </div>
                     <h3 className="text-xl font-semibold text-slate-900">Stop losing the good stuff.</h3>
                     <p className="text-slate-600 leading-relaxed">
