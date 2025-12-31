@@ -7,9 +7,7 @@ import { motion } from "framer-motion"
 import { SiteHeader } from "@/components/site-header"
 import { ArrowRight } from "lucide-react"
 import Link from "next/link"
-import { DemoCard } from "@/components/demo-card"
 import { RealNomeeSlice } from "@/components/real-nomee-slice"
-import { ChevronDown } from "lucide-react"
 
 export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -39,97 +37,43 @@ export default function Home() {
                 transition={{ duration: 0.6 }}
                 className="space-y-6 lg:pt-8"
               >
-                {/* Tab toggle */}
-                <div className="inline-flex items-center gap-2 bg-slate-100 p-1 rounded-full">
-                  <button
-                    onClick={() => setHeroTab("professional")}
-                    className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
-                      heroTab === "professional"
-                        ? "bg-white text-slate-900 shadow-sm"
-                        : "text-slate-600 hover:text-slate-900"
-                    }`}
+                <p className="text-sm text-slate-600 font-medium">
+                  Trusted by people who make decisions — hiring, partnerships, clients, collaborators.
+                </p>
+
+                <h1 className="text-5xl md:text-6xl font-bold text-slate-900 leading-tight tracking-tight">
+                  Your reputation already exists. Nomee makes it visible.
+                </h1>
+
+                <p className="text-xl md:text-2xl text-slate-700 leading-relaxed">
+                  One link that shows how people experience working with you — in their words.
+                </p>
+
+                <p className="text-sm text-slate-600 font-medium">
+                  Don't lose the praise. Turn it into proof you can share anywhere.
+                </p>
+
+                <div className="flex flex-col sm:flex-row items-start gap-4 pt-4">
+                  <Button
+                    onClick={() => openModal("deck")}
+                    size="lg"
+                    className="bg-slate-900 text-white hover:bg-slate-800 rounded-full px-8 py-6 text-base font-medium shadow-lg hover:shadow-xl transition-all"
                   >
-                    For Professionals
-                  </button>
-                  <button
-                    onClick={() => setHeroTab("decision-maker")}
-                    className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
-                      heroTab === "decision-maker"
-                        ? "bg-white text-slate-900 shadow-sm"
-                        : "text-slate-600 hover:text-slate-900"
-                    }`}
+                    Create your Nomee
+                    <ArrowRight className="w-5 h-5 ml-2" />
+                  </Button>
+
+                  <Link
+                    href="/maya-torres"
+                    className="text-slate-600 hover:text-slate-900 font-medium text-base flex items-center gap-2 px-4 py-3"
                   >
-                    For Decision-Makers
-                  </button>
+                    See an example →
+                  </Link>
                 </div>
 
-                {heroTab === "professional" ? (
-                  <>
-                    <h1 className="text-5xl md:text-6xl font-bold text-slate-900 leading-tight tracking-tight">
-                      Don't lose the praise. Turn it into proof.
-                    </h1>
-
-                    <p className="text-xl md:text-2xl text-slate-700 leading-relaxed">
-                      One link to how people experience working with you — for hiring, partnerships, clients, and
-                      promotions.
-                    </p>
-
-                    <p className="text-sm text-slate-500 font-medium">
-                      Trusted by people who make decisions — hiring, partnerships, clients, collaborators.
-                    </p>
-
-                    <br />
-
-                    <div className="flex flex-col sm:flex-row items-start gap-4 pt-4">
-                      <Button
-                        onClick={() => openModal("deck")}
-                        size="lg"
-                        className="bg-slate-900 text-white hover:bg-slate-800 rounded-full px-8 py-6 text-base font-medium shadow-lg hover:shadow-xl transition-all"
-                      >
-                        Start uploading today
-                        <ArrowRight className="w-5 h-5 ml-2" />
-                      </Button>
-
-                      <Link
-                        href="/maya-torres"
-                        className="text-slate-600 hover:text-slate-900 font-medium text-base flex items-center gap-2 px-4 py-3"
-                      >
-                        See an example →
-                      </Link>
-                    </div>
-
-                    <p className="text-sm text-slate-500">Nomee submissions are free forever • 3 uploads included</p>
-                  </>
-                ) : (
-                  <>
-                    <h1 className="text-5xl md:text-6xl font-bold text-slate-900 leading-tight tracking-tight">
-                      See how they actually show up — fast.
-                    </h1>
-
-                    <p className="text-xl md:text-2xl text-slate-700 leading-relaxed">
-                      Nomee surfaces repeated collaboration signals from real perspectives, voice notes, and sourced
-                      screenshots — so you can decide with less guesswork.
-                    </p>
-
-                    <br />
-
-                    <div className="flex flex-col sm:flex-row items-start gap-4 pt-4">
-                      <Link href="/maya-torres">
-                        <Button
-                          size="lg"
-                          className="bg-slate-900 text-white hover:bg-slate-800 rounded-full px-8 py-6 text-base font-medium shadow-lg hover:shadow-xl transition-all"
-                        >
-                          View an example
-                          <ArrowRight className="w-5 h-5 ml-2" />
-                        </Button>
-                      </Link>
-                    </div>
-
-                    <p className="text-sm text-slate-500">
-                      Optional artifact for candidates + creators. Faster than reference checks.
-                    </p>
-                  </>
-                )}
+                <p className="text-sm text-slate-500">
+                  Nomee submissions are free forever • 3 saved highlights included
+                </p>
               </motion.div>
 
               {/* Right: Real Nomee Slice (Desktop) */}
@@ -164,7 +108,7 @@ export default function Home() {
               transition={{ duration: 0.5 }}
               className="text-xl md:text-2xl font-semibold text-slate-900"
             >
-              Start uploading today.
+              Don't let your proof get buried.
             </motion.h3>
             <motion.p
               initial={{ opacity: 0 }}
@@ -182,6 +126,61 @@ export default function Home() {
             >
               3 uploads free.
             </motion.p>
+          </div>
+        </section>
+
+        <section className="py-16 px-6 bg-gradient-to-br from-slate-50 via-blue-50/30 to-slate-50 border-y border-slate-200/60">
+          <div className="max-w-3xl mx-auto">
+            <div className="bg-white/80 backdrop-blur-sm rounded-2xl border border-slate-200/80 shadow-lg shadow-slate-200/50 p-8 md:p-12">
+              <div className="text-center space-y-6">
+                <motion.h3
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5 }}
+                  className="text-2xl md:text-3xl font-semibold text-slate-900 leading-tight"
+                >
+                  Save your praise before it disappears.
+                </motion.h3>
+                <motion.p
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.5, delay: 0.1 }}
+                  className="text-base md:text-lg text-slate-600 leading-relaxed max-w-2xl mx-auto"
+                >
+                  Compliments get buried in emails, Slack, and DMs. Capture the best ones now — then share one Proof
+                  Link that shows how people experience working with you.
+                </motion.p>
+
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.2 }}
+                  className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4"
+                >
+                  <Link
+                    href="/auth/signup"
+                    className="inline-flex items-center justify-center px-6 py-3 bg-slate-900 text-white rounded-lg font-medium hover:bg-slate-800 transition-colors shadow-md hover:shadow-lg w-full sm:w-auto"
+                  >
+                    Start saving praise
+                  </Link>
+                  <Link
+                    href="/maya-torres"
+                    className="inline-flex items-center justify-center px-6 py-3 bg-white border border-slate-300 text-slate-700 rounded-lg font-medium hover:bg-slate-50 transition-colors w-full sm:w-auto"
+                  >
+                    See an example
+                  </Link>
+                </motion.div>
+
+                <motion.p
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.5, delay: 0.3 }}
+                  className="text-xs text-slate-500 pt-2"
+                >
+                  Nomee submissions are free forever • 3 uploads included
+                </motion.p>
+              </div>
+            </div>
           </div>
         </section>
 
@@ -289,304 +288,6 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Contrast statement after outcomes section */}
-        <section className="py-12 px-6 bg-white">
-          <div className="max-w-2xl mx-auto">
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-              className="text-xl md:text-2xl text-slate-700 text-center leading-relaxed"
-            >
-              Without Nomee, people have to take your word for it.
-              <br />
-              <span className="block mt-3">With Nomee, they hear it from others.</span>
-            </motion.p>
-          </div>
-        </section>
-
-        {/* Renamed section to "What your Proof Link shows" and updated item names */}
-        <section className="py-24 px-6 bg-white relative overflow-hidden">
-          <div className="max-w-4xl mx-auto space-y-12">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-              className="space-y-6 text-center"
-            >
-              <h2 className="text-2xl md:text-3xl font-semibold text-slate-900">What your Proof Link shows</h2>
-
-              <p className="text-lg text-slate-700 leading-relaxed">
-                A Proof Link isn't written by you. It's built from people who've worked with you.
-              </p>
-            </motion.div>
-
-            {/* Horizontal framework cards */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="grid grid-cols-1 md:grid-cols-3 gap-4"
-            >
-              {/* How it feels */}
-              <div className="relative">
-                <button
-                  onClick={() => setExpandedFramework(expandedFramework === "feels" ? null : "feels")}
-                  className="w-full p-6 border border-slate-300 rounded-xl bg-white hover:border-slate-400 hover:shadow-md transition-all duration-300 group"
-                >
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-lg font-semibold text-slate-900 group-hover:text-blue-600 transition-colors">
-                      How it feels
-                    </span>
-                    <ChevronDown
-                      className={`w-5 h-5 text-blue-600 transition-transform duration-300 ${
-                        expandedFramework === "feels" ? "rotate-180" : ""
-                      }`}
-                    />
-                  </div>
-                </button>
-                {expandedFramework === "feels" && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: "auto" }}
-                    exit={{ opacity: 0, height: 0 }}
-                    transition={{ duration: 0.3 }}
-                    className="mt-2 p-4 bg-slate-50 rounded-lg border border-slate-200"
-                  >
-                    <p className="text-sm text-slate-600 leading-relaxed">
-                      Short reflections on the experience of working together
-                    </p>
-                  </motion.div>
-                )}
-              </div>
-
-              {/* What stands out */}
-              <div className="relative">
-                <button
-                  onClick={() => setExpandedFramework(expandedFramework === "stands" ? null : "stands")}
-                  className="w-full p-6 border border-slate-300 rounded-xl bg-white hover:border-slate-400 hover:shadow-md transition-all duration-300 group"
-                >
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-lg font-semibold text-slate-900 group-hover:text-blue-600 transition-colors">
-                      What stands out
-                    </span>
-                    <ChevronDown
-                      className={`w-5 h-5 text-blue-600 transition-transform duration-300 ${
-                        expandedFramework === "stands" ? "rotate-180" : ""
-                      }`}
-                    />
-                  </div>
-                </button>
-                {expandedFramework === "stands" && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: "auto" }}
-                    exit={{ opacity: 0, height: 0 }}
-                    transition={{ duration: 0.3 }}
-                    className="mt-2 p-4 bg-slate-50 rounded-lg border border-slate-200"
-                  >
-                    <p className="text-sm text-slate-600 leading-relaxed">
-                      Key traits highlighted from each contribution
-                    </p>
-                  </motion.div>
-                )}
-              </div>
-
-              {/* What's consistent */}
-              <div className="relative">
-                <button
-                  onClick={() => setExpandedFramework(expandedFramework === "consistent" ? null : "consistent")}
-                  className="w-full p-6 border border-slate-300 rounded-xl bg-white hover:border-slate-400 hover:shadow-md transition-all duration-300 group"
-                >
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-lg font-semibold text-slate-900 group-hover:text-blue-600 transition-colors">
-                      What's consistent
-                    </span>
-                    <ChevronDown
-                      className={`w-5 h-5 text-blue-600 transition-transform duration-300 ${
-                        expandedFramework === "consistent" ? "rotate-180" : ""
-                      }`}
-                    />
-                  </div>
-                </button>
-                {expandedFramework === "consistent" && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: "auto" }}
-                    exit={{ opacity: 0, height: 0 }}
-                    transition={{ duration: 0.3 }}
-                    className="mt-2 p-4 bg-slate-50 rounded-lg border border-slate-200"
-                  >
-                    <p className="text-sm text-slate-600 leading-relaxed">
-                      Patterns that emerge as more people share over time
-                    </p>
-                  </motion.div>
-                )}
-              </div>
-            </motion.div>
-          </div>
-        </section>
-
-        {/* Updated section intro copy */}
-        <section className="py-20 px-6 bg-slate-50">
-          <div className="max-w-7xl mx-auto space-y-8">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-              className="text-center space-y-4"
-            >
-              <h2 className="text-3xl md:text-4xl font-semibold text-slate-900">
-                Shared by people who've worked with them
-              </h2>
-            </motion.div>
-
-            {/* Scrollable card grid */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
-            >
-              <DemoCard
-                quote="Maya's organizational skills are next level. She took our chaotic project and created a system that actually worked. Everyone knew what they were doing and why it mattered."
-                name="Riley Parker"
-                company="AgileTech"
-                relationship="Direct Report"
-                traits={["Organized", "Systematic", "Clear communicator"]}
-              />
-              <DemoCard
-                quote="Maya has this gift for seeing both the forest and the trees. She caught details that would have derailed our launch while never losing sight of the bigger strategic picture."
-                name="Taylor Kim"
-                company="ConsultGroup"
-                relationship="Other"
-                hasVoice
-                voiceDuration="48s"
-                traits={["Detail-oriented", "Strategic", "Thorough"]}
-              />
-              <DemoCard
-                quote="Maya's reliability is unmatched. When she commits to something, it gets done and done well. She helped us navigate a critical pivot with such calm confidence that the whole team felt grounded."
-                name="Sam Martinez"
-                company="StartupHQ"
-                relationship="Client"
-                traits={["Reliable", "Accountable", "Proactive"]}
-              />
-              <DemoCard
-                quote="Working with Maya was a masterclass in collaboration. She made space for everyone's ideas while keeping us focused on what mattered. The way she listens is rare."
-                name="Alex Rivera"
-                company="NutriTrack"
-                relationship="Colleague"
-                hasVoice
-                voiceDuration="45s"
-                traits={["Collaborative", "Active listener", "Focused"]}
-              />
-              <DemoCard
-                quote="Maya brings incredible strategic clarity to complex projects. She helped us restructure our product roadmap with no wasted meetings or confusion about next steps."
-                name="Jordan Chen"
-                company="GlowUp Beauty"
-                relationship="Client"
-                hasVoice
-                voiceDuration="52s"
-                traits={["Strategic", "Clear", "Efficient"]}
-              />
-              <DemoCard
-                quote="Maya consistently goes above and beyond. She created extra content for us unprompted, provided valuable feedback on our product line, and even connected us with other creators."
-                name="Nina Patel"
-                company="WellnessHub Collective"
-                relationship="Client"
-                traits={["Goes above and beyond", "Proactive", "Valuable partner"]}
-              />
-            </motion.div>
-          </div>
-        </section>
-
-        {/* Added expand/collapse functionality to show only top 8 traits by default */}
-        <section className="pt-24 pb-24 px-6 bg-white">
-          <div className="max-w-4xl mx-auto space-y-10">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-              className="text-center space-y-4"
-            >
-              <h2 className="text-3xl md:text-4xl font-semibold text-slate-900">What stands out, consistently</h2>
-              <p className="text-sm text-slate-500 max-w-2xl mx-auto leading-relaxed">
-                These signals repeat across contributors.
-              </p>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="space-y-4"
-            >
-              {/* Top 6 traits (always visible) */}
-              <div className="flex flex-wrap justify-center gap-3">
-                {[
-                  { trait: "Strategic", count: 6 },
-                  { trait: "Clear communicator", count: 6 },
-                  { trait: "Collaborative", count: 6 },
-                  { trait: "Thoughtful", count: 5 },
-                  { trait: "Detail-oriented", count: 5 },
-                  { trait: "Reliable", count: 5 },
-                ].map((item, idx) => (
-                  <button
-                    key={idx}
-                    className="px-6 py-3 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-full text-base font-semibold transition-colors"
-                  >
-                    {item.trait} ×{item.count}
-                  </button>
-                ))}
-              </div>
-
-              {/* Additional traits (shown when expanded) */}
-              {showAllTraits && (
-                <motion.div
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: "auto" }}
-                  exit={{ opacity: 0, height: 0 }}
-                  transition={{ duration: 0.3 }}
-                  className="flex flex-wrap justify-center gap-2.5"
-                >
-                  {[
-                    { trait: "Calm under pressure", count: 5 },
-                    { trait: "Patient", count: 4 },
-                    { trait: "Proactive", count: 4 },
-                    { trait: "Empathetic", count: 4 },
-                    { trait: "Organized", count: 3 },
-                    { trait: "Analytical", count: 3 },
-                  ].map((item, idx) => (
-                    <button
-                      key={idx}
-                      className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-full text-sm font-semibold transition-colors"
-                    >
-                      {item.trait} ×{item.count}
-                    </button>
-                  ))}
-                </motion.div>
-              )}
-
-              {/* View all / Show less button */}
-              <div className="text-center pt-4">
-                <button
-                  onClick={() => setShowAllTraits(!showAllTraits)}
-                  className="text-blue-600 hover:text-blue-700 font-medium text-sm transition-colors"
-                >
-                  {showAllTraits ? "Show less" : "View all signals"}
-                </button>
-              </div>
-            </motion.div>
-          </div>
-        </section>
-
         {/* Built for credibility section moved above How a Nomee comes together */}
         <section className="py-24 px-6 bg-white">
           <div className="max-w-4xl mx-auto space-y-12">
@@ -631,7 +332,7 @@ export default function Home() {
               <div className="space-y-4 p-6 bg-slate-50 rounded-xl">
                 <h3 className="text-lg font-semibold text-slate-900">You control what's shown</h3>
                 <p className="text-slate-600 leading-relaxed">
-                  Choose which contributions appear on your profile without changing what was actually said.
+                  Choose which contributions appear on your Proof Link without changing what was actually said.
                 </p>
               </div>
             </motion.div>
