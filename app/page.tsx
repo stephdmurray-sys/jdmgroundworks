@@ -455,24 +455,68 @@ export default function Home() {
                     </div>
                   </div>
                   <div className="p-8 space-y-6">
+                    {/* Page content placeholder */}
                     <div className="space-y-2">
                       <div className="h-4 bg-slate-200 rounded w-3/4" />
                       <div className="h-4 bg-slate-200 rounded w-full" />
                       <div className="h-4 bg-slate-200 rounded w-5/6" />
                     </div>
-                    <div className="border-2 border-blue-200 rounded-lg p-6 bg-blue-50/30">
-                      <div className="flex items-center gap-3 mb-4">
-                        <div className="w-12 h-12 rounded-full bg-blue-200" />
-                        <div className="space-y-2 flex-1">
-                          <div className="h-3 bg-blue-200 rounded w-1/3" />
-                          <div className="h-2 bg-blue-100 rounded w-1/4" />
+
+                    <div className="relative overflow-hidden">
+                      <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-2 snap-x snap-mandatory scroll-smooth">
+                        {/* Card 1 */}
+                        <div className="flex-none w-64 snap-start border border-slate-200 rounded-lg p-4 bg-white shadow-sm hover:shadow-md transition-shadow">
+                          <p className="text-sm text-slate-700 leading-relaxed mb-3">
+                            "Clear communicator, calm under pressure, and deeply thoughtful in how she approaches
+                            complex work."
+                          </p>
+                          <div className="flex items-center gap-2 mb-3">
+                            <div className="w-8 h-8 rounded-full bg-slate-200" />
+                            <div>
+                              <div className="text-xs font-medium text-slate-900">Sarah Chen</div>
+                              <div className="text-xs text-slate-500">Product Lead</div>
+                            </div>
+                          </div>
+                          <div className="text-[10px] text-slate-400 text-center pt-2 border-t border-slate-100">
+                            Powered by Nomee
+                          </div>
+                        </div>
+
+                        {/* Card 2 */}
+                        <div className="flex-none w-64 snap-start border border-slate-200 rounded-lg p-4 bg-white shadow-sm hover:shadow-md transition-shadow">
+                          <p className="text-sm text-slate-700 leading-relaxed mb-3">
+                            "One of the most reliable collaborators I've worked with. Strong judgment and
+                            follow-through."
+                          </p>
+                          <div className="flex items-center gap-2 mb-3">
+                            <div className="w-8 h-8 rounded-full bg-slate-200" />
+                            <div>
+                              <div className="text-xs font-medium text-slate-900">Marcus Johnson</div>
+                              <div className="text-xs text-slate-500">Design Director</div>
+                            </div>
+                          </div>
+                          <div className="text-[10px] text-slate-400 text-center pt-2 border-t border-slate-100">
+                            Powered by Nomee
+                          </div>
+                        </div>
+
+                        {/* Card 3 */}
+                        <div className="flex-none w-64 snap-start border border-slate-200 rounded-lg p-4 bg-white shadow-sm hover:shadow-md transition-shadow">
+                          <p className="text-sm text-slate-700 leading-relaxed mb-3">
+                            "Consistently strategic while still being easy to work with."
+                          </p>
+                          <div className="flex items-center gap-2 mb-3">
+                            <div className="w-8 h-8 rounded-full bg-slate-200" />
+                            <div>
+                              <div className="text-xs font-medium text-slate-900">Alex Rivera</div>
+                              <div className="text-xs text-slate-500">Co-Founder</div>
+                            </div>
+                          </div>
+                          <div className="text-[10px] text-slate-400 text-center pt-2 border-t border-slate-100">
+                            Powered by Nomee
+                          </div>
                         </div>
                       </div>
-                      <div className="space-y-2">
-                        <div className="h-3 bg-blue-100 rounded w-full" />
-                        <div className="h-3 bg-blue-100 rounded w-5/6" />
-                      </div>
-                      <div className="mt-4 text-xs text-center text-blue-600 font-medium">Powered by Nomee</div>
                     </div>
                   </div>
                 </div>
@@ -628,7 +672,9 @@ export default function Home() {
                 </div>
                 <h3 className="text-xl font-semibold text-slate-900">Share your Nomee link</h3>
                 <p className="text-slate-600 leading-relaxed">
-                  Send your unique link to people you've collaborated with directly.
+                  Send one link to people you've worked with.
+                  <br />
+                  There's no limit — contributions are always free.
                 </p>
               </motion.div>
 
@@ -644,7 +690,9 @@ export default function Home() {
                 </div>
                 <h3 className="text-xl font-semibold text-slate-900">People contribute their perspective</h3>
                 <p className="text-slate-600 leading-relaxed">
-                  They write 1–3 sentences with optional voice note — <span className="font-medium">~2 minutes</span>
+                  They share a few sentences (or a short voice note).
+                  <br />
+                  It takes about two minutes.
                 </p>
               </motion.div>
 
@@ -660,7 +708,7 @@ export default function Home() {
                 </div>
                 <h3 className="text-xl font-semibold text-slate-900">Patterns form over time</h3>
                 <p className="text-slate-600 leading-relaxed">
-                  Traits and highlighted phrases emerge as more people share their experience.
+                  As more people contribute, shared traits and themes surface automatically.
                 </p>
               </motion.div>
             </div>
@@ -677,7 +725,7 @@ export default function Home() {
               transition={{ duration: 0.6 }}
               className="text-sm text-slate-500 text-center font-medium"
             >
-              This is the context people usually wait until the reference check to get.
+              This is context people usually only get after interviews or reference checks.
             </motion.p>
           </div>
         </section>
@@ -704,17 +752,17 @@ export default function Home() {
             >
               <div className="space-y-3 text-center">
                 <h3 className="text-lg font-semibold text-slate-900">Hiring</h3>
-                <p className="text-slate-600">Skim the signals before interviews.</p>
+                <p className="text-slate-600">Understand working style before interviews begin.</p>
               </div>
 
               <div className="space-y-3 text-center">
                 <h3 className="text-lg font-semibold text-slate-900">Partnerships</h3>
-                <p className="text-slate-600">Confirm reliability and collaboration vibe.</p>
+                <p className="text-slate-600">Confirm reliability and collaboration fit early.</p>
               </div>
 
               <div className="space-y-3 text-center">
                 <h3 className="text-lg font-semibold text-slate-900">Clients & collaborators</h3>
-                <p className="text-slate-600">Know what it's like to work together before money changes hands.</p>
+                <p className="text-slate-600">See how it feels to work together before committing.</p>
               </div>
             </motion.div>
 
@@ -741,16 +789,28 @@ export default function Home() {
               </div>
 
               <div className="text-center pt-4">
-                <Link href="/maya-torres">
-                  <Button
-                    size="lg"
-                    className="bg-slate-900 text-white hover:bg-slate-800 rounded-full px-8 py-6 text-base font-medium shadow-lg hover:shadow-xl transition-all"
-                  >
-                    View an example Proof Link
-                    <ArrowRight className="w-5 h-5 ml-2" />
-                  </Button>
+                <Link
+                  href="/maya-torres"
+                  className="inline-flex items-center gap-2 text-slate-900 hover:text-slate-700 font-medium text-sm transition-colors"
+                >
+                  View an example Proof Link
+                  <ArrowRight className="w-4 h-4" />
                 </Link>
               </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.6 }}
+              className="text-center pt-6"
+            >
+              <p className="text-sm text-slate-500 leading-relaxed">
+                Your Nomee link is free to share — forever.
+                <br />
+                Unlimited people can contribute. You only upgrade to save and showcase highlights.
+              </p>
             </motion.div>
           </div>
         </section>
