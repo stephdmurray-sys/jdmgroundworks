@@ -39,18 +39,17 @@ export default function Home() {
                 transition={{ duration: 0.6 }}
                 className="space-y-6 lg:pt-8"
               >
-                <p className="text-sm text-slate-600 font-medium">
-                  Trusted by the person on the other side of the decision — hiring, clients, collaborators,
-                  partnerships.
-                </p>
+                <p className="text-sm text-slate-600 font-medium">Trusted by the people who decide.</p>
 
                 <h1 className="text-5xl md:text-6xl font-bold text-slate-900 leading-tight tracking-tight">
-                  Your reputation already exists. Your Nomee Page shows it.
+                  Your reputation already exists.
                 </h1>
 
                 <p className="text-xl md:text-2xl text-slate-700 leading-relaxed">
-                  One Proof Link that shows how people experience working with you — in their words.
+                  One Proof Link shows how people experience working with you — in their words.
                 </p>
+
+                <p className="text-base text-slate-600">Your Nomee Page makes it visible.</p>
 
                 <div className="flex flex-col sm:flex-row items-start gap-4 pt-4">
                   <Button
@@ -70,7 +69,7 @@ export default function Home() {
                   </Link>
                 </div>
 
-                <p className="text-sm text-slate-500">No credit card required</p>
+                <p className="text-sm text-slate-500">Start free. No card required.</p>
               </motion.div>
 
               {/* Right: Real Nomee Slice (Desktop) */}
@@ -401,6 +400,7 @@ export default function Home() {
                 <p className="text-sm text-slate-600 leading-relaxed">
                   They write 1–3 sentences with optional voice note — <span className="font-medium">~2 minutes</span>.
                 </p>
+                <p className="text-sm text-slate-500 italic mt-2">Hear tone, not just words.</p>
               </motion.div>
 
               {/* Step 3: Patterns */}
