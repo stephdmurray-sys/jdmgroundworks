@@ -174,16 +174,41 @@ export default function UploadForm({ profileId, currentCount, limit }: UploadFor
         }),
       })
 
-      console.log("[v0] Create record response:", {
+      console.log("[IMPORT_UPLOAD] Sending payload to create-record:", {
+        sourceType: fileData.sourceType,
+        imagePath: path,
+        profileId: profileId,
+        imageUrl: url ? "✓" : "✗",
+        fileName: fileData.file.name,
+        fullPayload: {
+          imageUrl: url,
+          imagePath: path,
+          profileId,
+          sourceType: fileData.sourceType,
+        },
+      })
+
+      console.log("[IMPORT_UPLOAD] API Response Status:", {
         ok: createResponse.ok,
         status: createResponse.status,
-        sourceType: fileData.sourceType,
+        statusText: createResponse.statusText,
       })
 
       if (!createResponse.ok) {
-        const errorData = await createResponse.json()
-        console.log("[v0] Create record error:", errorData)
-        throw new Error("We couldn't save this file yet. Please check the source and try again.")
+        const errorText = await createResponse.text()
+        console.error("[IMPORT_UPLOAD] Full error response:", errorText)
+
+        let errorData
+        try {
+          errorData = JSON.parse(errorText)
+        } catch {
+          errorData = { error: errorText }
+        }
+
+        console.error("[IMPORT_UPLOAD] Parsed error data:", errorData)
+
+        const userMessage = errorData.message || errorData.error || "We couldn't save this file yet."
+        throw new Error(userMessage)
       }
 
       const { id } = await createResponse.json()
