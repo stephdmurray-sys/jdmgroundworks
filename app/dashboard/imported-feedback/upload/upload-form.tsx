@@ -25,15 +25,23 @@ type UploadFile = {
 }
 
 const SOURCE_OPTIONS = [
-  { value: "LinkedIn", label: "LinkedIn" },
   { value: "Email", label: "Email" },
-  { value: "Slack", label: "Slack" },
-  { value: "Text", label: "Text/SMS" },
-  { value: "DM", label: "DM (Instagram/Twitter)" },
-  { value: "Facebook", label: "Facebook" },
-  { value: "Teams", label: "Microsoft Teams" },
+  { value: "LinkedIn", label: "LinkedIn" },
+  { value: "DM", label: "Text/SMS" },
+  { value: "DM", label: "Slack" },
   { value: "Other", label: "Other" },
 ]
+
+const SOURCE_TYPE_MAP: Record<string, string> = {
+  Email: "Email",
+  LinkedIn: "LinkedIn",
+  "Text/SMS": "DM",
+  Slack: "DM",
+  Facebook: "DM",
+  "Microsoft Teams": "DM",
+  "Instagram/Twitter": "DM",
+  Other: "Other",
+}
 
 export default function UploadForm({ profileId, currentCount, limit }: UploadFormProps) {
   const router = useRouter()
@@ -105,6 +113,19 @@ export default function UploadForm({ profileId, currentCount, limit }: UploadFor
     const fileData = files[index]
     if (!fileData || fileData.status !== "pending") return
 
+    if (!fileData.sourceType) {
+      setFiles((prev) => {
+        const updated = [...prev]
+        updated[index] = {
+          ...updated[index],
+          status: "error_upload",
+          error: "Please select where this feedback is from",
+        }
+        return updated
+      })
+      return
+    }
+
     setFiles((prev) => {
       const updated = [...prev]
       updated[index] = { ...updated[index], status: "uploading" }
@@ -133,20 +154,22 @@ export default function UploadForm({ profileId, currentCount, limit }: UploadFor
         return updated
       })
 
+      const mappedSourceType = SOURCE_TYPE_MAP[fileData.sourceType] || fileData.sourceType
+
       const createResponse = await fetch("/api/imported-feedback/create-record", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           imageUrl: url,
-          imagePath: path, // Storage path for SDK downloads
+          imagePath: path,
           profileId,
-          sourceType: fileData.sourceType || null,
+          sourceType: mappedSourceType,
         }),
       })
 
       if (!createResponse.ok) {
         const errorData = await createResponse.json()
-        throw new Error(errorData.error || "Failed to create record")
+        throw new Error("We couldn't save this file yet. Please try again.")
       }
 
       const { id } = await createResponse.json()
@@ -158,8 +181,6 @@ export default function UploadForm({ profileId, currentCount, limit }: UploadFor
       })
 
       try {
-        console.log("[v0] Calling process API with:", { imageUrl: url, profileId, recordId: id })
-
         const processResponse = await fetch("/api/imported-feedback/process", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -169,16 +190,12 @@ export default function UploadForm({ profileId, currentCount, limit }: UploadFor
           }),
         })
 
-        console.log("[v0] Process API response status:", processResponse.status)
-
         if (!processResponse.ok) {
           const errorData = await processResponse.json()
-          console.error("[v0] Process API error:", errorData)
           throw new Error(errorData.error || "Processing failed")
         }
 
         const processResult = await processResponse.json()
-        console.log("[v0] Processing complete:", processResult)
 
         setFiles((prev) => {
           const updated = [...prev]
@@ -201,10 +218,12 @@ export default function UploadForm({ profileId, currentCount, limit }: UploadFor
       console.error("[v0] Upload error:", error)
       setFiles((prev) => {
         const updated = [...prev]
+        const errorMessage =
+          error instanceof Error ? error.message : "This file wasn't saved. You can retry or remove it."
         updated[index] = {
           ...updated[index],
           status: "error_upload",
-          error: error instanceof Error ? error.message : "Upload failed",
+          error: errorMessage,
         }
         return updated
       })
@@ -308,7 +327,7 @@ export default function UploadForm({ profileId, currentCount, limit }: UploadFor
                           </SelectTrigger>
                           <SelectContent>
                             {SOURCE_OPTIONS.map((option) => (
-                              <SelectItem key={option.value} value={option.value} className="text-sm">
+                              <SelectItem key={option.value} value={option.label} className="text-sm">
                                 {option.label}
                               </SelectItem>
                             ))}
@@ -330,36 +349,49 @@ export default function UploadForm({ profileId, currentCount, limit }: UploadFor
                       {fileData.status === "uploaded" && (
                         <span className="flex items-center gap-2 text-xs text-blue-600">
                           <Loader2 className="h-3 w-3 animate-spin" />
-                          Creating record...
+                          Saving...
                         </span>
                       )}
                       {fileData.status === "processing" && (
                         <span className="flex items-center gap-2 text-xs text-blue-600">
                           <Loader2 className="h-3 w-3 animate-spin" />
-                          Processing...
+                          Extracting text...
                         </span>
                       )}
                       {fileData.status === "ready_for_review" && (
-                        <span className="flex items-center gap-2 text-xs text-green-600">
-                          <CheckCircle2 className="h-3 w-3" />
-                          Ready for review
-                        </span>
+                        <div className="space-y-1">
+                          <span className="flex items-center gap-2 text-xs text-green-600">
+                            <CheckCircle2 className="h-3 w-3" />
+                            Saved
+                          </span>
+                          <p className="text-xs text-neutral-500">You can review or feature this later.</p>
+                        </div>
                       )}
                       {fileData.status === "error_upload" && (
-                        <div className="space-y-1">
+                        <div className="space-y-2">
                           <span className="flex items-center gap-2 text-xs text-red-600">
                             <AlertCircle className="h-3 w-3" />
-                            {fileData.error || "Upload failed"}
+                            {fileData.error}
                           </span>
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            className="h-6 text-xs bg-transparent"
-                            onClick={() => retryFile(index)}
-                          >
-                            <RefreshCw className="h-3 w-3 mr-1" />
-                            Retry
-                          </Button>
+                          <div className="flex gap-2">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="h-7 text-xs bg-transparent"
+                              onClick={() => retryFile(index)}
+                            >
+                              <RefreshCw className="h-3 w-3 mr-1" />
+                              Retry
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              className="h-7 text-xs text-neutral-600"
+                              onClick={() => removeFile(index)}
+                            >
+                              Remove
+                            </Button>
+                          </div>
                         </div>
                       )}
                     </div>
@@ -389,7 +421,7 @@ export default function UploadForm({ profileId, currentCount, limit }: UploadFor
               ) : allProcessed ? (
                 <>
                   <CheckCircle2 className="mr-2 h-4 w-4" />
-                  All Uploaded
+                  All Saved
                 </>
               ) : (
                 <>Upload {files.filter((f) => f.status === "pending").length} Files</>
@@ -405,7 +437,7 @@ export default function UploadForm({ profileId, currentCount, limit }: UploadFor
 
           {hasErrors && (
             <p className="text-sm text-red-600">
-              Some files failed to upload. Click "Retry" to try again or remove them.
+              Some files couldn't be saved. Click "Retry" to try again or "Remove" to discard them.
             </p>
           )}
         </div>

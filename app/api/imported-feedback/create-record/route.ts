@@ -14,15 +14,27 @@ export async function POST(request: NextRequest) {
 
     const { imageUrl, imagePath, profileId, sourceType } = await request.json()
 
-    if ((!imageUrl && !imagePath) || !profileId) {
+    if (!imageUrl || !profileId) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 })
+    }
+
+    if (!sourceType) {
+      return NextResponse.json({ error: "Source type is required" }, { status: 400 })
+    }
+
+    const validSourceTypes = ["Email", "LinkedIn", "DM", "Review", "Other"]
+    if (!validSourceTypes.includes(sourceType)) {
+      return NextResponse.json(
+        { error: `Invalid source type. Must be one of: ${validSourceTypes.join(", ")}` },
+        { status: 400 },
+      )
     }
 
     const { data: profile } = await supabase
       .from("profiles")
       .select("id")
       .eq("id", profileId)
-      .eq("id", user.id)
+      .eq("user_id", user.id)
       .single()
 
     if (!profile) {
@@ -33,8 +45,9 @@ export async function POST(request: NextRequest) {
       .from("imported_feedback")
       .insert({
         profile_id: profileId,
-        raw_image_url: imageUrl || null,
-        raw_image_path: imagePath || null, // Storage path for SDK downloads
+        raw_image_url: imageUrl,
+        raw_image_path: imagePath || null,
+        source_type: sourceType, // Validated enum value
         extraction_status: "queued",
         extraction_attempts: 0,
         ocr_text: null,
@@ -42,7 +55,6 @@ export async function POST(request: NextRequest) {
         giver_name: "Processing...",
         giver_company: null,
         giver_role: null,
-        source_type: sourceType || null,
         approx_date: null,
         traits: [],
         confidence_score: null,
@@ -54,10 +66,10 @@ export async function POST(request: NextRequest) {
 
     if (error) {
       console.error("[v0] Database insert error:", error)
-      return NextResponse.json({ error: "Failed to create record" }, { status: 500 })
+      return NextResponse.json({ error: "We couldn't save this file yet. Please try again." }, { status: 500 })
     }
 
-    console.log("[v0] Created imported_feedback record:", importedFeedback.id, "with path:", imagePath || "from URL")
+    console.log("[v0] Created imported_feedback record:", importedFeedback.id)
 
     return NextResponse.json({
       id: importedFeedback.id,
@@ -65,9 +77,6 @@ export async function POST(request: NextRequest) {
     })
   } catch (error) {
     console.error("[v0] Create record error:", error)
-    return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Failed to create record" },
-      { status: 500 },
-    )
+    return NextResponse.json({ error: "We couldn't save this file yet. Please try again." }, { status: 500 })
   }
 }
