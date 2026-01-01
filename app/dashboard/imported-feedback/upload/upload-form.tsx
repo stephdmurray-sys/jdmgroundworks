@@ -21,31 +21,16 @@ type UploadFile = {
   status: "pending" | "uploading" | "uploaded" | "processing" | "ready_for_review" | "error_upload"
   error?: string
   id?: string
-  sourceType?: string
+  sourceType?: "Email" | "LinkedIn" | "DM" | "Review" | "Other"
 }
 
 const SOURCE_OPTIONS = [
-  { value: "Email", label: "Email" },
-  { value: "LinkedIn", label: "LinkedIn" },
-  { value: "Direct Message (Text, SMS, DM)", label: "Direct Message (Text, SMS, DM)" },
-  { value: "Slack", label: "Slack" },
-  { value: "Review", label: "Review" },
-  { value: "Other", label: "Other" },
+  { label: "Email", value: "Email" as const },
+  { label: "LinkedIn", value: "LinkedIn" as const },
+  { label: "Direct Message (Text, SMS, DM)", value: "DM" as const },
+  { label: "Review", value: "Review" as const },
+  { label: "Other", value: "Other" as const },
 ]
-
-const SOURCE_TYPE_MAP: Record<string, string> = {
-  Email: "Email",
-  LinkedIn: "LinkedIn",
-  "Direct Message (Text, SMS, DM)": "DM",
-  "Text/SMS": "DM",
-  Slack: "DM",
-  "Direct Message": "DM",
-  Facebook: "DM",
-  "Microsoft Teams": "DM",
-  "Instagram/Twitter": "DM",
-  Review: "Review",
-  Other: "Other",
-}
 
 export default function UploadForm({ profileId, currentCount, limit }: UploadFormProps) {
   const router = useRouter()
@@ -117,7 +102,10 @@ export default function UploadForm({ profileId, currentCount, limit }: UploadFor
     const fileData = files[index]
     if (!fileData || fileData.status !== "pending") return
 
+    console.log("[v0] Starting upload:", { index, sourceType: fileData.sourceType, fileName: fileData.file.name })
+
     if (!fileData.sourceType) {
+      console.log("[v0] Upload blocked: No source type selected")
       setFiles((prev) => {
         const updated = [...prev]
         updated[index] = {
@@ -129,6 +117,23 @@ export default function UploadForm({ profileId, currentCount, limit }: UploadFor
       })
       return
     }
+
+    const validBackendEnums = ["Email", "LinkedIn", "DM", "Review", "Other"]
+    if (!validBackendEnums.includes(fileData.sourceType)) {
+      console.log("[v0] Upload blocked: Invalid source type:", fileData.sourceType)
+      setFiles((prev) => {
+        const updated = [...prev]
+        updated[index] = {
+          ...updated[index],
+          status: "error_upload",
+          error: "Please select a valid source.",
+        }
+        return updated
+      })
+      return
+    }
+
+    console.log("[v0] Source validation passed:", fileData.sourceType)
 
     setFiles((prev) => {
       const updated = [...prev]
@@ -158,13 +163,6 @@ export default function UploadForm({ profileId, currentCount, limit }: UploadFor
         return updated
       })
 
-      const mappedSourceType = SOURCE_TYPE_MAP[fileData.sourceType] || fileData.sourceType
-
-      const validBackendEnums = ["Email", "LinkedIn", "DM", "Review", "Other"]
-      if (!validBackendEnums.includes(mappedSourceType)) {
-        throw new Error("Please select a valid source.")
-      }
-
       const createResponse = await fetch("/api/imported-feedback/create-record", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -172,16 +170,24 @@ export default function UploadForm({ profileId, currentCount, limit }: UploadFor
           imageUrl: url,
           imagePath: path,
           profileId,
-          sourceType: mappedSourceType,
+          sourceType: fileData.sourceType, // Already correct: Email | LinkedIn | DM | Review | Other
         }),
+      })
+
+      console.log("[v0] Create record response:", {
+        ok: createResponse.ok,
+        status: createResponse.status,
+        sourceType: fileData.sourceType,
       })
 
       if (!createResponse.ok) {
         const errorData = await createResponse.json()
+        console.log("[v0] Create record error:", errorData)
         throw new Error("We couldn't save this file yet. Please check the source and try again.")
       }
 
       const { id } = await createResponse.json()
+      console.log("[v0] Record created successfully:", { id, sourceType: fileData.sourceType })
 
       setFiles((prev) => {
         const updated = [...prev]
@@ -255,6 +261,11 @@ export default function UploadForm({ profileId, currentCount, limit }: UploadFor
   const remainingDisplay = limit === Number.POSITIVE_INFINITY ? "Unlimited" : `${remainingUploads} remaining`
 
   const updateSourceType = (index: number, sourceType: string) => {
+    console.log("[v0] Source type selected:", {
+      index,
+      sourceType,
+      label: SOURCE_OPTIONS.find((o) => o.value === sourceType)?.label,
+    })
     setFiles((prev) => {
       const updated = [...prev]
       updated[index] = { ...updated[index], sourceType }

@@ -24,11 +24,14 @@ export async function POST(request: NextRequest) {
 
     const validSourceTypes = ["Email", "LinkedIn", "DM", "Review", "Other"]
     if (!validSourceTypes.includes(sourceType)) {
+      console.log("[v0] Invalid source type received:", { sourceType, validTypes: validSourceTypes })
       return NextResponse.json(
         { error: `Invalid source type. Must be one of: ${validSourceTypes.join(", ")}` },
         { status: 400 },
       )
     }
+
+    console.log("[v0] Source type validation passed:", sourceType)
 
     const { data: profile } = await supabase
       .from("profiles")
@@ -66,10 +69,12 @@ export async function POST(request: NextRequest) {
 
     if (error) {
       console.error("[v0] Database insert error:", error)
+      console.log("[v0] Failed insert details:", { sourceType, profileId, hasImageUrl: !!imageUrl })
       return NextResponse.json({ error: "We couldn't save this file yet. Please try again." }, { status: 500 })
     }
 
     console.log("[v0] Created imported_feedback record:", importedFeedback.id)
+    console.log("[v0] Record details:", { id: importedFeedback.id, sourceType: importedFeedback.source_type })
 
     return NextResponse.json({
       id: importedFeedback.id,
