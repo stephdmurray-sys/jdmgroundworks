@@ -27,19 +27,23 @@ type UploadFile = {
 const SOURCE_OPTIONS = [
   { value: "Email", label: "Email" },
   { value: "LinkedIn", label: "LinkedIn" },
-  { value: "DM", label: "Text/SMS" },
-  { value: "DM", label: "Slack" },
+  { value: "Direct Message (Text, SMS, DM)", label: "Direct Message (Text, SMS, DM)" },
+  { value: "Slack", label: "Slack" },
+  { value: "Review", label: "Review" },
   { value: "Other", label: "Other" },
 ]
 
 const SOURCE_TYPE_MAP: Record<string, string> = {
   Email: "Email",
   LinkedIn: "LinkedIn",
+  "Direct Message (Text, SMS, DM)": "DM",
   "Text/SMS": "DM",
   Slack: "DM",
+  "Direct Message": "DM",
   Facebook: "DM",
   "Microsoft Teams": "DM",
   "Instagram/Twitter": "DM",
+  Review: "Review",
   Other: "Other",
 }
 
@@ -156,6 +160,11 @@ export default function UploadForm({ profileId, currentCount, limit }: UploadFor
 
       const mappedSourceType = SOURCE_TYPE_MAP[fileData.sourceType] || fileData.sourceType
 
+      const validBackendEnums = ["Email", "LinkedIn", "DM", "Review", "Other"]
+      if (!validBackendEnums.includes(mappedSourceType)) {
+        throw new Error("Please select a valid source.")
+      }
+
       const createResponse = await fetch("/api/imported-feedback/create-record", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -169,7 +178,7 @@ export default function UploadForm({ profileId, currentCount, limit }: UploadFor
 
       if (!createResponse.ok) {
         const errorData = await createResponse.json()
-        throw new Error("We couldn't save this file yet. Please try again.")
+        throw new Error("We couldn't save this file yet. Please check the source and try again.")
       }
 
       const { id } = await createResponse.json()
@@ -327,7 +336,7 @@ export default function UploadForm({ profileId, currentCount, limit }: UploadFor
                           </SelectTrigger>
                           <SelectContent>
                             {SOURCE_OPTIONS.map((option) => (
-                              <SelectItem key={option.value} value={option.label} className="text-sm">
+                              <SelectItem key={option.value} value={option.value} className="text-sm">
                                 {option.label}
                               </SelectItem>
                             ))}
