@@ -27,6 +27,7 @@ type UploadFile = {
 const SOURCE_OPTIONS = [
   { label: "Email", value: "Email" as const },
   { label: "LinkedIn", value: "LinkedIn" as const },
+  { label: "Slack", value: "DM" as const },
   { label: "Direct Message (Text, SMS, DM)", value: "DM" as const },
   { label: "Review", value: "Review" as const },
   { label: "Other", value: "Other" as const },
@@ -102,7 +103,12 @@ export default function UploadForm({ profileId, currentCount, limit }: UploadFor
     const fileData = files[index]
     if (!fileData || fileData.status !== "pending") return
 
-    console.log("[v0] Starting upload:", { index, sourceType: fileData.sourceType, fileName: fileData.file.name })
+    console.log("[IMPORT_UPLOAD] Starting upload:", {
+      index,
+      sourceType: fileData.sourceType,
+      sourceLabel: SOURCE_OPTIONS.find((o) => o.value === fileData.sourceType)?.label,
+      fileName: fileData.file.name,
+    })
 
     if (!fileData.sourceType) {
       console.log("[v0] Upload blocked: No source type selected")
@@ -208,7 +214,9 @@ export default function UploadForm({ profileId, currentCount, limit }: UploadFor
         console.error("[IMPORT_UPLOAD] Parsed error data:", errorData)
 
         const userMessage = errorData.message || errorData.error || "We couldn't save this file yet."
-        throw new Error(userMessage)
+        const errorDetails =
+          process.env.NODE_ENV !== "production" ? ` (${errorData.details || errorData.code || "Unknown"})` : ""
+        throw new Error(userMessage + errorDetails)
       }
 
       const { id } = await createResponse.json()

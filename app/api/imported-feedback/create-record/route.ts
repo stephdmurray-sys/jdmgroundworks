@@ -73,20 +73,13 @@ export async function POST(request: NextRequest) {
     const insertPayload = {
       profile_id: profileId,
       raw_image_url: imageUrl,
-      raw_image_path: imagePath || null,
       source_type: sourceType,
-      extraction_status: "queued",
-      extraction_attempts: 0,
-      ocr_text: null,
-      ai_extracted_excerpt: "Processing...",
-      giver_name: "Processing...",
-      giver_company: null,
-      giver_role: null,
-      approx_date: null,
-      traits: [],
-      confidence_score: null,
-      approved_by_owner: false,
-      visibility: "private",
+      // Database defaults handle the rest:
+      // ocr_text: null (default)
+      // ai_extracted_excerpt: null (default)
+      // giver_name: 'Not specified' (default)
+      // approved_by_owner: false (default)
+      // visibility: 'private' (default)
     }
 
     console.log("[CREATE_RECORD] Insert payload:", insertPayload)
@@ -104,15 +97,16 @@ export async function POST(request: NextRequest) {
         details: error.details,
         hint: error.hint,
         code: error.code,
+        fullError: JSON.stringify(error, null, 2),
       })
 
       return NextResponse.json(
         {
           ok: false,
-          code: "DB_INSERT_FAILED",
+          code: error.code || "DB_INSERT_FAILED",
           message: "We couldn't save this file yet",
           details: error.message,
-          hint: error.hint || "Check if required fields are missing or if there's a database constraint issue",
+          hint: error.hint || "Check the browser console for full error details",
         },
         { status: 500 },
       )
@@ -125,8 +119,9 @@ export async function POST(request: NextRequest) {
     })
 
     return NextResponse.json({
+      ok: true,
       id: importedFeedback.id,
-      status: "pending_processing",
+      status: "created",
     })
   } catch (error) {
     console.error("[CREATE_RECORD] Unexpected error:", error)
@@ -137,7 +132,7 @@ export async function POST(request: NextRequest) {
         code: "UNEXPECTED_ERROR",
         message: "We couldn't save this file yet",
         details: error instanceof Error ? error.message : "Unknown error",
-        hint: "Please try again or contact support if the issue persists",
+        hint: "Check the browser console for full error details",
       },
       { status: 500 },
     )
