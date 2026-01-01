@@ -21,26 +21,27 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       {
-        url: "/favicon.ico",
+        url: "/images/nome-20icon.png",
         sizes: "32x32",
+        type: "image/png",
       },
       {
-        url: "/icon-16x16.jpg",
+        url: "/images/nome-20icon.png",
         type: "image/png",
         sizes: "16x16",
       },
       {
-        url: "/icon-32x32.jpg",
-        type: "image/png",
-        sizes: "32x32",
-      },
-      {
-        url: "/icon-48x48.jpg",
+        url: "/images/nome-20icon.png",
         type: "image/png",
         sizes: "48x48",
       },
+      {
+        url: "/images/nome-20icon.png",
+        type: "image/png",
+        sizes: "64x64",
+      },
     ],
-    apple: "/apple-touch-icon.jpg",
+    apple: "/images/nome-20icon.png",
   },
 }
 
