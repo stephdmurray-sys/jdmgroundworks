@@ -92,7 +92,7 @@ Return ONLY valid JSON with this exact structure:
   "company": "Company/organization name if visible, or null",
   "excerpt": "1-2 sentence verbatim positive quote about the recipient from the recommendation/feedback",
   "traits": ["trait1", "trait2", "trait3"],
-  "source_type": "Best match from: LinkedIn, Email, Slack, Teams, Text, DM, Facebook, Other",
+  "source_type": "Best match from: LinkedIn, Email, Slack, Teams, Text, DM, Facebook, Instagram, WhatsApp, Review, Other",
   "approx_date": "YYYY-MM-DD format if date visible, or null",
   "confidence": {
     "overall": 0.85,
@@ -157,6 +157,28 @@ CRITICAL RULES:
       source: Math.max(0, Math.min(1, Number(extracted.confidence?.source || 0))),
     },
   }
+}
+
+function mapSourceTypeToValidEnum(aiSourceType: string | null, fallbackSourceType: string | null): string {
+  if (!aiSourceType) {
+    return fallbackSourceType || "Other"
+  }
+
+  const normalized = aiSourceType.toLowerCase().trim()
+
+  // Map AI responses to database enum values
+  // Database only accepts: 'Email', 'LinkedIn', 'DM', 'Review', 'Other'
+  if (normalized === "email") return "Email"
+  if (normalized === "linkedin") return "LinkedIn"
+  if (normalized === "review") return "Review"
+
+  // Map all messaging platforms to 'DM'
+  if (["slack", "teams", "text", "sms", "dm", "facebook", "instagram", "whatsapp", "messenger"].includes(normalized)) {
+    return "DM"
+  }
+
+  // Default to Other for unrecognized values
+  return "Other"
 }
 
 export async function POST(request: NextRequest) {
@@ -294,6 +316,13 @@ export async function POST(request: NextRequest) {
       confidence: extracted.confidence.overall,
     })
 
+    const validSourceType = mapSourceTypeToValidEnum(extracted.source_type, currentRecord.source_type)
+    console.log("[v0] Source type mapping:", {
+      aiResponse: extracted.source_type,
+      mappedValue: validSourceType,
+      fallback: currentRecord.source_type,
+    })
+
     const updateData = {
       extraction_status: "success",
       extraction_error: null,
@@ -307,7 +336,7 @@ export async function POST(request: NextRequest) {
       giver_company: extracted.company,
       ai_extracted_excerpt: extracted.excerpt,
       traits: extracted.traits,
-      source_type: extracted.source_type || currentRecord.source_type,
+      source_type: validSourceType, // Use mapped value instead of raw AI response
       approx_date: extracted.approx_date,
       confidence_score: extracted.confidence.overall,
       confidence_details: extracted.confidence as any,
