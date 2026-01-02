@@ -12,6 +12,7 @@ import { CheckCircle2, AlertCircle, Trash2, Eye, EyeOff, RefreshCw, Loader2, Che
 import { useRouter } from "next/navigation"
 import { SOURCE_TYPES, type ImportedFeedback } from "@/lib/imported-feedback-traits"
 import { useToast } from "@/hooks/use-toast"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
 type ReviewListProps = {
   initialPending: ImportedFeedback[]
@@ -463,14 +464,24 @@ export default function ReviewList({ initialPending, initialApproved }: ReviewLi
                               <Button variant="outline" size="sm" onClick={() => handleEdit(feedback.id)}>
                                 Edit Details
                               </Button>
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => handleDelete(feedback.id)}
-                                disabled={isProcessing}
-                              >
-                                <Trash2 className="h-4 w-4" />
-                              </Button>
+                              <TooltipProvider>
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <Button
+                                      variant="outline"
+                                      size="sm"
+                                      onClick={() => handleDelete(feedback.id)}
+                                      disabled={isProcessing}
+                                      className="border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700"
+                                    >
+                                      <Trash2 className="h-4 w-4" />
+                                    </Button>
+                                  </TooltipTrigger>
+                                  <TooltipContent>
+                                    <p>Delete this import</p>
+                                  </TooltipContent>
+                                </Tooltip>
+                              </TooltipProvider>
                               <Button size="sm" onClick={() => handleApprove(feedback.id)} disabled={isProcessing}>
                                 {isProcessing ? (
                                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
