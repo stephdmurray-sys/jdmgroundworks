@@ -100,78 +100,66 @@ export default function Home() {
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(59,130,246,0.03),transparent_50%)]" />
 
           <div className="relative max-w-7xl mx-auto">
-            {/* Headline + Subheadline */}
-            <div className="text-center mb-16 space-y-4">
+            {/* Section title */}
+            <div className="text-center mb-16">
               <motion.h3
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
                 className="text-4xl md:text-5xl font-semibold text-slate-900 tracking-tight"
               >
-                You already have proof.
+                Two ways your Nomee grows
               </motion.h3>
-
-              <motion.p
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-                className="text-lg md:text-xl text-slate-600 leading-relaxed max-w-3xl mx-auto"
-              >
-                Praise already exists in your emails, Slack, texts, and DMs. Nomee helps you save the moments that show
-                how people experience working with you — then turns them into a Proof Link you can actually use.
-              </motion.p>
             </div>
 
-            {/* Three-column process flow */}
-            <div className="grid md:grid-cols-3 gap-8 mb-16 max-w-5xl mx-auto">
-              {/* Step 1: Save */}
+            {/* Two-column side-by-side layout */}
+            <div className="grid md:grid-cols-2 gap-8 mb-16 max-w-6xl mx-auto">
+              {/* Left column: Collect new perspectives */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-                className="text-center space-y-3"
+                className="bg-white rounded-2xl p-8 border border-slate-200 shadow-sm space-y-4"
               >
-                <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-blue-100 text-blue-600 font-semibold text-lg mb-2">
-                  1
-                </div>
-                <h4 className="text-lg font-semibold text-slate-900">Save praise from anywhere</h4>
-                <p className="text-sm text-slate-600 leading-relaxed">
-                  Forward emails, upload screenshots, paste messages — capture feedback before it disappears.
+                <h4 className="text-2xl font-semibold text-slate-900">Collect new perspectives</h4>
+                <p className="text-base text-slate-700 leading-relaxed">
+                  Share your Nomee link.
+                  <br />
+                  People contribute 1–3 sentences (optional voice).
+                  <br />
+                  Patterns form as more people share how it feels to work with you.
                 </p>
+                <p className="text-sm text-slate-500 pt-2">Free · Unlimited</p>
               </motion.div>
 
-              {/* Step 2: Extract */}
+              {/* Right column: Save existing praise */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
-                className="text-center space-y-3"
+                className="bg-white rounded-2xl p-8 border border-slate-200 shadow-sm space-y-4"
               >
-                <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-blue-100 text-blue-600 font-semibold text-lg mb-2">
-                  2
-                </div>
-                <h4 className="text-lg font-semibold text-slate-900">Pull out the signal</h4>
-                <p className="text-sm text-slate-600 leading-relaxed">
-                  Nomee automatically extracts what people value — no formatting, no manual work.
+                <h4 className="text-2xl font-semibold text-slate-900">Save existing praise</h4>
+                <p className="text-base text-slate-700 leading-relaxed">
+                  Upload screenshots, emails, Slack messages, texts, or DMs you already have.
+                  <br />
+                  Nomee pulls out the signal and keeps it organized.
                 </p>
-              </motion.div>
-
-              {/* Step 3: Share */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                className="text-center space-y-3"
-              >
-                <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-blue-100 text-blue-600 font-semibold text-lg mb-2">
-                  3
-                </div>
-                <h4 className="text-lg font-semibold text-slate-900">Share one link when it matters</h4>
-                <p className="text-sm text-slate-600 leading-relaxed">
-                  Your Proof Link shows patterns across all perspectives — ready for any opportunity.
-                </p>
+                <p className="text-sm text-slate-500 pt-2">3 uploads free · Unlimited on Pro</p>
               </motion.div>
             </div>
+
+            {/* Bottom line - unified statement */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.6, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
+              className="text-center mb-16"
+            >
+              <p className="text-lg text-slate-700 leading-relaxed max-w-4xl mx-auto">
+                One Nomee. One link. A living record of how people experience working with you.
+              </p>
+            </motion.div>
 
             {/* Visual demonstration: Three realistic snippets with arrows flowing to CTA */}
             <div className="relative max-w-6xl mx-auto">
@@ -343,81 +331,6 @@ export default function Home() {
                   <p className="text-xs text-slate-500">Have your reputation ready when you need it the most</p>
                 </motion.div>
               </div>
-            </div>
-          </div>
-        </section>
-
-        <section className="py-16 px-6 bg-slate-50 border-b border-slate-100">
-          <div className="max-w-3xl mx-auto text-center space-y-6">
-            <motion.h3
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="text-3xl md:text-4xl font-semibold text-slate-900"
-            >
-              How Nomee works
-            </motion.h3>
-
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-              className="text-base text-slate-600 leading-relaxed max-w-2xl mx-auto"
-            >
-              Send your unique link to people you've collaborated with directly. They write 1–3 sentences with optional
-              voice note — <span className="font-medium">~2 minutes</span>.
-            </motion.p>
-
-            {/* Three-column process flow */}
-            <div className="grid md:grid-cols-3 gap-8 mb-16 max-w-5xl mx-auto">
-              {/* Step 1: Share */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-                className="text-center space-y-3"
-              >
-                <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-blue-100 text-blue-600 font-semibold text-lg mb-2">
-                  1
-                </div>
-                <h4 className="text-lg font-semibold text-slate-900">Share your Nomee link</h4>
-                <p className="text-sm text-slate-600 leading-relaxed">
-                  Send people to your Nomee Page to contribute their perspective directly.
-                </p>
-              </motion.div>
-
-              {/* Step 2: Contribute */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.3 }}
-                className="text-center space-y-3"
-              >
-                <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-blue-100 text-blue-600 font-semibold text-lg mb-2">
-                  2
-                </div>
-                <h4 className="text-lg font-semibold text-slate-900">People contribute their perspective</h4>
-                <p className="text-sm text-slate-600 leading-relaxed">
-                  They write 1–3 sentences with optional voice note — <span className="font-medium">~2 minutes</span>.
-                </p>
-                <p className="text-sm text-slate-500 italic mt-2">Hear tone, not just words.</p>
-              </motion.div>
-
-              {/* Step 3: Patterns */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.4 }}
-                className="text-center space-y-3"
-              >
-                <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-blue-100 text-blue-600 font-semibold text-lg mb-2">
-                  3
-                </div>
-                <h4 className="text-lg font-semibold text-slate-900">Patterns form over time</h4>
-                <p className="text-sm text-slate-600 leading-relaxed">
-                  Traits and highlighted phrases emerge as more people share their experience.
-                </p>
-              </motion.div>
             </div>
           </div>
         </section>
