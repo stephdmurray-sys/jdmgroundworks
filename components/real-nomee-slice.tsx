@@ -61,7 +61,28 @@ export function RealNomeeSlice() {
     { label: "Clear communicator", count: 4 },
   ]
 
-  const highlightedTerms = topTraits.map((t) => t.label.toLowerCase())
+  const highlightedTerms = [
+    // Primary traits (existing)
+    "thoughtful",
+    "strategic thinking",
+    "organized",
+    "calm under pressure",
+    "clear communicator",
+    // Additional traits and impact phrases
+    "organizational skills",
+    "next level",
+    "worked",
+    "gift",
+    "seeing",
+    "caught details",
+    "strategic picture",
+    "high-pressure situations",
+    "stays calm",
+    "asks the right questions",
+    "helps",
+    "think more clearly",
+    "elevates",
+  ]
 
   // Auto-rotate top card every 6 seconds
   useEffect(() => {

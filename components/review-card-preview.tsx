@@ -18,7 +18,7 @@ export function ReviewCardPreview({ name, relationship, text, highlightedTerms =
   }))
 
   const relationshipLabel = getRelationshipLabel(relationship) || "Contributor"
-  const highlightedText = patterns.length > 0 ? highlightQuote(text, patterns, 3) : text
+  const highlightedText = patterns.length > 0 ? highlightQuote(text, patterns, 5) : text
 
   return (
     <div className="w-full border border-neutral-200 bg-white rounded-lg p-4 hover:border-neutral-300 transition-all">

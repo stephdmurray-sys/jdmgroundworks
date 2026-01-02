@@ -449,71 +449,79 @@ export function PremierProfileClient({
     <TooltipProvider>
       <div className="sticky top-0 z-40 bg-white/95 backdrop-blur-sm border-b border-neutral-200">
         <div className="max-w-6xl mx-auto px-4 py-3">
-          <nav className="flex items-center gap-2 overflow-x-auto">
-            {(safeProfileAnalysis.totalDataCount >= 1 || safeTraits.length > 0) && (
-              <button
-                onClick={() => scrollToSection(summaryRef)}
-                className={cn(
-                  "px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all",
-                  activeSection === "summary" ? "bg-blue-100 text-blue-900" : "text-neutral-600 hover:bg-neutral-100",
-                )}
-              >
-                Summary
-              </button>
-            )}
+          <div className="flex items-center justify-between gap-4">
+            <Link href="/" className="flex items-center shrink-0">
+              <img src="/images/nomee-20logo-20transparent.png" alt="Nomee" className="h-6 w-auto" />
+            </Link>
 
-            {voiceContributions.length > 0 && (
-              <button
-                onClick={() => scrollToSection(voiceRef)}
-                className={cn(
-                  "px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all",
-                  activeSection === "voice" ? "bg-blue-100 text-blue-900" : "text-neutral-600 hover:bg-neutral-100",
-                )}
-              >
-                Voice Notes
-              </button>
-            )}
+            <nav className="flex items-center gap-2 overflow-x-auto">
+              {(safeProfileAnalysis.totalDataCount >= 1 || safeTraits.length > 0) && (
+                <button
+                  onClick={() => scrollToSection(summaryRef)}
+                  className={cn(
+                    "px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all",
+                    activeSection === "summary" ? "bg-blue-100 text-blue-900" : "text-neutral-600 hover:bg-neutral-100",
+                  )}
+                >
+                  Summary
+                </button>
+              )}
 
-            {safeTraits.length > 0 && (
-              <button
-                onClick={() => scrollToSection(patternsRef)}
-                className={cn(
-                  "px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all",
-                  activeSection === "patterns" ? "bg-blue-100 text-blue-900" : "text-neutral-600 hover:bg-neutral-100",
-                )}
-              >
-                Patterns
-              </button>
-            )}
+              {voiceContributions.length > 0 && (
+                <button
+                  onClick={() => scrollToSection(voiceRef)}
+                  className={cn(
+                    "px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all",
+                    activeSection === "voice" ? "bg-blue-100 text-blue-900" : "text-neutral-600 hover:bg-neutral-100",
+                  )}
+                >
+                  Voice Notes
+                </button>
+              )}
 
-            {writtenContributions.length > 0 && (
-              <button
-                onClick={() => scrollToSection(howItFeelsRef)}
-                className={cn(
-                  "px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all",
-                  activeSection === "how-it-feels"
-                    ? "bg-blue-100 text-blue-900"
-                    : "text-neutral-600 hover:bg-neutral-100",
-                )}
-              >
-                How it feels
-              </button>
-            )}
+              {safeTraits.length > 0 && (
+                <button
+                  onClick={() => scrollToSection(patternsRef)}
+                  className={cn(
+                    "px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all",
+                    activeSection === "patterns"
+                      ? "bg-blue-100 text-blue-900"
+                      : "text-neutral-600 hover:bg-neutral-100",
+                  )}
+                >
+                  Patterns
+                </button>
+              )}
 
-            {importedFeedback.length > 0 && (
-              <button
-                onClick={() => scrollToSection(screenshotsRef)}
-                className={cn(
-                  "px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all",
-                  activeSection === "screenshots"
-                    ? "bg-blue-100 text-blue-900"
-                    : "text-neutral-600 hover:bg-neutral-100",
-                )}
-              >
-                Screenshots
-              </button>
-            )}
-          </nav>
+              {writtenContributions.length > 0 && (
+                <button
+                  onClick={() => scrollToSection(howItFeelsRef)}
+                  className={cn(
+                    "px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all",
+                    activeSection === "how-it-feels"
+                      ? "bg-blue-100 text-blue-900"
+                      : "text-neutral-600 hover:bg-neutral-100",
+                  )}
+                >
+                  How it feels
+                </button>
+              )}
+
+              {importedFeedback.length > 0 && (
+                <button
+                  onClick={() => scrollToSection(screenshotsRef)}
+                  className={cn(
+                    "px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all",
+                    activeSection === "screenshots"
+                      ? "bg-blue-100 text-blue-900"
+                      : "text-neutral-600 hover:bg-neutral-100",
+                  )}
+                >
+                  Screenshots
+                </button>
+              )}
+            </nav>
+          </div>
         </div>
       </div>
 
