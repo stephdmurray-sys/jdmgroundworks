@@ -157,7 +157,7 @@ export default function Home() {
               className="text-center mb-16"
             >
               <p className="text-lg text-slate-700 leading-relaxed max-w-4xl mx-auto">
-                One Nomee. One link. A living record of how people experience working with you.
+                Don't lose the praise that shows how people experience working with you.
               </p>
             </motion.div>
 
