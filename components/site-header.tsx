@@ -27,12 +27,12 @@ export function SiteHeader({ onCreateClick }: SiteHeaderProps) {
             <Link href="/why-nomee" className="text-sm text-slate-600 hover:text-slate-900 transition-colors">
               Why Nomee
             </Link>
-            <a href="#decision-makers" className="text-sm text-slate-600 hover:text-slate-900 transition-colors">
+            <Link href="/#decision-makers" className="text-sm text-slate-600 hover:text-slate-900 transition-colors">
               For Decision-Makers
-            </a>
-            <a href="#pricing" className="text-sm text-slate-600 hover:text-slate-900 transition-colors">
+            </Link>
+            <Link href="/pricing" className="text-sm text-slate-600 hover:text-slate-900 transition-colors">
               Pricing
-            </a>
+            </Link>
             <div className="flex items-center gap-4">
               <Link
                 href="/auth/login"
@@ -93,20 +93,20 @@ export function SiteHeader({ onCreateClick }: SiteHeaderProps) {
             >
               Why Nomee
             </Link>
-            <a
-              href="#decision-makers"
+            <Link
+              href="/#decision-makers"
               className="text-base text-slate-600 hover:text-slate-900 transition-colors py-2"
               onClick={() => setMobileMenuOpen(false)}
             >
               For Decision-Makers
-            </a>
-            <a
-              href="#pricing"
+            </Link>
+            <Link
+              href="/pricing"
               className="text-base text-slate-600 hover:text-slate-900 transition-colors py-2"
               onClick={() => setMobileMenuOpen(false)}
             >
               Pricing
-            </a>
+            </Link>
             <Link
               href="/auth/login"
               className="text-base text-slate-600 hover:text-slate-900 transition-colors font-medium py-2"
