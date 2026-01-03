@@ -1,224 +1,242 @@
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import { Check } from "lucide-react"
+import { Check, ArrowRight } from "lucide-react"
 import Link from "next/link"
+import type { Metadata } from "next"
+import { SiteHeader } from "@/components/site-header"
+
+export const metadata: Metadata = {
+  title: "Pricing | Nomee",
+  description: "Simple pricing. Real leverage. Start free, upgrade when your reputation starts working for you.",
+}
 
 export default function PricingPage() {
   return (
     <div className="min-h-screen bg-white">
-      {/* Header */}
-      <nav className="border-b">
-        <div className="mx-auto max-w-7xl px-6 py-4 flex items-center justify-between">
-          <Link href="/" className="text-2xl font-bold">
-            Nomee
-          </Link>
-          <div className="flex items-center gap-4">
-            <Button variant="ghost" asChild>
-              <Link href="/auth/login">Log in</Link>
-            </Button>
-            <Button asChild>
-              <Link href="/auth/signup">Sign up</Link>
-            </Button>
-          </div>
-        </div>
-      </nav>
+      <SiteHeader />
 
-      <div className="mx-auto max-w-7xl px-6 py-20">
-        <div className="mb-16 text-center">
-          <h1 className="mb-4 text-5xl font-bold tracking-tight text-neutral-900">Simple, honest pricing.</h1>
-          <p className="text-xl text-neutral-600">
-            Create and share your Nomee for free. Upgrade for uploads, exports, and embedding.
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 py-16 sm:py-24">
+        {/* Hero Section */}
+        <div className="mb-16 sm:mb-20 text-center max-w-3xl mx-auto">
+          <h1 className="mb-4 sm:mb-6 text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-slate-900">
+            Simple pricing. Real leverage.
+          </h1>
+          <p className="text-lg sm:text-xl text-slate-600 leading-relaxed">
+            Start free. Upgrade only when your reputation starts working for you.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
+        {/* Pricing Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 max-w-7xl mx-auto mb-20">
           {/* FREE TIER */}
-          <Card className="p-8 border-2">
-            <div className="mb-6">
-              <h3 className="mb-2 text-2xl font-bold text-neutral-900">Free</h3>
-              <p className="text-sm text-neutral-600 mb-4">Your Nomee, fully functional.</p>
+          <Card className="p-6 sm:p-8 border-2 border-slate-200 hover:border-slate-300 transition-all duration-300 flex flex-col">
+            <div className="mb-8">
+              <h3 className="mb-3 text-2xl font-bold text-slate-900">Free</h3>
               <div className="mb-4">
-                <span className="text-4xl font-bold">$0</span>
-                <span className="text-neutral-600"> — always free</span>
+                <span className="text-5xl font-bold text-slate-900">$0</span>
+                <span className="text-slate-600 ml-2">forever</span>
+              </div>
+              <p className="text-base text-slate-600 leading-relaxed">Collect real praise. See the patterns.</p>
+            </div>
+
+            <div className="space-y-3 mb-8 flex-1">
+              <div className="flex items-start gap-3">
+                <Check className="h-5 w-5 text-slate-900 shrink-0 mt-0.5" strokeWidth={2.5} />
+                <span className="text-sm text-slate-700">Unlimited Nomee collection links</span>
+              </div>
+              <div className="flex items-start gap-3">
+                <Check className="h-5 w-5 text-slate-900 shrink-0 mt-0.5" strokeWidth={2.5} />
+                <span className="text-sm text-slate-700">Unlimited contributors</span>
+              </div>
+              <div className="flex items-start gap-3">
+                <Check className="h-5 w-5 text-slate-900 shrink-0 mt-0.5" strokeWidth={2.5} />
+                <span className="text-sm text-slate-700">AI summary: &quot;How it feels to work with you&quot;</span>
+              </div>
+              <div className="flex items-start gap-3">
+                <Check className="h-5 w-5 text-slate-900 shrink-0 mt-0.5" strokeWidth={2.5} />
+                <span className="text-sm text-slate-700">Highlighted traits & keywords</span>
+              </div>
+              <div className="flex items-start gap-3">
+                <Check className="h-5 w-5 text-slate-900 shrink-0 mt-0.5" strokeWidth={2.5} />
+                <span className="text-sm text-slate-700">Private storage of praise</span>
+              </div>
+              <div className="flex items-start gap-3">
+                <Check className="h-5 w-5 text-slate-900 shrink-0 mt-0.5" strokeWidth={2.5} />
+                <span className="text-sm text-slate-700">Shareable personal Nomee page (basic)</span>
+              </div>
+              <div className="flex items-start gap-3">
+                <Check className="h-5 w-5 text-slate-900 shrink-0 mt-0.5" strokeWidth={2.5} />
+                <span className="text-sm text-slate-700">AI summaries refresh a limited number of times per month</span>
               </div>
             </div>
 
-            <Button className="w-full mb-2 bg-transparent" variant="outline" asChild>
-              <Link href="/auth/signup">Create your Nomee</Link>
+            <Button className="w-full bg-slate-900 hover:bg-slate-800 text-white" size="lg" asChild>
+              <Link href="/auth/signup">Start free</Link>
             </Button>
-            <p className="text-xs text-neutral-500 text-center mb-6">No credit card required.</p>
-
-            <div className="space-y-3">
-              <div className="flex items-start gap-2">
-                <Check className="h-5 w-5 text-green-600 shrink-0 mt-0.5" />
-                <span className="text-sm">Unlimited Nomee submissions (invite as many collaborators as you want)</span>
-              </div>
-              <div className="flex items-start gap-2">
-                <Check className="h-5 w-5 text-green-600 shrink-0 mt-0.5" />
-                <span className="text-sm">Public Nomee page</span>
-              </div>
-              <div className="flex items-start gap-2">
-                <Check className="h-5 w-5 text-green-600 shrink-0 mt-0.5" />
-                <span className="text-sm">Pattern recognition & keyword highlighting</span>
-              </div>
-              <div className="flex items-start gap-2">
-                <Check className="h-5 w-5 text-green-600 shrink-0 mt-0.5" />
-                <span className="text-sm">Frequency-based traits and insights</span>
-              </div>
-              <div className="flex items-start gap-2">
-                <Check className="h-5 w-5 text-green-600 shrink-0 mt-0.5" />
-                <span className="text-sm">&quot;How it feels to work with you&quot; summary</span>
-              </div>
-              <div className="flex items-start gap-2">
-                <Check className="h-5 w-5 text-green-600 shrink-0 mt-0.5" />
-                <span className="text-sm">Shareable Nomee link</span>
-              </div>
-              <div className="flex items-start gap-2">
-                <Check className="h-5 w-5 text-green-600 shrink-0 mt-0.5" />
-                <span className="text-sm">Dashboard access</span>
-              </div>
-              <div className="flex items-start gap-2">
-                <Check className="h-5 w-5 text-green-600 shrink-0 mt-0.5" />
-                <span className="text-sm">Up to 3 uploaded reviews (screenshots or pasted reviews)</span>
-              </div>
-            </div>
           </Card>
 
-          {/* PREMIUM TIER */}
-          <Card className="p-8 border-2 relative">
+          {/* PRO TIER - HIGHLIGHTED */}
+          <Card className="p-6 sm:p-8 border-2 border-slate-900 bg-slate-50 hover:shadow-xl transition-all duration-300 flex flex-col relative">
             <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-              <span className="bg-blue-600 text-white text-xs font-medium px-3 py-1 rounded-full">Most popular</span>
-            </div>
-            <div className="mb-6">
-              <h3 className="mb-2 text-2xl font-bold text-neutral-900">Premium</h3>
-              <p className="text-sm text-neutral-600 mb-4">Proof Vault — store and organize your praise.</p>
-              <div className="mb-2">
-                <span className="text-4xl font-bold">$7</span>
-                <span className="text-neutral-600">/month</span>
-              </div>
-              <p className="text-sm text-neutral-500 mb-4">or $69/year (2 months free)</p>
+              <span className="bg-slate-900 text-white text-xs font-semibold px-4 py-1.5 rounded-full tracking-wide">
+                MOST POPULAR
+              </span>
             </div>
 
-            <Button className="w-full mb-2" asChild>
-              <Link href="/auth/signup?plan=premium">Upgrade to Premium</Link>
-            </Button>
-            <p className="text-xs text-neutral-500 text-center mb-6">Upgrade anytime. Stay free forever if you want.</p>
-
-            <div className="space-y-3">
-              <div className="flex items-start gap-2">
-                <Check className="h-5 w-5 text-green-600 shrink-0 mt-0.5" />
-                <span className="text-sm font-medium">Everything in Free, plus:</span>
+            <div className="mb-8">
+              <h3 className="mb-3 text-2xl font-bold text-slate-900">Pro</h3>
+              <div className="mb-4 flex items-baseline gap-3">
+                <div>
+                  <span className="text-5xl font-bold text-slate-900">$7</span>
+                  <span className="text-slate-600 ml-2">/ month</span>
+                </div>
               </div>
-              <div className="flex items-start gap-2">
-                <Check className="h-5 w-5 text-green-600 shrink-0 mt-0.5" />
-                <span className="text-sm">Unlimited uploaded reviews (screenshots or pasted reviews)</span>
-              </div>
-              <div className="flex items-start gap-2">
-                <Check className="h-5 w-5 text-green-600 shrink-0 mt-0.5" />
-                <span className="text-sm">Organize uploads (tags + pin your top 3)</span>
-              </div>
-              <div className="flex items-start gap-2">
-                <Check className="h-5 w-5 text-green-600 shrink-0 mt-0.5" />
-                <span className="text-sm">Quote-level sharing (share a single quote card)</span>
-              </div>
-              <div className="flex items-start gap-2">
-                <Check className="h-5 w-5 text-green-600 shrink-0 mt-0.5" />
-                <span className="text-sm">Downloadable Nomee snapshot (PDF / image)</span>
-              </div>
-              <div className="flex items-start gap-2">
-                <Check className="h-5 w-5 text-green-600 shrink-0 mt-0.5" />
-                <span className="text-sm">Light presentation styles (1–2 clean layouts)</span>
-              </div>
-            </div>
-          </Card>
-
-          {/* PRO TIER - NEW */}
-          <Card className="p-8 border-2">
-            <div className="mb-6">
-              <h3 className="mb-2 text-2xl font-bold text-neutral-900">Pro</h3>
-              <p className="text-sm text-neutral-600 mb-4">Showcase + Embed — make your Nomee work everywhere.</p>
-              <div className="mb-2">
-                <span className="text-4xl font-bold">$14</span>
-                <span className="text-neutral-600">/month</span>
-              </div>
-              <p className="text-sm text-neutral-500 mb-4">or $139/year (2 months free)</p>
+              <p className="text-sm text-slate-500 mb-3">$72 / year (Save $12)</p>
+              <p className="text-base text-slate-900 font-medium leading-relaxed">Own your reputation.</p>
             </div>
 
-            <Button className="w-full mb-2" asChild>
-              <Link href="/auth/signup?plan=pro">Upgrade to Pro</Link>
-            </Button>
-            <p className="text-xs text-neutral-500 text-center mb-6">&nbsp;</p>
-
-            <div className="space-y-3">
-              <div className="flex items-start gap-2">
-                <Check className="h-5 w-5 text-green-600 shrink-0 mt-0.5" />
-                <span className="text-sm font-medium">Everything in Premium, plus:</span>
+            <div className="space-y-3 mb-6 flex-1">
+              <div className="flex items-start gap-3">
+                <Check className="h-5 w-5 text-slate-900 shrink-0 mt-0.5" strokeWidth={2.5} />
+                <span className="text-sm text-slate-900 font-medium">Everything in Free, plus:</span>
               </div>
-              <div className="flex items-start gap-2">
-                <Check className="h-5 w-5 text-green-600 shrink-0 mt-0.5" />
-                <span className="text-sm">Embeddable Nomee for your website or portfolio (code snippet)</span>
-              </div>
-              <div className="flex items-start gap-2">
-                <Check className="h-5 w-5 text-green-600 shrink-0 mt-0.5" />
-                <span className="text-sm">Premium presentation styles (best layouts)</span>
-              </div>
-              <div className="flex items-start gap-2">
-                <Check className="h-5 w-5 text-green-600 shrink-0 mt-0.5" />
-                <span className="text-sm">Optional hero image / elevated layout</span>
-              </div>
-              <div className="flex items-start gap-2">
-                <Check className="h-5 w-5 text-green-600 shrink-0 mt-0.5" />
-                <span className="text-sm">Basic analytics (views, plays, top traits clicked)</span>
-              </div>
-              <div className="flex items-start gap-2">
-                <Check className="h-5 w-5 text-green-600 shrink-0 mt-0.5" />
-                <span className="text-sm">
-                  Share-ready exports (LinkedIn-size quote cards + &quot;media kit&quot; PDF)
+              <div className="flex items-start gap-3">
+                <Check className="h-5 w-5 text-slate-900 shrink-0 mt-0.5" strokeWidth={2.5} />
+                <span className="text-sm text-slate-700">
+                  Upload & store screenshots of praise (Slack, email, LinkedIn, texts)
                 </span>
               </div>
-              <div className="flex items-start gap-2">
-                <Check className="h-5 w-5 text-green-600 shrink-0 mt-0.5" />
-                <span className="text-sm">Minimal/optional &quot;Powered by Nomee&quot; branding on embeds</span>
+              <div className="flex items-start gap-3">
+                <Check className="h-5 w-5 text-slate-900 shrink-0 mt-0.5" strokeWidth={2.5} />
+                <span className="text-sm text-slate-700">Voice messages included in AI summaries</span>
+              </div>
+              <div className="flex items-start gap-3">
+                <Check className="h-5 w-5 text-slate-900 shrink-0 mt-0.5" strokeWidth={2.5} />
+                <span className="text-sm text-slate-700">Advanced AI pattern recognition</span>
+              </div>
+              <div className="flex items-start gap-3">
+                <Check className="h-5 w-5 text-slate-900 shrink-0 mt-0.5" strokeWidth={2.5} />
+                <span className="text-sm text-slate-700">Timeline view of praise over time</span>
+              </div>
+              <div className="flex items-start gap-3">
+                <Check className="h-5 w-5 text-slate-900 shrink-0 mt-0.5" strokeWidth={2.5} />
+                <span className="text-sm text-slate-700">Downloadable & shareable career summary (PDF or link)</span>
+              </div>
+              <div className="flex items-start gap-3">
+                <Check className="h-5 w-5 text-slate-900 shrink-0 mt-0.5" strokeWidth={2.5} />
+                <span className="text-sm text-slate-700">Priority AI processing</span>
               </div>
             </div>
+
+            <div className="mb-6">
+              <p className="text-xs text-slate-500 leading-relaxed">
+                Less than one coffee a month. Career insurance that compounds.
+              </p>
+            </div>
+
+            <Button className="w-full bg-slate-900 hover:bg-slate-800 text-white" size="lg" asChild>
+              <Link href="/auth/signup?plan=pro">Upgrade to Pro</Link>
+            </Button>
+          </Card>
+
+          {/* SHOWCASE TIER */}
+          <Card className="p-6 sm:p-8 border-2 border-slate-200 hover:border-slate-300 transition-all duration-300 flex flex-col">
+            <div className="mb-8">
+              <h3 className="mb-3 text-2xl font-bold text-slate-900">Showcase</h3>
+              <div className="mb-4 flex items-baseline gap-3">
+                <div>
+                  <span className="text-5xl font-bold text-slate-900">$14</span>
+                  <span className="text-slate-600 ml-2">/ month</span>
+                </div>
+              </div>
+              <p className="text-sm text-slate-500 mb-3">$144 / year</p>
+              <p className="text-base text-slate-900 font-medium leading-relaxed">Turn praise into leverage.</p>
+            </div>
+
+            <div className="space-y-3 mb-6 flex-1">
+              <div className="flex items-start gap-3">
+                <Check className="h-5 w-5 text-slate-900 shrink-0 mt-0.5" strokeWidth={2.5} />
+                <span className="text-sm text-slate-900 font-medium">Everything in Pro, plus:</span>
+              </div>
+              <div className="flex items-start gap-3">
+                <Check className="h-5 w-5 text-slate-900 shrink-0 mt-0.5" strokeWidth={2.5} />
+                <span className="text-sm text-slate-700">Public-ready Nomee page (toggle sections on/off)</span>
+              </div>
+              <div className="flex items-start gap-3">
+                <Check className="h-5 w-5 text-slate-900 shrink-0 mt-0.5" strokeWidth={2.5} />
+                <span className="text-sm text-slate-700">
+                  Embed Nomee cards on personal websites, portfolios, and About pages
+                </span>
+              </div>
+              <div className="flex items-start gap-3">
+                <Check className="h-5 w-5 text-slate-900 shrink-0 mt-0.5" strokeWidth={2.5} />
+                <span className="text-sm text-slate-700">Custom URL</span>
+              </div>
+              <div className="flex items-start gap-3">
+                <Check className="h-5 w-5 text-slate-900 shrink-0 mt-0.5" strokeWidth={2.5} />
+                <span className="text-sm text-slate-700">Light branding removal</span>
+              </div>
+              <div className="flex items-start gap-3">
+                <Check className="h-5 w-5 text-slate-900 shrink-0 mt-0.5" strokeWidth={2.5} />
+                <span className="text-sm text-slate-700">&quot;Verified praise&quot; visual treatment</span>
+              </div>
+              <div className="flex items-start gap-3">
+                <Check className="h-5 w-5 text-slate-900 shrink-0 mt-0.5" strokeWidth={2.5} />
+                <span className="text-sm text-slate-700">
+                  Shareable link optimized for jobs, pitches, and proposals
+                </span>
+              </div>
+            </div>
+
+            <div className="mb-6">
+              <p className="text-xs text-slate-500 leading-relaxed">
+                One job, one client, or one deal pays for a year.
+              </p>
+            </div>
+
+            <Button className="w-full bg-slate-900 hover:bg-slate-800 text-white" size="lg" asChild>
+              <Link href="/auth/signup?plan=showcase">Unlock Showcase</Link>
+            </Button>
           </Card>
         </div>
 
-        <div className="mt-16 max-w-3xl mx-auto bg-neutral-50 rounded-2xl p-8">
-          <h2 className="mb-4 text-xl font-bold text-neutral-900">
-            What's the difference between submissions and uploads?
-          </h2>
-          <p className="text-neutral-700 leading-relaxed">
-            Nomee submissions are structured perspectives collected directly from collaborators — these are always
-            unlimited and free. Uploaded reviews are screenshots or pasted reviews you already have. Premium and Pro
-            unlock unlimited uploads and organization.
+        {/* Pricing Philosophy */}
+        <div className="max-w-2xl mx-auto mb-24 text-center space-y-3">
+          <p className="text-base text-slate-700 leading-relaxed">We don&apos;t charge for praise.</p>
+          <p className="text-base text-slate-700 leading-relaxed">We don&apos;t charge for asking.</p>
+          <p className="text-base text-slate-700 leading-relaxed">
+            We charge for organizing, elevating, and leveraging it.
           </p>
         </div>
 
-        <div className="mt-20 max-w-3xl mx-auto">
-          <h2 className="mb-8 text-3xl font-bold text-center text-neutral-900">Frequently Asked Questions</h2>
-          <div className="space-y-6">
-            <div>
-              <h3 className="mb-2 font-semibold text-neutral-900">Can I cancel anytime?</h3>
-              <p className="text-neutral-600">
-                Yes. If you cancel a paid plan, your account reverts to Free. Your Nomee submissions remain unlimited,
-                and you'll keep up to 3 uploaded reviews.
-              </p>
-            </div>
-            <div>
-              <h3 className="mb-2 font-semibold text-neutral-900">How does the embed work?</h3>
-              <p className="text-neutral-600">
-                Pro users get a simple code snippet to paste into their website, portfolio, or email signature. You
-                control how your Nomee appears.
-              </p>
-            </div>
-            <div>
-              <h3 className="mb-2 font-semibold text-neutral-900">What happens if I downgrade from Pro to Premium?</h3>
-              <p className="text-neutral-600">
-                You'll keep Premium features (unlimited uploads, organization, downloads), but embeds and Pro-only
-                presentation/analytics features will be disabled. Your submissions remain unlimited.
-              </p>
-            </div>
+        {/* Footer CTA */}
+        <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl sm:rounded-3xl p-8 sm:p-12 lg:p-16 text-center max-w-5xl mx-auto">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4 sm:mb-6 leading-tight">
+            Your reputation already exists.
+            <br />
+            Nomee helps you own it.
+          </h2>
+          <p className="text-lg sm:text-xl text-slate-300 mb-8 sm:mb-10 leading-relaxed">
+            Start free. Upgrade when it starts opening doors.
+          </p>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6">
+            <Button
+              size="lg"
+              className="w-full sm:w-auto bg-white text-slate-900 hover:bg-slate-100 text-base px-8 py-6"
+              asChild
+            >
+              <Link href="/auth/signup">
+                Create your Nomee
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Link>
+            </Button>
+            <Link
+              href="/maya-torres"
+              className="text-white hover:text-slate-200 text-base font-medium transition-colors flex items-center gap-2"
+            >
+              See an example Nomee
+              <ArrowRight className="h-4 w-4" />
+            </Link>
           </div>
         </div>
       </div>
