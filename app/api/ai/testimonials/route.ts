@@ -8,7 +8,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Missing contributions or profileName" }, { status: 400 })
   }
 
-  const testimonials = contributions
+  const feedbackText = contributions
     .map((c: { written_note: string }) => c.written_note)
     .filter(Boolean)
     .join("\n\n")
@@ -16,10 +16,10 @@ export async function POST(req: Request) {
   try {
     const { text } = await generateText({
       model: "openai/gpt-4o-mini",
-      prompt: `You are analyzing testimonials about ${profileName}. Based on these testimonials, generate 3 short summary statements (one sentence each) that capture the overall feeling and experience of working with them. Each summary should be emotionally resonant and focus on the human experience, not just skills.
+      prompt: `You are analyzing feedback about ${profileName}. Based on this feedback, generate 3 short summary statements (one sentence each) that capture the overall feeling and experience of working with them. Each summary should be emotionally resonant and focus on the human experience, not just skills.
 
-Testimonials:
-${testimonials}
+Feedback:
+${feedbackText}
 
 Return ONLY 3 summaries, one per line, without numbering or bullet points. Each should be 10-15 words max.`,
     })

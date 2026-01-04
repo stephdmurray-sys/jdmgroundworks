@@ -194,7 +194,7 @@ export function PremierSignalBar({
     return [...nomeeCards, ...importedCards]
   }, [safeContributions, safeImportedFeedback])
 
-  // Top Signals - ranked by count
+  // Common themes - ranked by count
   const topSignals = useMemo(() => {
     const counts: Record<string, { count: number; sources: Set<"nomee" | "imported">; example?: string }> = {}
 
@@ -333,7 +333,7 @@ export function PremierSignalBar({
     <TooltipProvider>
       <div className="bg-white rounded-2xl border border-neutral-200 p-6 shadow-sm">
         <div className="grid md:grid-cols-3 gap-6">
-          {/* Top Signals */}
+          {/* Common themes */}
           <div className="space-y-3">
             <div className="flex items-center gap-2 text-neutral-700">
               <TrendingUp className="w-4 h-4" />

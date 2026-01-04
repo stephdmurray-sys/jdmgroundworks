@@ -171,10 +171,10 @@ export function AiPatternSummary({
       if (impactStatement) {
         synthesis = `Feedback highlights that this person ${impactStatement.charAt(0).toLowerCase()}${impactStatement.slice(1)}`
       } else {
-        synthesis = `This person is building a professional reputation through ${effectiveContributionsCount > 0 ? `${effectiveContributionsCount} direct contribution${effectiveContributionsCount > 1 ? "s" : ""}` : ""}${effectiveContributionsCount > 0 && uploadsCount > 0 ? " and " : ""}${uploadsCount > 0 ? `${uploadsCount} imported testimonial${uploadsCount > 1 ? "s" : ""}` : ""}.`
+        synthesis = `This person is building a professional reputation through ${effectiveContributionsCount > 0 ? `${effectiveContributionsCount} direct contribution${effectiveContributionsCount > 1 ? "s" : ""}` : ""}${effectiveContributionsCount > 0 && uploadsCount > 0 ? " and " : ""}${uploadsCount > 0 ? `${uploadsCount} saved feedback${uploadsCount > 1 ? " items" : ""}` : ""}.`
       }
     } else if (totalDataCount > 0) {
-      synthesis = `This person has ${effectiveContributionsCount > 0 ? `${effectiveContributionsCount} contribution${effectiveContributionsCount > 1 ? "s" : ""}` : ""}${effectiveContributionsCount > 0 && uploadsCount > 0 ? " and " : ""}${uploadsCount > 0 ? `${uploadsCount} saved testimonial${uploadsCount > 1 ? "s" : ""}` : ""} building their professional story.`
+      synthesis = `This person has ${effectiveContributionsCount > 0 ? `${effectiveContributionsCount} contribution${effectiveContributionsCount > 1 ? "s" : ""}` : ""}${effectiveContributionsCount > 0 && uploadsCount > 0 ? " and " : ""}${uploadsCount > 0 ? `${uploadsCount} saved feedback${uploadsCount > 1 ? " items" : ""}` : ""} building their professional story.`
     }
 
     if (totalDataCount === 0 && !hasTraits && !hasVibes && !hasText) {
@@ -201,7 +201,7 @@ export function AiPatternSummary({
         <p className="text-neutral-700 leading-relaxed text-base sm:text-lg" style={{ lineHeight: "1.7" }}>
           {firstName} has received feedback from {effectiveContributionsCount}{" "}
           {effectiveContributionsCount === 1 ? "person" : "people"}
-          {uploadsCount > 0 && ` and saved ${uploadsCount} testimonial${uploadsCount === 1 ? "" : "s"}`}.
+          {uploadsCount > 0 && ` and saved ${uploadsCount} feedback${uploadsCount === 1 ? " item" : " items"}`}.
         </p>
       </div>
     )

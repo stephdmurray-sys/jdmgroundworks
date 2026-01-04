@@ -9,14 +9,14 @@ import type { HighlightPattern } from "./extract-highlight-patterns"
 export function extractKeywordsFromText(
   text: string,
   traits: string[] = [],
-  topSignals: string[] = [],
+  commonThemes: string[] = [], // Renamed from topSignals to commonThemes
 ): HighlightPattern[] {
   if (!text || typeof text !== "string" || text.trim().length === 0) {
     return []
   }
 
   const safeTraits = Array.isArray(traits) ? traits : []
-  const safeTopSignals = Array.isArray(topSignals) ? topSignals : []
+  const safeCommonThemes = Array.isArray(commonThemes) ? commonThemes : [] // Renamed variable
 
   const keywords: HighlightPattern[] = []
   const textLower = text.toLowerCase()
@@ -199,18 +199,19 @@ export function extractKeywordsFromText(
     })
   }
 
-  // TIER 1.5: Top Signals from page analysis
-  if (safeTopSignals.length > 0 && keywords.length < 4) {
-    safeTopSignals.slice(0, 3).forEach((signal) => {
-      if (!signal || typeof signal !== "string") return
+  // TIER 1.5: Common themes from page analysis
+  if (safeCommonThemes.length > 0 && keywords.length < 4) {
+    safeCommonThemes.slice(0, 3).forEach((theme) => {
+      // Renamed from signal to theme
+      if (!theme || typeof theme !== "string") return
       if (keywords.length >= 4) return
-      const signalLower = signal.toLowerCase()
-      if (phraseExistsInText(signalLower) && isValidKeyword(signalLower)) {
+      const themeLower = theme.toLowerCase() // Renamed variable
+      if (phraseExistsInText(themeLower) && isValidKeyword(themeLower)) {
         // Check if already added
-        if (!keywords.some((k) => k.phrase === signalLower)) {
+        if (!keywords.some((k) => k.phrase === themeLower)) {
           keywords.push({
-            phrase: signalLower,
-            tier: "signal",
+            phrase: themeLower,
+            tier: "theme", // Changed from "signal" to "theme"
             frequency: 1,
           })
         }

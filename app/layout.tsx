@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   description:
     "Close deals faster with verified partnership proof you can embed anywhere—your website, proposals, email signature, or portfolio. Positive-only. Lightweight. Built for the gig world.",
   keywords:
-    "professional recognition platform, partnership trust proof, embed social proof, verified recommendations, freelancer credibility, consultant testimonials",
+    "professional recognition platform, partnership trust proof, embed social proof, verified recommendations, freelancer credibility, consultant feedback",
   generator: "v0.app",
   icons: {
     icon: [

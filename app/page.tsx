@@ -39,16 +39,15 @@ export default function Home() {
                 className="space-y-6 lg:pt-8"
               >
                 <p className="text-sm text-slate-600 font-medium">
-                  Most people don't save the best feedback they receive — until they need it.
+                  Most people forget the best feedback they receive — until they need it.
                 </p>
 
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-slate-900 leading-tight tracking-tight">
-                  You get good feedback. Nomee makes sure you can find it when it matters.
+                  You receive valuable feedback. Nomee makes sure you keep it.
                 </h1>
 
                 <p className="text-lg md:text-xl lg:text-2xl text-slate-700 leading-relaxed">
-                  Save what people say about your work in one place — so you're ready for reviews, opportunities, and
-                  conversations that matter.
+                  Save what people say about your work in one place — so it's ready when it matters.
                 </p>
 
                 <div className="flex flex-col sm:flex-row items-start gap-4 pt-2 md:pt-4">
@@ -106,8 +105,8 @@ export default function Home() {
                 transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
                 className="text-base md:text-lg text-slate-600 leading-relaxed max-w-3xl mx-auto px-4"
               >
-                By the time most people go looking for feedback, it's buried in messages, emails, or screenshots — or
-                gone entirely. Nomee saves it as it happens.
+                By the time most people go looking for feedback, it's buried in messages or gone entirely. Nomee saves
+                it as it happens — so you're never starting from zero.
               </motion.p>
             </div>
 
@@ -130,7 +129,7 @@ export default function Home() {
                 className="bg-white rounded-2xl p-6 md:p-8 border border-slate-200 shadow-sm space-y-4 transition-all duration-300 ease-out hover:shadow-lg hover:-translate-y-1 hover:border-slate-300"
               >
                 <h4 className="text-xl md:text-2xl font-semibold text-slate-900">
-                  Invite people to leave short, honest feedback
+                  Invite people to share short, honest feedback
                 </h4>
                 <p className="text-base text-slate-700 leading-relaxed">
                   Nothing formal. Nothing polished. Just real feedback before it gets lost.
@@ -168,7 +167,7 @@ export default function Home() {
               className="text-center mb-8"
             >
               <p className="text-sm font-medium text-slate-600 px-4">
-                This is the kind of feedback people wish they'd saved.
+                This is the kind of feedback most people forget to save.
               </p>
             </motion.div>
 
@@ -441,7 +440,7 @@ export default function Home() {
                     </svg>
                   </Link>
                   <p className="text-xs text-slate-500 text-center px-4">
-                    Have your reputation ready when you need it the most
+                    Ready when it matters — not lost in messages
                   </p>
                 </motion.div>
               </div>
@@ -449,7 +448,6 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Updated embed section to use "Proof Tiles" terminology */}
         <section className="py-20 px-6 bg-gradient-to-b from-white to-slate-50">
           <div className="max-w-4xl mx-auto">
             <motion.div
@@ -677,8 +675,8 @@ export default function Home() {
                 For decision-makers
               </h2>
               <p className="text-lg md:text-xl lg:text-2xl text-slate-600 max-w-3xl mx-auto leading-relaxed px-4">
-                When you're hiring, partnering, or working with someone — don't guess. See the feedback they've actually
-                received.
+                When decisions are being made, guessing isn't enough. Saved feedback shows how someone actually works
+                with others.
               </p>
             </motion.div>
 
@@ -819,7 +817,6 @@ export default function Home() {
               </div>
             </motion.div>
 
-            {/* One-line context under preview */}
             <motion.p
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
@@ -832,7 +829,6 @@ export default function Home() {
               {activeDecisionTab === "clients" && "See what to expect before starting a project together."}
             </motion.p>
 
-            {/* CTAs - Generous spacing */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -855,12 +851,10 @@ export default function Home() {
                 </Link>
               </div>
 
-              {/* Trust line */}
               <p className="text-sm text-slate-500 px-4">
                 Real names. Real relationships. One contribution per person.
               </p>
 
-              {/* Free forever clarification */}
               <p className="text-sm text-slate-400 max-w-2xl mx-auto leading-relaxed px-4">
                 Your Nomee page is free to share — forever. You only upgrade to keep feedback organized over time.
               </p>
@@ -1039,7 +1033,7 @@ export default function Home() {
               transition={{ duration: 0.6 }}
               className="text-3xl md:text-4xl lg:text-5xl font-bold text-white px-4"
             >
-              Start once. Keep it over time.
+              Ready when it matters — not lost in messages.
             </motion.h2>
 
             <motion.p

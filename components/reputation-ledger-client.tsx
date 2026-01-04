@@ -38,7 +38,7 @@ export function ReputationLedgerClient({ traits, contributions, traitToContribut
           Interactive Signal Heatmap
         </h2>
         <p className="text-sm text-[var(--soft-gray-text)] mb-6">
-          Click any trait to filter testimonials below. See exactly where each quality was mentioned.
+          Click any trait to filter feedback below. See exactly where each quality was mentioned.
         </p>
         <BentoGridHeatmap traits={traits} onTraitClick={(trait) => setSelectedTrait(trait)} />
         {selectedTrait && (
@@ -114,7 +114,7 @@ export function ReputationLedgerClient({ traits, contributions, traitToContribut
         {filteredContributions.length === 0 && (
           <div className="text-center py-12">
             <p className="text-[var(--soft-gray-text)]">
-              No testimonials found with this trait. Try selecting a different one.
+              No feedback found with this trait. Try selecting a different one.
             </p>
           </div>
         )}

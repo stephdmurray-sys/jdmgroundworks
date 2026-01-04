@@ -144,7 +144,7 @@ export function highlightQuote(
   enableTwoTone = true,
   useMarkerStyle = true,
   selectedVibes: string[] = [], // New: currently selected vibe pills
-  topSignals: string[] = [], // New: top signals computed on page load
+  commonThemes: string[] = [], // Renamed from topSignals to commonThemes
 ): React.ReactNode {
   if (!text || text.trim().length === 0) return text
 
@@ -184,17 +184,17 @@ export function highlightQuote(
     }
   })
 
-  // 3. Match top signals computed on page load
-  topSignals.forEach((signal) => {
-    if (NEVER_HIGHLIGHT.has(signal.toLowerCase())) return
-    const regex = new RegExp(`\\b${signal.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`, "gi")
+  // 3. Match common themes computed on page load
+  commonThemes.forEach((theme) => {
+    if (NEVER_HIGHLIGHT.has(theme.toLowerCase())) return
+    const regex = new RegExp(`\\b${theme.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`, "gi")
     let match
     while ((match = regex.exec(text)) !== null) {
       matches.push({
         phrase: match[0],
         index: match.index,
         length: match[0].length,
-        tier: "signal",
+        tier: "theme",
         color: "marker",
       })
     }
