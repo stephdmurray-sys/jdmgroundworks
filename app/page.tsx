@@ -43,11 +43,15 @@ export default function Home() {
                 </p>
 
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-slate-900 leading-tight tracking-tight">
-                  You receive valuable feedback. Nomee makes sure you keep it.
+                  You receive valuable feedback. Nomee helps you keep it.
                 </h1>
 
                 <p className="text-lg md:text-xl lg:text-2xl text-slate-700 leading-relaxed">
                   Save what people say about your work in one place — so it's ready when it matters.
+                </p>
+
+                <p className="text-base text-slate-600 leading-relaxed">
+                  Usually, that moment is a review, an interview, a client conversation, or an unexpected opportunity.
                 </p>
 
                 <div className="flex flex-col sm:flex-row items-start gap-4 pt-2 md:pt-4">
@@ -56,7 +60,7 @@ export default function Home() {
                     size="lg"
                     className="w-full sm:w-auto bg-slate-900 text-white hover:bg-slate-800 rounded-full px-8 py-6 text-base font-medium shadow-lg hover:shadow-xl transition-all"
                   >
-                    Start saving feedback
+                    Save my feedback
                     <ArrowRight className="w-5 h-5 ml-2" />
                   </Button>
 
@@ -68,7 +72,7 @@ export default function Home() {
                   </Link>
                 </div>
 
-                <p className="text-sm text-slate-500">Start free. No card required.</p>
+                <p className="text-sm text-slate-500">      Start free. No card required.</p>
               </motion.div>
 
               {/* Right: Real Nomee Slice (Desktop) */}
@@ -105,8 +109,7 @@ export default function Home() {
                 transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
                 className="text-base md:text-lg text-slate-600 leading-relaxed max-w-3xl mx-auto px-4"
               >
-                By the time most people go looking for feedback, it's buried in messages or gone entirely. Nomee saves
-                it as it happens — so you're never starting from zero.
+                Most feedback gets buried in messages or forgotten. Nomee saves it as it happens.
               </motion.p>
             </div>
 
@@ -128,11 +131,9 @@ export default function Home() {
                 transition={{ duration: 0.6, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
                 className="bg-white rounded-2xl p-6 md:p-8 border border-slate-200 shadow-sm space-y-4 transition-all duration-300 ease-out hover:shadow-lg hover:-translate-y-1 hover:border-slate-300"
               >
-                <h4 className="text-xl md:text-2xl font-semibold text-slate-900">
-                  Invite people to share short, honest feedback
-                </h4>
+                <h4 className="text-xl md:text-2xl font-semibold text-slate-900">Collect feedback</h4>
                 <p className="text-base text-slate-700 leading-relaxed">
-                  Nothing formal. Nothing polished. Just real feedback before it gets lost.
+                  Invite people to share short, honest feedback.
                 </p>
               </motion.div>
 
@@ -142,9 +143,9 @@ export default function Home() {
                 transition={{ duration: 0.6, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
                 className="bg-white rounded-2xl p-6 md:p-8 border border-slate-200 shadow-sm space-y-4 transition-all duration-300 ease-out hover:shadow-lg hover:-translate-y-1 hover:border-slate-300"
               >
-                <h4 className="text-xl md:text-2xl font-semibold text-slate-900">Save feedback you already have</h4>
+                <h4 className="text-xl md:text-2xl font-semibold text-slate-900">Save existing feedback</h4>
                 <p className="text-base text-slate-700 leading-relaxed">
-                  Emails, Slack messages, texts, screenshots — finally in one place.
+                  Bring in feedback you already have — emails, Slack messages, texts, or screenshots.
                 </p>
               </motion.div>
             </div>
@@ -154,11 +155,7 @@ export default function Home() {
               animate={{ opacity: 1 }}
               transition={{ duration: 0.6, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
               className="text-center mb-12 md:mb-16"
-            >
-              <p className="text-base md:text-lg text-slate-700 leading-relaxed max-w-4xl mx-auto px-4">
-                Don't lose what people said about working with you.
-              </p>
-            </motion.div>
+            ></motion.div>
 
             <motion.div
               initial={{ opacity: 0 }}
@@ -429,7 +426,7 @@ export default function Home() {
                     href="/auth/signup"
                     className="w-full md:w-auto group relative inline-flex items-center justify-center px-8 md:px-10 py-4 bg-slate-900 text-white rounded-full font-medium text-base hover:bg-slate-800 transition-all duration-300 shadow-lg hover:shadow-2xl hover:scale-105"
                   >
-                    <span>Start saving feedback</span>
+                    <span>Save my feedback</span>
                     <svg
                       className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform duration-300"
                       fill="none"
