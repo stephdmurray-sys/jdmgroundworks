@@ -53,13 +53,13 @@ export default async function ImportedFeedbackUploadPage() {
         </div>
 
         {uploadCount >= uploadLimit ? (
-          <div className="p-8 bg-amber-50 border border-amber-200 rounded-lg">
-            <h3 className="mb-2 text-lg font-semibold text-amber-900">Upload Limit Reached</h3>
-            <p className="mb-4 text-sm text-amber-800">
-              You've uploaded {uploadCount} of {uploadLimit} items on your {plan} plan.
+          <div className="p-8 bg-blue-50 border border-blue-200 rounded-lg">
+            <h3 className="mb-2 text-lg font-semibold text-slate-900">You've collected feedback</h3>
+            <p className="mb-4 text-sm text-slate-700">
+              You've saved {uploadCount} items. Upgrading keeps everything organized as it grows.
             </p>
             <Button asChild>
-              <Link href="/pricing">Upgrade to upload more</Link>
+              <Link href="/pricing">Keep this organized</Link>
             </Button>
           </div>
         ) : (

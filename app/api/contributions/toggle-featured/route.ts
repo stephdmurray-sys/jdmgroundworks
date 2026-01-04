@@ -63,7 +63,7 @@ export async function POST(request: Request) {
       if (currentFeaturedCount >= featuredLimit) {
         return NextResponse.json(
           {
-            error: `You've reached your ${featuredLimit} featured perspective limit. Upgrade your plan to feature more.`,
+            error: `You've featured ${featuredLimit} perspectives. Upgrading keeps more organized and easy to find.`,
           },
           { status: 403 },
         )

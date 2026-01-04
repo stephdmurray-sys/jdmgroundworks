@@ -525,9 +525,14 @@ export function PremierProfileClient({
         </div>
       </div>
 
-      <main className="relative min-h-screen bg-[var(--nomee-neutral-bg)]">
-        {" "}
-        {/* Changed to relative */}
+      <main className="relative min-h-screen bg-[var(--nomee-body-bg)] pb-[var(--space-section)]">
+        <div className="max-w-4xl mx-auto px-4 pt-8 pb-4">
+          <p className="text-sm text-neutral-500 text-center">
+            This page keeps the feedback people have shared about working with {firstName}, so it doesn't get lost over
+            time.
+          </p>
+        </div>
+
         {/* ============================================ */}
         {/* SECTION 1: HERO / HEADER */}
         {/* ============================================ */}
@@ -580,7 +585,6 @@ export function PremierProfileClient({
               {/* Trust rule */}
               <span className="text-xs text-neutral-500 opacity-75">Each contributor can submit once</span>
             </div>
-            {/* </CHANGE> */}
           </div>
         </section>
         {/* ============================================ */}
@@ -588,8 +592,6 @@ export function PremierProfileClient({
         {/* ============================================ */}
         {(safeProfileAnalysis.totalDataCount >= 1 || safeTraits.length > 0) && (
           <section ref={summaryRef} className="pb-[var(--space-section)] px-4">
-            {" "}
-            {/* Added ref */}
             <div className="max-w-4xl mx-auto">
               <CardShell>
                 <AiPatternSummary
@@ -641,12 +643,14 @@ export function PremierProfileClient({
         {/* ============================================ */}
         {voiceContributions.length > 0 && (
           <section ref={voiceRef} className="py-[var(--space-section)] px-4 w-full">
-            {" "}
-            {/* Added ref */}
             <div className="w-full">
               <div className="mx-auto w-full max-w-6xl px-6">
-                <p className="text-sm text-neutral-500 mb-3 text-center">One contribution per person. Never edited.</p>
-                {/* </CHANGE> */}
+                <p className="text-sm text-neutral-500 mb-2 text-center">
+                  Saved voice feedback from people {firstName} has worked with.
+                </p>
+                <p className="text-xs text-neutral-400 mb-6 text-center">
+                  Collected over time, not written after the fact.
+                </p>
                 <SectionHeading
                   title="In Their Own Words"
                   subtitle={`Unedited voice notes from people who know ${firstName}`}
@@ -659,7 +663,6 @@ export function PremierProfileClient({
                     contributions={voiceContributions}
                   />
                 </div>
-                {/* </CHANGE> */}
 
                 <div className="mt-10 columns-1 md:columns-2 lg:columns-3 [column-gap:2rem]">
                   {filteredVoiceContributions.map((contribution) => {
@@ -746,14 +749,11 @@ export function PremierProfileClient({
         {/* ============================================ */}
         {safeTraits.length > 0 && (
           <section ref={patternsRef} className="py-[var(--space-section)] px-4">
-            {" "}
-            {/* Added ref */}
             <div className="max-w-4xl mx-auto">
               <SectionHeading
                 title={`How it feels to work with ${firstName}`}
-                subtitle="Based on recurring themes across contributions."
+                subtitle="A summary of how people consistently describe this collaboration."
               />
-              {/* </CHANGE> */}
 
               <div className="flex justify-center mt-4 mb-8 opacity-60">
                 <Pill variant="direct">
@@ -769,7 +769,6 @@ export function PremierProfileClient({
                   {confidenceLevel} confidence
                 </Pill>
               </div>
-              {/* </CHANGE> */}
 
               <CardShell>
                 <div className="grid md:grid-cols-2 gap-8">
@@ -828,7 +827,6 @@ export function PremierProfileClient({
                         )
                       })}
                     </div>
-                    {/* </CHANGE> */}
                   </div>
                 </div>
               </CardShell>
@@ -880,13 +878,14 @@ export function PremierProfileClient({
             ref={howItFeelsRef}
             className="py-[var(--space-section)] px-4 bg-white border-t border-[var(--nomee-neutral-border)]"
           >
-            {" "}
-            {/* Added ref */}
             <div className="w-full">
               <div className="mx-auto w-full max-w-6xl px-6">
+                <p className="text-sm text-neutral-500 mb-6 text-center">
+                  This is the kind of feedback most people forget to save.
+                </p>
+
                 <SectionHeading title="How it feels" subtitle="Day-to-day collaboration style and working patterns" />
 
-                {/* Relationship Filter */}
                 <div className="flex justify-center mb-6">
                   <RelationshipFilter
                     selectedCategory={howItFeelsRelationshipFilter}
@@ -1013,12 +1012,10 @@ export function PremierProfileClient({
             ref={screenshotsRef}
             className="py-[var(--space-section)] px-4 bg-white border-t border-[var(--nomee-neutral-border)]"
           >
-            {" "}
-            {/* Added ref */}
             <div className="max-w-6xl mx-auto">
               <SectionHeading
                 title="Screenshots and highlights"
-                subtitle={`${firstName} saved ${importedFeedback.length} pieces of feedback`}
+                subtitle={`Saved as feedback came in — organized in one place`}
               />
 
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -1102,6 +1099,14 @@ export function PremierProfileClient({
           </div>
         </section>
       </main>
+
+      {safeString(profile?.slug) === "maya-torres" && (
+        <div className="max-w-4xl mx-auto px-4 py-8">
+          <p className="text-xs text-neutral-400 text-center">
+            This is an example Nomee page showing how feedback can be saved and kept over time.
+          </p>
+        </div>
+      )}
     </TooltipProvider>
   )
 }

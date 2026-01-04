@@ -176,9 +176,9 @@ export function DashboardClient({
           <Card className="p-6 border-2 border-blue-200 bg-blue-50/40">
             <div className="flex items-start justify-between gap-4">
               <div className="flex-1">
-                <h3 className="text-lg font-semibold text-neutral-900 mb-2">Claim your Nomee link</h3>
+                <h3 className="text-lg font-semibold text-neutral-900 mb-2">Set your username</h3>
                 <p className="text-sm text-neutral-700 mb-4">
-                  Set a username to unlock your collection link and public Nomee page.
+                  Choose your username to start saving feedback from colleagues.
                 </p>
                 <Button onClick={() => setShowOnboarding(true)}>Set username</Button>
               </div>
@@ -205,10 +205,10 @@ export function DashboardClient({
             <Card className="p-4">
               <div className="mb-1 text-lg font-bold text-neutral-900 capitalize">{plan}</div>
               <div className="text-xs font-medium text-neutral-600">Current Plan</div>
-              <div className="text-xs text-neutral-500 mt-1">Keeps your Proof Link current</div>
+              <div className="text-xs text-neutral-500 mt-1">Keeps feedback ready over time</div>
               {plan === "free" && (
                 <Button size="sm" variant="link" className="mt-1 p-0 h-auto text-blue-600 text-xs" asChild>
-                  <Link href="/pricing">Upgrade</Link>
+                  <Link href="/pricing">Keep my feedback</Link>
                 </Button>
               )}
             </Card>
@@ -450,10 +450,8 @@ export function DashboardClient({
               </div>
             ) : (
               <Card className="p-8 text-center bg-white">
-                <p className="mb-2 text-neutral-700 font-medium">No contributions yet</p>
-                <p className="text-sm text-neutral-500 mb-4">
-                  Share your collection link to start gathering feedback from colleagues
-                </p>
+                <p className="mb-2 text-neutral-700 font-medium">Most people don't save feedback until it's too late</p>
+                <p className="text-sm text-neutral-500 mb-4">You're early. Invite one or two people to get started.</p>
                 {collectionUrl && (
                   <Button onClick={handleCopyCollection} variant="outline">
                     <Copy className="mr-2 h-4 w-4" />
@@ -474,11 +472,10 @@ export function DashboardClient({
             {!canAddMoreFeatured && contributions.length > 0 && (
               <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg text-center">
                 <p className="text-sm text-blue-900">
-                  You've reached your {featuredLimit} featured perspective limit.{" "}
+                  You've featured {featuredLimit} perspectives. Upgrading keeps more organized and accessible.{" "}
                   <Link href="/pricing" className="font-medium underline">
-                    Upgrade to {plan === "free" ? "Starter" : "Premier"}
-                  </Link>{" "}
-                  to feature more.
+                    Keep this organized
+                  </Link>
                 </p>
               </div>
             )}
@@ -563,9 +560,9 @@ export function DashboardClient({
                 <div className="rounded-full bg-slate-100 p-3 w-fit mx-auto mb-4">
                   <Upload className="h-5 w-5 text-slate-500" />
                 </div>
-                <p className="mb-1 text-neutral-800 font-medium">Bring your past praise in</p>
+                <p className="mb-1 text-neutral-800 font-medium">Save feedback from old messages</p>
                 <p className="text-sm text-neutral-500 mb-4 max-w-md mx-auto">
-                  Upload a LinkedIn recommendation screenshot and we'll extract the quote, giver, and traits.
+                  Upload screenshots of LinkedIn recommendations or Slack praise. We'll extract what matters.
                 </p>
                 <Button asChild>
                   <Link href="/dashboard/imported-feedback/upload">

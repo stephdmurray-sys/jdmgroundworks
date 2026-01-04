@@ -103,10 +103,10 @@ export function UsernameOnboardingModal({ isOpen, onComplete, userEmail }: Usern
             <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
               <Sparkles className="w-5 h-5 text-white" />
             </div>
-            <DialogTitle className="text-2xl">Welcome to Nomee!</DialogTitle>
+            <DialogTitle className="text-2xl">Save feedback before it gets lost</DialogTitle>
           </div>
           <DialogDescription className="text-base leading-relaxed">
-            Choose your username to create your personal Nomee page and start collecting feedback.
+            This page will keep the feedback people share about working with you — in one place, over time.
           </DialogDescription>
         </DialogHeader>
 
@@ -153,21 +153,20 @@ export function UsernameOnboardingModal({ isOpen, onComplete, userEmail }: Usern
             <p className="text-base font-semibold text-blue-900 break-all">{publicUrl}</p>
           </div>
 
-          {/* Benefits */}
           <div className="space-y-2">
             <p className="text-sm font-medium text-neutral-900">You'll be able to:</p>
             <ul className="space-y-2 text-sm text-neutral-700">
               <li className="flex items-start gap-2">
                 <Check className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
-                <span>Share a collection link to gather feedback from colleagues</span>
+                <span>Invite one or two people who've already said good things about working with you</span>
               </li>
               <li className="flex items-start gap-2">
                 <Check className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
-                <span>Display featured perspectives on your public profile</span>
+                <span>Keep feedback organized before it gets lost in old messages</span>
               </li>
               <li className="flex items-start gap-2">
                 <Check className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
-                <span>Build your professional reputation with real feedback</span>
+                <span>Build your record quietly as people share more over time</span>
               </li>
             </ul>
           </div>
@@ -179,7 +178,7 @@ export function UsernameOnboardingModal({ isOpen, onComplete, userEmail }: Usern
             disabled={!username || !isAvailable || isChecking || isSaving}
             className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-base h-11"
           >
-            {isSaving ? "Creating your Nomee..." : "Claim my username"}
+            {isSaving ? "Creating your page..." : "Claim my username"}
           </Button>
           <Button onClick={onComplete} variant="ghost" className="w-full text-neutral-600" disabled={isSaving}>
             I'll do this later

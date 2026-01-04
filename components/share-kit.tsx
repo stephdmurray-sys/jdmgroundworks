@@ -209,7 +209,7 @@ export function ShareKit({ publicUrl, plan }: ShareKitProps) {
                       </Button>
                     </div>
                   ) : (
-                    <p className="text-xs text-slate-500 mt-2">Upgrade to Pro to use embeds</p>
+                    <p className="text-xs text-slate-500 mt-2">Showcasing keeps embeds ready when you share</p>
                   )}
                 </div>
 
@@ -251,7 +251,7 @@ export function ShareKit({ publicUrl, plan }: ShareKitProps) {
                       </Button>
                     </div>
                   ) : (
-                    <p className="text-xs text-slate-500 mt-2">Upgrade to Pro to use embeds</p>
+                    <p className="text-xs text-slate-500 mt-2">Showcasing keeps embeds ready when you share</p>
                   )}
                 </div>
 
@@ -259,9 +259,9 @@ export function ShareKit({ publicUrl, plan }: ShareKitProps) {
                   <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
                     <p className="text-sm text-slate-700">
                       <Link href="/pricing" className="font-semibold text-blue-600 hover:text-blue-700">
-                        Upgrade to Pro
+                        Showcase
                       </Link>{" "}
-                      to embed quotes and traits on your website.
+                      keeps embeds and exports ready when someone asks.
                     </p>
                   </div>
                 )}

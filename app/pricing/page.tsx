@@ -18,10 +18,22 @@ export default function PricingPage() {
         {/* Hero Section */}
         <div className="mb-12 sm:mb-16 text-center max-w-3xl mx-auto">
           <h1 className="mb-4 sm:mb-6 text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-slate-900">
-            Simple pricing. Real leverage.
+            Good feedback gets lost.
           </h1>
           <p className="text-lg sm:text-xl text-slate-600 leading-relaxed">
-            Start free. Upgrade only when your reputation starts working for you.
+            Nomee keeps it safe, organized, and ready when you need it.
+          </p>
+        </div>
+
+        <div className="max-w-2xl mx-auto mb-16 space-y-4 text-center">
+          <p className="text-base text-slate-700 leading-relaxed">Most people lose the best feedback they receive.</p>
+          <p className="text-base text-slate-700 leading-relaxed">
+            It gets buried in messages, emails, and screenshots — until the moment they need it.
+          </p>
+          <p className="text-base text-slate-900 font-medium leading-relaxed mt-6">
+            Nomee is free to collect feedback.
+            <br />
+            You only pay to keep it organized, current, and ready when it matters.
           </p>
         </div>
 
@@ -54,7 +66,9 @@ export default function PricingPage() {
                 <span className="text-5xl font-bold text-slate-900">$0</span>
                 <span className="text-slate-600 ml-2">forever</span>
               </div>
-              <p className="text-base text-slate-600 leading-relaxed">Collect real praise before it disappears.</p>
+              <p className="text-base text-slate-600 leading-relaxed">
+                For collecting real feedback and seeing how people describe working with you.
+              </p>
             </div>
 
             <div className="space-y-3 mb-8 flex-1">
@@ -68,9 +82,7 @@ export default function PricingPage() {
               </div>
               <div className="flex items-start gap-3">
                 <Check className="h-5 w-5 text-slate-900 shrink-0 mt-0.5" strokeWidth={2.5} />
-                <span className="text-sm text-slate-700">
-                  Core AI summary: &quot;How it feels to work with you&quot;
-                </span>
+                <span className="text-sm text-slate-700">Core summary: &quot;How it feels to work with you&quot;</span>
               </div>
               <div className="flex items-start gap-3">
                 <Check className="h-5 w-5 text-slate-900 shrink-0 mt-0.5" strokeWidth={2.5} />
@@ -78,7 +90,7 @@ export default function PricingPage() {
               </div>
               <div className="flex items-start gap-3">
                 <Check className="h-5 w-5 text-slate-900 shrink-0 mt-0.5" strokeWidth={2.5} />
-                <span className="text-sm text-slate-700">Private storage of praise</span>
+                <span className="text-sm text-slate-700">Private storage of feedback</span>
               </div>
               <div className="flex items-start gap-3">
                 <Check className="h-5 w-5 text-slate-900 shrink-0 mt-0.5" strokeWidth={2.5} />
@@ -87,7 +99,7 @@ export default function PricingPage() {
             </div>
 
             <Button className="w-full bg-slate-900 hover:bg-slate-800 text-white" size="lg" asChild>
-              <Link href="/auth/signup">Create your Nomee</Link>
+              <Link href="/auth/signup">Start saving feedback</Link>
             </Button>
           </Card>
 
@@ -110,7 +122,7 @@ export default function PricingPage() {
                 <p className="text-sm font-medium text-green-700 mb-3">Save ~27% — best value</p>
               )}
               <p className="text-base text-slate-900 font-medium leading-relaxed">
-                Own and steward your reputation over time.
+                For people who don&apos;t want their feedback to go stale, scattered, or forgotten over time.
               </p>
             </div>
 
@@ -121,42 +133,40 @@ export default function PricingPage() {
               </div>
               <div className="flex items-start gap-3">
                 <Check className="h-5 w-5 text-slate-900 shrink-0 mt-0.5" strokeWidth={2.5} />
-                <span className="text-sm text-slate-700">
-                  Upload and store praise from Slack, email, LinkedIn, texts
-                </span>
+                <span className="text-sm text-slate-700">Upload feedback from Slack, email, LinkedIn, texts</span>
               </div>
               <div className="flex items-start gap-3">
                 <Check className="h-5 w-5 text-slate-900 shrink-0 mt-0.5" strokeWidth={2.5} />
-                <span className="text-sm text-slate-700">Advanced AI summaries and pattern recognition</span>
+                <span className="text-sm text-slate-700">Timeline view of feedback over time</span>
               </div>
               <div className="flex items-start gap-3">
                 <Check className="h-5 w-5 text-slate-900 shrink-0 mt-0.5" strokeWidth={2.5} />
-                <span className="text-sm text-slate-700">Timeline view of praise over time</span>
+                <span className="text-sm text-slate-700">Freshness indicators (recent vs long-term)</span>
               </div>
               <div className="flex items-start gap-3">
                 <Check className="h-5 w-5 text-slate-900 shrink-0 mt-0.5" strokeWidth={2.5} />
-                <span className="text-sm text-slate-700">Freshness indicators (recent vs long-term signals)</span>
+                <span className="text-sm text-slate-700">Helps summarize and organize feedback as it grows</span>
               </div>
               <div className="flex items-start gap-3">
                 <Check className="h-5 w-5 text-slate-900 shrink-0 mt-0.5" strokeWidth={2.5} />
-                <span className="text-sm text-slate-700">Monthly &quot;What&apos;s changed&quot; insight digest</span>
+                <span className="text-sm text-slate-700">Monthly &quot;What&apos;s changed&quot; digest</span>
               </div>
               <div className="flex items-start gap-3">
                 <Check className="h-5 w-5 text-slate-900 shrink-0 mt-0.5" strokeWidth={2.5} />
-                <span className="text-sm text-slate-700">Full control to pin, hide, or organize praise</span>
+                <span className="text-sm text-slate-700">Full control to pin, hide, or organize feedback</span>
               </div>
             </div>
 
             {billingPeriod === "annual" && (
               <div className="mb-6">
                 <p className="text-xs text-slate-600 leading-relaxed">
-                  Best for keeping your reputation current all year.
+                  Keep your feedback organized all year without starting from zero.
                 </p>
               </div>
             )}
 
             <Button className="w-full bg-slate-900 hover:bg-slate-800 text-white" size="lg" asChild>
-              <Link href="/auth/signup?plan=maintain">Upgrade to Maintain</Link>
+              <Link href="/auth/signup?plan=maintain">Keep my feedback current</Link>
             </Button>
           </Card>
 
@@ -173,7 +183,7 @@ export default function PricingPage() {
               </div>
               {billingPeriod === "annual" && <p className="text-sm font-medium text-green-700 mb-3">Save ~26%</p>}
               <p className="text-base text-slate-900 font-medium leading-relaxed">
-                Bring trusted proof wherever decisions are made.
+                For sharing your feedback when decisions are being made — hiring, clients, partnerships.
               </p>
             </div>
 
@@ -206,14 +216,14 @@ export default function PricingPage() {
               </div>
               <div className="flex items-start gap-3">
                 <Check className="h-5 w-5 text-slate-900 shrink-0 mt-0.5" strokeWidth={2.5} />
-                <span className="text-sm text-slate-700">&quot;Verified praise&quot; visual treatment</span>
+                <span className="text-sm text-slate-700">&quot;Verified feedback&quot; visual treatment</span>
               </div>
             </div>
 
             {billingPeriod === "annual" && (
               <div className="mb-6">
                 <p className="text-xs text-slate-600 leading-relaxed">
-                  Ideal if you&apos;re actively pitching, applying, or partnering.
+                  For when you&apos;re actively pitching, applying, or partnering.
                 </p>
               </div>
             )}
@@ -225,28 +235,28 @@ export default function PricingPage() {
             </div>
 
             <Button className="w-full bg-slate-900 hover:bg-slate-800 text-white" size="lg" asChild>
-              <Link href="/auth/signup?plan=showcase">Unlock Showcase</Link>
+              <Link href="/auth/signup?plan=showcase">Use my feedback when it matters</Link>
             </Button>
           </Card>
         </div>
 
-        <div className="max-w-2xl mx-auto mb-24 text-center space-y-2">
-          <p className="text-base text-slate-700 leading-relaxed">We don&apos;t charge for praise.</p>
-          <p className="text-base text-slate-700 leading-relaxed">We don&apos;t charge for asking.</p>
-          <p className="text-base text-slate-700 leading-relaxed">
-            We charge for keeping it current — and using it when it matters.
+        <div className="max-w-2xl mx-auto mb-24 text-center space-y-3">
+          <p className="text-lg text-slate-900 font-medium leading-relaxed">You never pay to receive feedback.</p>
+          <p className="text-lg text-slate-900 font-medium leading-relaxed">You never pay to ask for feedback.</p>
+          <p className="text-lg text-slate-900 font-semibold leading-relaxed mt-6">
+            You only pay to keep it usable over time.
           </p>
         </div>
 
         {/* Footer CTA */}
         <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl sm:rounded-3xl p-8 sm:p-12 lg:p-16 text-center max-w-5xl mx-auto">
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4 sm:mb-6 leading-tight">
-            Your reputation already exists.
+            Your feedback already exists.
             <br />
-            Nomee helps you own it.
+            Nomee keeps it from disappearing.
           </h2>
           <p className="text-lg sm:text-xl text-slate-300 mb-8 sm:mb-10 leading-relaxed">
-            Start free. Upgrade when it starts opening doors.
+            Start free. Upgrade when you need it to work for you.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6">
             <Button
@@ -255,7 +265,7 @@ export default function PricingPage() {
               asChild
             >
               <Link href="/auth/signup">
-                Create your Nomee
+                Start saving feedback
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
             </Button>
