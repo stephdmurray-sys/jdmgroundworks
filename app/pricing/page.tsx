@@ -1,23 +1,22 @@
+"use client"
+
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Check, ArrowRight } from "lucide-react"
 import Link from "next/link"
-import type { Metadata } from "next"
 import { SiteHeader } from "@/components/site-header"
-
-export const metadata: Metadata = {
-  title: "Pricing | Nomee",
-  description: "Simple pricing. Real leverage. Start free, upgrade when your reputation starts working for you.",
-}
+import { useState } from "react"
 
 export default function PricingPage() {
+  const [billingPeriod, setBillingPeriod] = useState<"monthly" | "annual">("monthly")
+
   return (
     <div className="min-h-screen bg-white">
       <SiteHeader />
 
       <div className="mx-auto max-w-7xl px-4 sm:px-6 py-16 sm:py-24">
         {/* Hero Section */}
-        <div className="mb-16 sm:mb-20 text-center max-w-3xl mx-auto">
+        <div className="mb-12 sm:mb-16 text-center max-w-3xl mx-auto">
           <h1 className="mb-4 sm:mb-6 text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-slate-900">
             Simple pricing. Real leverage.
           </h1>
@@ -26,17 +25,36 @@ export default function PricingPage() {
           </p>
         </div>
 
+        <div className="flex items-center justify-center gap-4 mb-12">
+          <button
+            onClick={() => setBillingPeriod("monthly")}
+            className={`px-6 py-2 rounded-full font-medium transition-all ${
+              billingPeriod === "monthly" ? "bg-slate-900 text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+            }`}
+          >
+            Monthly
+          </button>
+          <button
+            onClick={() => setBillingPeriod("annual")}
+            className={`px-6 py-2 rounded-full font-medium transition-all ${
+              billingPeriod === "annual" ? "bg-slate-900 text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+            }`}
+          >
+            Annual
+            <span className="ml-2 text-xs">Save ~27%</span>
+          </button>
+        </div>
+
         {/* Pricing Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 max-w-7xl mx-auto mb-20">
-          {/* FREE TIER */}
           <Card className="p-6 sm:p-8 border-2 border-slate-200 hover:border-slate-300 transition-all duration-300 flex flex-col">
             <div className="mb-8">
-              <h3 className="mb-3 text-2xl font-bold text-slate-900">Free</h3>
+              <h3 className="mb-3 text-2xl font-bold text-slate-900">Collect</h3>
               <div className="mb-4">
                 <span className="text-5xl font-bold text-slate-900">$0</span>
                 <span className="text-slate-600 ml-2">forever</span>
               </div>
-              <p className="text-base text-slate-600 leading-relaxed">Collect real praise. See the patterns.</p>
+              <p className="text-base text-slate-600 leading-relaxed">Collect real praise before it disappears.</p>
             </div>
 
             <div className="space-y-3 mb-8 flex-1">
@@ -50,7 +68,9 @@ export default function PricingPage() {
               </div>
               <div className="flex items-start gap-3">
                 <Check className="h-5 w-5 text-slate-900 shrink-0 mt-0.5" strokeWidth={2.5} />
-                <span className="text-sm text-slate-700">AI summary: &quot;How it feels to work with you&quot;</span>
+                <span className="text-sm text-slate-700">
+                  Core AI summary: &quot;How it feels to work with you&quot;
+                </span>
               </div>
               <div className="flex items-start gap-3">
                 <Check className="h-5 w-5 text-slate-900 shrink-0 mt-0.5" strokeWidth={2.5} />
@@ -62,20 +82,15 @@ export default function PricingPage() {
               </div>
               <div className="flex items-start gap-3">
                 <Check className="h-5 w-5 text-slate-900 shrink-0 mt-0.5" strokeWidth={2.5} />
-                <span className="text-sm text-slate-700">Shareable personal Nomee page (basic)</span>
-              </div>
-              <div className="flex items-start gap-3">
-                <Check className="h-5 w-5 text-slate-900 shrink-0 mt-0.5" strokeWidth={2.5} />
-                <span className="text-sm text-slate-700">AI summaries refresh a limited number of times per month</span>
+                <span className="text-sm text-slate-700">Shareable Nomee page (basic view)</span>
               </div>
             </div>
 
             <Button className="w-full bg-slate-900 hover:bg-slate-800 text-white" size="lg" asChild>
-              <Link href="/auth/signup">Start free</Link>
+              <Link href="/auth/signup">Create your Nomee</Link>
             </Button>
           </Card>
 
-          {/* PRO TIER - HIGHLIGHTED */}
           <Card className="p-6 sm:p-8 border-2 border-slate-900 bg-slate-50 hover:shadow-xl transition-all duration-300 flex flex-col relative">
             <div className="absolute -top-3 left-1/2 -translate-x-1/2">
               <span className="bg-slate-900 text-white text-xs font-semibold px-4 py-1.5 rounded-full tracking-wide">
@@ -84,35 +99,35 @@ export default function PricingPage() {
             </div>
 
             <div className="mb-8">
-              <h3 className="mb-3 text-2xl font-bold text-slate-900">Pro</h3>
-              <div className="mb-4 flex items-baseline gap-3">
+              <h3 className="mb-3 text-2xl font-bold text-slate-900">Maintain</h3>
+              <div className="mb-2 flex items-baseline gap-3">
                 <div>
-                  <span className="text-5xl font-bold text-slate-900">$7</span>
-                  <span className="text-slate-600 ml-2">/ month</span>
+                  <span className="text-5xl font-bold text-slate-900">${billingPeriod === "monthly" ? "9" : "79"}</span>
+                  <span className="text-slate-600 ml-2">/ {billingPeriod === "monthly" ? "month" : "year"}</span>
                 </div>
               </div>
-              <p className="text-sm text-slate-500 mb-3">$72 / year (Save $12)</p>
-              <p className="text-base text-slate-900 font-medium leading-relaxed">Own your reputation.</p>
+              {billingPeriod === "annual" && (
+                <p className="text-sm font-medium text-green-700 mb-3">Save ~27% — best value</p>
+              )}
+              <p className="text-base text-slate-900 font-medium leading-relaxed">
+                Own and steward your reputation over time.
+              </p>
             </div>
 
             <div className="space-y-3 mb-6 flex-1">
               <div className="flex items-start gap-3">
                 <Check className="h-5 w-5 text-slate-900 shrink-0 mt-0.5" strokeWidth={2.5} />
-                <span className="text-sm text-slate-900 font-medium">Everything in Free, plus:</span>
+                <span className="text-sm text-slate-900 font-medium">Everything in Collect, plus:</span>
               </div>
               <div className="flex items-start gap-3">
                 <Check className="h-5 w-5 text-slate-900 shrink-0 mt-0.5" strokeWidth={2.5} />
                 <span className="text-sm text-slate-700">
-                  Upload & store screenshots of praise (Slack, email, LinkedIn, texts)
+                  Upload and store praise from Slack, email, LinkedIn, texts
                 </span>
               </div>
               <div className="flex items-start gap-3">
                 <Check className="h-5 w-5 text-slate-900 shrink-0 mt-0.5" strokeWidth={2.5} />
-                <span className="text-sm text-slate-700">Voice messages included in AI summaries</span>
-              </div>
-              <div className="flex items-start gap-3">
-                <Check className="h-5 w-5 text-slate-900 shrink-0 mt-0.5" strokeWidth={2.5} />
-                <span className="text-sm text-slate-700">Advanced AI pattern recognition</span>
+                <span className="text-sm text-slate-700">Advanced AI summaries and pattern recognition</span>
               </div>
               <div className="flex items-start gap-3">
                 <Check className="h-5 w-5 text-slate-900 shrink-0 mt-0.5" strokeWidth={2.5} />
@@ -120,53 +135,66 @@ export default function PricingPage() {
               </div>
               <div className="flex items-start gap-3">
                 <Check className="h-5 w-5 text-slate-900 shrink-0 mt-0.5" strokeWidth={2.5} />
-                <span className="text-sm text-slate-700">Downloadable & shareable career summary (PDF or link)</span>
+                <span className="text-sm text-slate-700">Freshness indicators (recent vs long-term signals)</span>
               </div>
               <div className="flex items-start gap-3">
                 <Check className="h-5 w-5 text-slate-900 shrink-0 mt-0.5" strokeWidth={2.5} />
-                <span className="text-sm text-slate-700">Priority AI processing</span>
+                <span className="text-sm text-slate-700">Monthly &quot;What&apos;s changed&quot; insight digest</span>
+              </div>
+              <div className="flex items-start gap-3">
+                <Check className="h-5 w-5 text-slate-900 shrink-0 mt-0.5" strokeWidth={2.5} />
+                <span className="text-sm text-slate-700">Full control to pin, hide, or organize praise</span>
               </div>
             </div>
 
-            <div className="mb-6">
-              <p className="text-xs text-slate-500 leading-relaxed">
-                Less than one coffee a month. Career insurance that compounds.
-              </p>
-            </div>
+            {billingPeriod === "annual" && (
+              <div className="mb-6">
+                <p className="text-xs text-slate-600 leading-relaxed">
+                  Best for keeping your reputation current all year.
+                </p>
+              </div>
+            )}
 
             <Button className="w-full bg-slate-900 hover:bg-slate-800 text-white" size="lg" asChild>
-              <Link href="/auth/signup?plan=pro">Upgrade to Pro</Link>
+              <Link href="/auth/signup?plan=maintain">Upgrade to Maintain</Link>
             </Button>
           </Card>
 
-          {/* SHOWCASE TIER */}
           <Card className="p-6 sm:p-8 border-2 border-slate-200 hover:border-slate-300 transition-all duration-300 flex flex-col">
             <div className="mb-8">
               <h3 className="mb-3 text-2xl font-bold text-slate-900">Showcase</h3>
-              <div className="mb-4 flex items-baseline gap-3">
+              <div className="mb-2 flex items-baseline gap-3">
                 <div>
-                  <span className="text-5xl font-bold text-slate-900">$14</span>
-                  <span className="text-slate-600 ml-2">/ month</span>
+                  <span className="text-5xl font-bold text-slate-900">
+                    ${billingPeriod === "monthly" ? "19" : "169"}
+                  </span>
+                  <span className="text-slate-600 ml-2">/ {billingPeriod === "monthly" ? "month" : "year"}</span>
                 </div>
               </div>
-              <p className="text-sm text-slate-500 mb-3">$144 / year</p>
-              <p className="text-base text-slate-900 font-medium leading-relaxed">Turn praise into leverage.</p>
+              {billingPeriod === "annual" && <p className="text-sm font-medium text-green-700 mb-3">Save ~26%</p>}
+              <p className="text-base text-slate-900 font-medium leading-relaxed">
+                Bring trusted proof wherever decisions are made.
+              </p>
             </div>
 
             <div className="space-y-3 mb-6 flex-1">
               <div className="flex items-start gap-3">
                 <Check className="h-5 w-5 text-slate-900 shrink-0 mt-0.5" strokeWidth={2.5} />
-                <span className="text-sm text-slate-900 font-medium">Everything in Pro, plus:</span>
-              </div>
-              <div className="flex items-start gap-3">
-                <Check className="h-5 w-5 text-slate-900 shrink-0 mt-0.5" strokeWidth={2.5} />
-                <span className="text-sm text-slate-700">Public-ready Nomee page (toggle sections on/off)</span>
+                <span className="text-sm text-slate-900 font-medium">Everything in Maintain, plus:</span>
               </div>
               <div className="flex items-start gap-3">
                 <Check className="h-5 w-5 text-slate-900 shrink-0 mt-0.5" strokeWidth={2.5} />
                 <span className="text-sm text-slate-700">
-                  Embed Nomee cards on personal websites, portfolios, and About pages
+                  Embed Nomee cards on websites, portfolios, and media kits
                 </span>
+              </div>
+              <div className="flex items-start gap-3">
+                <Check className="h-5 w-5 text-slate-900 shrink-0 mt-0.5" strokeWidth={2.5} />
+                <span className="text-sm text-slate-700">Public-ready views for hiring, clients, or partnerships</span>
+              </div>
+              <div className="flex items-start gap-3">
+                <Check className="h-5 w-5 text-slate-900 shrink-0 mt-0.5" strokeWidth={2.5} />
+                <span className="text-sm text-slate-700">One-page export (PDF / shareable link)</span>
               </div>
               <div className="flex items-start gap-3">
                 <Check className="h-5 w-5 text-slate-900 shrink-0 mt-0.5" strokeWidth={2.5} />
@@ -174,23 +202,25 @@ export default function PricingPage() {
               </div>
               <div className="flex items-start gap-3">
                 <Check className="h-5 w-5 text-slate-900 shrink-0 mt-0.5" strokeWidth={2.5} />
-                <span className="text-sm text-slate-700">Light branding removal</span>
+                <span className="text-sm text-slate-700">Subtle branding removal</span>
               </div>
               <div className="flex items-start gap-3">
                 <Check className="h-5 w-5 text-slate-900 shrink-0 mt-0.5" strokeWidth={2.5} />
                 <span className="text-sm text-slate-700">&quot;Verified praise&quot; visual treatment</span>
               </div>
-              <div className="flex items-start gap-3">
-                <Check className="h-5 w-5 text-slate-900 shrink-0 mt-0.5" strokeWidth={2.5} />
-                <span className="text-sm text-slate-700">
-                  Shareable link optimized for jobs, pitches, and proposals
-                </span>
-              </div>
             </div>
+
+            {billingPeriod === "annual" && (
+              <div className="mb-6">
+                <p className="text-xs text-slate-600 leading-relaxed">
+                  Ideal if you&apos;re actively pitching, applying, or partnering.
+                </p>
+              </div>
+            )}
 
             <div className="mb-6">
               <p className="text-xs text-slate-500 leading-relaxed">
-                One job, one client, or one deal pays for a year.
+                One job, one client, or one deal pays for months.
               </p>
             </div>
 
@@ -200,12 +230,11 @@ export default function PricingPage() {
           </Card>
         </div>
 
-        {/* Pricing Philosophy */}
-        <div className="max-w-2xl mx-auto mb-24 text-center space-y-3">
+        <div className="max-w-2xl mx-auto mb-24 text-center space-y-2">
           <p className="text-base text-slate-700 leading-relaxed">We don&apos;t charge for praise.</p>
           <p className="text-base text-slate-700 leading-relaxed">We don&apos;t charge for asking.</p>
           <p className="text-base text-slate-700 leading-relaxed">
-            We charge for organizing, elevating, and leveraging it.
+            We charge for keeping it current — and using it when it matters.
           </p>
         </div>
 

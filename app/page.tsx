@@ -872,31 +872,31 @@ export default function Home() {
               transition={{ duration: 0.6, delay: 0.2 }}
               className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8"
             >
-              {/* Free tier */}
+              {/* Collect tier (was Free) */}
               <div className="border border-slate-200 rounded-xl p-8 bg-white space-y-6 hover:shadow-lg transition-shadow">
                 <div className="space-y-2">
-                  <h3 className="text-2xl font-bold text-slate-900">Free</h3>
+                  <h3 className="text-2xl font-bold text-slate-900">Collect</h3>
                   <p className="text-4xl font-bold text-slate-900">$0</p>
                   <p className="text-sm text-slate-500">forever</p>
-                  <p className="text-base font-medium text-slate-700 mt-4">Collect real praise. See the patterns.</p>
+                  <p className="text-base font-medium text-slate-700 mt-4">Collect real praise before it disappears.</p>
                 </div>
 
                 <ul className="space-y-3 text-slate-600 min-h-[160px]">
                   <li className="flex items-start gap-2">
                     <span className="text-blue-600 mt-1">✓</span>
-                    <span>Unlimited contributions</span>
+                    <span>Unlimited collection links</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-blue-600 mt-1">✓</span>
-                    <span>Public Nomee page</span>
+                    <span>Core AI summary</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-blue-600 mt-1">✓</span>
-                    <span>AI pattern recognition</span>
+                    <span>Shareable Nomee page</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-blue-600 mt-1">✓</span>
-                    <span>Up to 3 proof uploads</span>
+                    <span>Private praise storage</span>
                   </li>
                 </ul>
 
@@ -904,88 +904,92 @@ export default function Home() {
                   onClick={() => openModal("deck")}
                   className="w-full bg-slate-900 text-white hover:bg-slate-800 rounded-full py-6 text-base font-medium transition-all"
                 >
-                  Start Free
+                  Create your Nomee
                 </Button>
               </div>
 
-              {/* Pro tier */}
+              {/* Maintain tier (was Pro) - $9/$79 */}
               <div className="border-2 border-blue-600 rounded-xl p-8 bg-white space-y-6 shadow-lg relative">
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-blue-600 text-white px-4 py-1 rounded-full text-xs font-semibold uppercase tracking-wide">
                   Most Popular
                 </div>
                 <div className="space-y-2">
-                  <h3 className="text-2xl font-bold text-slate-900">Pro</h3>
+                  <h3 className="text-2xl font-bold text-slate-900">Maintain</h3>
                   <p className="text-4xl font-bold text-slate-900">
-                    $7<span className="text-lg font-normal text-slate-600">/month</span>
+                    $9<span className="text-lg font-normal text-slate-600">/month</span>
                   </p>
-                  <p className="text-sm text-slate-500">$72 / year (Save $12)</p>
-                  <p className="text-base font-medium text-slate-700 mt-4">Own your reputation.</p>
+                  <p className="text-sm text-slate-500">$79 / year (Save ~27%)</p>
+                  <p className="text-base font-medium text-slate-700 mt-4">
+                    Own and steward your reputation over time.
+                  </p>
                 </div>
 
                 <ul className="space-y-3 text-slate-600 min-h-[160px]">
                   <li className="flex items-start gap-2">
                     <span className="text-blue-600 mt-1">✓</span>
-                    <span>Everything in Free</span>
+                    <span>Everything in Collect</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-blue-600 mt-1">✓</span>
-                    <span>Unlimited proof uploads</span>
+                    <span>Upload external praise</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-blue-600 mt-1">✓</span>
-                    <span>Custom proof organization</span>
+                    <span>Timeline & freshness views</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-blue-600 mt-1">✓</span>
-                    <span>Advanced AI summaries</span>
+                    <span>Monthly insights digest</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-blue-600 mt-1">✓</span>
-                    <span>PDF export</span>
+                    <span>Advanced AI patterns</span>
                   </li>
                 </ul>
 
                 <Button className="w-full bg-blue-600 text-white hover:bg-blue-700 rounded-full py-6 text-base font-medium transition-all">
-                  Start Your Nomee
+                  Upgrade to Maintain
                 </Button>
               </div>
 
-              {/* Showcase tier */}
+              {/* Showcase tier - $19/$169 */}
               <div className="border border-slate-200 rounded-xl p-8 bg-white space-y-6 hover:shadow-lg transition-shadow">
                 <div className="space-y-2">
                   <h3 className="text-2xl font-bold text-slate-900">Showcase</h3>
                   <p className="text-4xl font-bold text-slate-900">
-                    $14<span className="text-lg font-normal text-slate-600">/month</span>
+                    $19<span className="text-lg font-normal text-slate-600">/month</span>
                   </p>
-                  <p className="text-sm text-slate-500">$144 / year</p>
-                  <p className="text-base font-medium text-slate-700 mt-4">Turn praise into leverage.</p>
+                  <p className="text-sm text-slate-500">$169 / year (Save ~26%)</p>
+                  <p className="text-base font-medium text-slate-700 mt-4">
+                    Bring trusted proof wherever decisions are made.
+                  </p>
                 </div>
 
                 <ul className="space-y-3 text-slate-600 min-h-[160px]">
                   <li className="flex items-start gap-2">
                     <span className="text-blue-600 mt-1">✓</span>
-                    <span>Everything in Pro</span>
+                    <span>Everything in Maintain</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-blue-600 mt-1">✓</span>
-                    <span>Embeddable proof tiles</span>
+                    <span>Embeds for websites & portfolios</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-blue-600 mt-1">✓</span>
-                    <span>Custom branding</span>
+                    <span>One-page export (PDF)</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-blue-600 mt-1">✓</span>
-                    <span>Priority support</span>
+                    <span>Custom URL & branding</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-blue-600 mt-1">✓</span>
-                    <span>Advanced analytics</span>
+                    <span>Verified praise treatment</span>
                   </li>
                 </ul>
 
                 <Button className="w-full bg-slate-900 text-white hover:bg-slate-800 rounded-full py-6 text-base font-medium transition-all">
-                  Upgrade to Showcase
+                  Unlock Showcase
                 </Button>
               </div>
             </motion.div>
@@ -995,10 +999,13 @@ export default function Home() {
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.4 }}
-              className="text-center pt-6 md:pt-8"
+              className="text-center pt-6 md:pt-8 space-y-2"
             >
-              <p className="text-sm text-slate-500 max-w-2xl mx-auto px-4">
-                Start free. Upgrade only when your reputation starts working for you.
+              <p className="text-sm text-slate-600 max-w-2xl mx-auto px-4">
+                We don&apos;t charge for praise. We don&apos;t charge for asking.
+              </p>
+              <p className="text-sm text-slate-600 max-w-2xl mx-auto px-4">
+                We charge for keeping it current — and using it when it matters.
               </p>
             </motion.div>
           </div>
