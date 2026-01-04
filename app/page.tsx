@@ -47,7 +47,7 @@ export default function Home() {
                 </h1>
 
                 <p className="text-lg md:text-xl lg:text-2xl text-slate-700 leading-relaxed">
-                  Save what people say about your work — ready when it matters.
+                  Save what people say about your work in one place — so it's ready when it matters.
                 </p>
 
                 <p className="text-base text-slate-600 leading-relaxed">
@@ -102,17 +102,6 @@ export default function Home() {
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(59,130,246,0.03),transparent_50%)]" />
 
           <div className="relative max-w-7xl mx-auto">
-            <div className="text-center mb-8 md:mb-12">
-              <motion.p
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-                className="text-base md:text-lg text-slate-600 leading-relaxed max-w-3xl mx-auto px-4"
-              >
-                Feedback disappears. Nomee saves it as it happens.
-              </motion.p>
-            </div>
-
             <div className="text-center mb-12 md:mb-16">
               <motion.h3
                 initial={{ opacity: 0, y: 10 }}
@@ -132,7 +121,9 @@ export default function Home() {
                 className="bg-white rounded-2xl p-6 md:p-8 border border-slate-200 shadow-sm space-y-4 transition-all duration-300 ease-out hover:shadow-lg hover:-translate-y-1 hover:border-slate-300"
               >
                 <h4 className="text-xl md:text-2xl font-semibold text-slate-900">Collect feedback</h4>
-                <p className="text-base text-slate-700 leading-relaxed">Invite people to share feedback.</p>
+                <p className="text-base text-slate-700 leading-relaxed">
+                  Invite people to share short, honest feedback.
+                </p>
               </motion.div>
 
               <motion.div
@@ -143,7 +134,7 @@ export default function Home() {
               >
                 <h4 className="text-xl md:text-2xl font-semibold text-slate-900">Save existing feedback</h4>
                 <p className="text-base text-slate-700 leading-relaxed">
-                  Upload feedback you already have — emails, Slack, texts, or screenshots.
+                  Save feedback you already have — emails, Slack messages, texts, or screenshots.
                 </p>
               </motion.div>
             </div>
