@@ -43,11 +43,11 @@ export default function Home() {
                 </p>
 
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-slate-900 leading-tight tracking-tight">
-                  You receive valuable feedback. Nomee helps you keep it.
+                  You receive valuable feedback. Nomee keeps it.
                 </h1>
 
                 <p className="text-lg md:text-xl lg:text-2xl text-slate-700 leading-relaxed">
-                  Save what people say about your work in one place — so it's ready when it matters.
+                  Save what people say about your work — ready when it matters.
                 </p>
 
                 <p className="text-base text-slate-600 leading-relaxed">
@@ -72,7 +72,7 @@ export default function Home() {
                   </Link>
                 </div>
 
-                <p className="text-sm text-slate-500">      Start free. No card required.</p>
+                <p className="text-sm text-slate-500"> Start free. No card required.</p>
               </motion.div>
 
               {/* Right: Real Nomee Slice (Desktop) */}
@@ -109,7 +109,7 @@ export default function Home() {
                 transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
                 className="text-base md:text-lg text-slate-600 leading-relaxed max-w-3xl mx-auto px-4"
               >
-                Most feedback gets buried in messages or forgotten. Nomee saves it as it happens.
+                Feedback disappears. Nomee saves it as it happens.
               </motion.p>
             </div>
 
@@ -132,9 +132,7 @@ export default function Home() {
                 className="bg-white rounded-2xl p-6 md:p-8 border border-slate-200 shadow-sm space-y-4 transition-all duration-300 ease-out hover:shadow-lg hover:-translate-y-1 hover:border-slate-300"
               >
                 <h4 className="text-xl md:text-2xl font-semibold text-slate-900">Collect feedback</h4>
-                <p className="text-base text-slate-700 leading-relaxed">
-                  Invite people to share short, honest feedback.
-                </p>
+                <p className="text-base text-slate-700 leading-relaxed">Invite people to share feedback.</p>
               </motion.div>
 
               <motion.div
@@ -145,7 +143,7 @@ export default function Home() {
               >
                 <h4 className="text-xl md:text-2xl font-semibold text-slate-900">Save existing feedback</h4>
                 <p className="text-base text-slate-700 leading-relaxed">
-                  Bring in feedback you already have — emails, Slack messages, texts, or screenshots.
+                  Upload feedback you already have — emails, Slack, texts, or screenshots.
                 </p>
               </motion.div>
             </div>
@@ -622,9 +620,7 @@ export default function Home() {
                 Real feedback. Unedited.
               </h2>
 
-              <p className="text-base md:text-lg text-slate-600">
-                This isn't self-promotion. It's what people actually said.
-              </p>
+              <p className="text-base md:text-lg text-slate-600">What people actually said.</p>
             </motion.div>
 
             <motion.div
@@ -672,8 +668,7 @@ export default function Home() {
                 For decision-makers
               </h2>
               <p className="text-lg md:text-xl lg:text-2xl text-slate-600 max-w-3xl mx-auto leading-relaxed px-4">
-                When decisions are being made, guessing isn't enough. Saved feedback shows how someone actually works
-                with others.
+                When decisions are made, guessing isn't enough. Saved feedback shows how someone actually works.
               </p>
             </motion.div>
 
@@ -901,17 +896,13 @@ export default function Home() {
                     <span className="text-blue-600 mt-1">✓</span>
                     <span>Core summary + traits</span>
                   </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-blue-600 mt-1">✓</span>
-                    <span>Up to 3 saved feedback</span>
-                  </li>
                 </ul>
 
                 <Button
                   onClick={() => openModal("deck")}
                   className="w-full bg-slate-900 text-white hover:bg-slate-800 rounded-full py-6 text-base font-medium transition-all"
                 >
-                  Start saving feedback
+                  Save my feedback
                 </Button>
               </div>
 
@@ -938,7 +929,7 @@ export default function Home() {
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-blue-600 mt-1">✓</span>
-                    <span>Unlimited saved feedback & secure storage</span>
+                    <span>Saved feedback & secure storage</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-blue-600 mt-1">✓</span>
@@ -946,7 +937,7 @@ export default function Home() {
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-blue-600 mt-1">✓</span>
-                    <span>Freshness tracking (recent vs long-term feedback)</span>
+                    <span>Track recent vs long-term feedback</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-blue-600 mt-1">✓</span>
@@ -1011,11 +1002,9 @@ export default function Home() {
               transition={{ duration: 0.6, delay: 0.4 }}
               className="text-center pt-6 md:pt-8 space-y-2"
             >
+              <p className="text-sm text-slate-600 max-w-2xl mx-auto px-4">We don't charge for feedback or asking.</p>
               <p className="text-sm text-slate-600 max-w-2xl mx-auto px-4">
-                We don't charge for feedback. We don't charge for asking.
-              </p>
-              <p className="text-sm text-slate-600 max-w-2xl mx-auto px-4">
-                We charge for keeping it organized — and ready when it matters.
+                We charge for keeping it organized — ready when it matters.
               </p>
             </motion.div>
           </div>
@@ -1055,7 +1044,7 @@ export default function Home() {
                 size="lg"
                 className="w-full md:w-auto bg-white text-slate-900 hover:bg-slate-100 rounded-full px-8 py-6 text-base font-medium shadow-lg hover:shadow-xl transition-all"
               >
-                Create your Nomee
+                Save my feedback
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
             </motion.div>
