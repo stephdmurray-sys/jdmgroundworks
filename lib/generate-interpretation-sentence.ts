@@ -11,7 +11,6 @@ export async function generateInterpretationSentence(
   topTraits: TraitData[],
   totalVerifiedCount: number,
 ): Promise<string> {
-  // If confidence is low or data is sparse, return neutral fallback
   if (topTraits.length === 0) {
     return `People describe working with ${personName.split(" ")[0]} as thoughtful and professional.`
   }
@@ -21,9 +20,16 @@ export async function generateInterpretationSentence(
     return `People describe working with ${personName.split(" ")[0]} as ${trait} in day-to-day collaboration.`
   }
 
-  // Use only top 3-5 traits
-  const traitsToUse = topTraits.slice(0, Math.min(5, topTraits.length))
-  const traitLabels = traitsToUse.map((t) => t.label).join(", ")
+  // Use only top 3 traits for the fallback sentence
+  const traitsToUse = topTraits.slice(0, 3)
+  const topTraitsList = traitsToUse.map((t) => t.label.toLowerCase()).join(", ")
+  return `People describe working with ${personName.split(" ")[0]} as ${topTraitsList}.`
+
+  // AI Gateway code disabled to prevent errors in preview environment
+  const traitLabels = topTraits
+    .slice(0, Math.min(5, topTraits.length))
+    .map((t) => t.label)
+    .join(", ")
 
   try {
     const { text } = await generateText({
@@ -69,20 +75,15 @@ Generate the interpretation sentence now.`,
       ],
     })
 
-    // Clean up the response
     const cleanedText = text
       .trim()
-      .replace(/^["']|["']$/g, "") // Remove surrounding quotes
-      .replace(/\*\*/g, "") // Remove markdown bold
-      .replace(/\n/g, " ") // Remove line breaks
+      .replace(/^["']|["']$/g, "")
+      .replace(/\*\*/g, "")
+      .replace(/\n/g, " ")
 
     return cleanedText
   } catch (error) {
     console.error("[v0] Error generating interpretation sentence:", error)
-    // Fallback to a neutral sentence
-    return `People describe working with ${personName.split(" ")[0]} as ${traitsToUse
-      .slice(0, 3)
-      .map((t) => t.label.toLowerCase())
-      .join(", ")}.`
+    return `People describe working with ${personName.split(" ")[0]} as ${topTraitsList}.`
   }
 }

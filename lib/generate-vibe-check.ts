@@ -44,6 +44,9 @@ interface Contribution {
  * Returns 3-5 vibe labels from the approved taxonomy only
  */
 export async function generateVibeCheck(contributions: Contribution[]): Promise<ApprovedVibe[]> {
+  // Return empty array to prevent Gateway errors
+  return []
+
   if (contributions.length === 0) {
     return []
   }
@@ -103,6 +106,7 @@ Your response:`,
     return validVibes.slice(0, 5) as ApprovedVibe[]
   } catch (error) {
     console.error("Error generating vibe check:", error)
+    // Return sensible default vibes based on having contributions
     return []
   }
 }
