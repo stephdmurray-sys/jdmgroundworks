@@ -38,14 +38,17 @@ export default function Home() {
                 transition={{ duration: 0.6 }}
                 className="space-y-6 lg:pt-8"
               >
-                <p className="text-sm text-slate-600 font-medium">Feedback gets lost. Nomee keeps it.</p>
+                <p className="text-sm text-slate-600 font-medium">
+                  Most people don't save the best feedback they receive — until they need it.
+                </p>
 
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-slate-900 leading-tight tracking-tight">
-                  The best feedback you receive doesn't stay in one place.
+                  You get good feedback. Nomee makes sure you can find it when it matters.
                 </h1>
 
                 <p className="text-lg md:text-xl lg:text-2xl text-slate-700 leading-relaxed">
-                  Nomee is a living record of how people experience working with you — saved in one place, over time.
+                  Save what people say about your work in one place — so you're ready for reviews, opportunities, and
+                  conversations that matter.
                 </p>
 
                 <div className="flex flex-col sm:flex-row items-start gap-4 pt-2 md:pt-4">
@@ -103,8 +106,8 @@ export default function Home() {
                 transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
                 className="text-base md:text-lg text-slate-600 leading-relaxed max-w-3xl mx-auto px-4"
               >
-                Most people don't save feedback until they need it. By then, it's scattered or gone. Nomee helps you
-                save it as it happens.
+                By the time most people go looking for feedback, it's buried in messages, emails, or screenshots — or
+                gone entirely. Nomee saves it as it happens.
               </motion.p>
             </div>
 
@@ -126,12 +129,12 @@ export default function Home() {
                 transition={{ duration: 0.6, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
                 className="bg-white rounded-2xl p-6 md:p-8 border border-slate-200 shadow-sm space-y-4 transition-all duration-300 ease-out hover:shadow-lg hover:-translate-y-1 hover:border-slate-300"
               >
-                <h4 className="text-xl md:text-2xl font-semibold text-slate-900">Collect new feedback</h4>
+                <h4 className="text-xl md:text-2xl font-semibold text-slate-900">
+                  Invite people to leave short, honest feedback
+                </h4>
                 <p className="text-base text-slate-700 leading-relaxed">
-                  Invite people to share short, honest feedback — nothing formal, nothing polished. Capture feedback
-                  before it disappears into messages.
+                  Nothing formal. Nothing polished. Just real feedback before it gets lost.
                 </p>
-                <p className="text-sm text-slate-500 pt-2">Free · Unlimited</p>
               </motion.div>
 
               <motion.div
@@ -140,11 +143,10 @@ export default function Home() {
                 transition={{ duration: 0.6, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
                 className="bg-white rounded-2xl p-6 md:p-8 border border-slate-200 shadow-sm space-y-4 transition-all duration-300 ease-out hover:shadow-lg hover:-translate-y-1 hover:border-slate-300"
               >
-                <h4 className="text-xl md:text-2xl font-semibold text-slate-900">Save existing feedback</h4>
+                <h4 className="text-xl md:text-2xl font-semibold text-slate-900">Save feedback you already have</h4>
                 <p className="text-base text-slate-700 leading-relaxed">
-                  Save feedback you already have from emails, Slack, texts, or screenshots — finally in one place.
+                  Emails, Slack messages, texts, screenshots — finally in one place.
                 </p>
-                <p className="text-sm text-slate-500 pt-2">3 uploads free · Unlimited on Pro</p>
               </motion.div>
             </div>
 
@@ -166,7 +168,7 @@ export default function Home() {
               className="text-center mb-8"
             >
               <p className="text-sm font-medium text-slate-600 px-4">
-                This is the kind of feedback most people forget to save.
+                This is the kind of feedback people wish they'd saved.
               </p>
             </motion.div>
 
