@@ -34,9 +34,9 @@ export default function Home() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
-                className="space-y-5"
+                className="space-y-4"
               >
-                <p className="text-sm text-slate-600 font-medium">
+                <p className="text-xs md:text-sm text-slate-500 font-normal">
                   Most people forget the best feedback they receive — until they need it.
                 </p>
 
@@ -45,14 +45,10 @@ export default function Home() {
                 </h1>
 
                 <p className="text-lg md:text-xl lg:text-2xl text-slate-700 leading-relaxed">
-                  Save what people say about your work in one place — so it's ready when it matters.
+                  Save what people say about your work — ready when it matters.
                 </p>
 
-                <p className="text-base text-slate-600 leading-relaxed">
-                  Usually, that moment is a review, an interview, a client conversation, or an unexpected opportunity.
-                </p>
-
-                <div className="flex flex-col sm:flex-row items-start gap-4 pt-2">
+                <div className="flex flex-col sm:flex-row items-start gap-4 pt-1">
                   <Button
                     onClick={() => openModal("deck")}
                     size="lg"
@@ -123,11 +119,8 @@ export default function Home() {
               className="mb-16 md:mb-20 max-w-2xl mx-auto text-center px-4"
             >
               <h3 className="text-2xl md:text-3xl font-semibold text-slate-900 mb-4">Your personal Nomee page</h3>
-              <p className="text-base md:text-lg text-slate-700 leading-relaxed mb-3">
-                A private link that keeps all your saved feedback in one place — ready to share when it matters.
-              </p>
-              <p className="text-base text-slate-600 leading-relaxed mb-6">
-                You decide when to share it — for a review, a role, a client, or an unexpected opportunity.
+              <p className="text-base md:text-lg text-slate-700 leading-relaxed mb-6">
+                One private link that keeps all your feedback in one place — ready to share when it matters.
               </p>
               <Link
                 href="/auth/signup"
@@ -143,10 +136,8 @@ export default function Home() {
               transition={{ duration: 0.6, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
               className="mb-8 md:mb-12 max-w-2xl mx-auto text-center px-4"
             >
-              <h3 className="text-xl md:text-2xl font-semibold text-slate-900 mb-3">An example Nomee page</h3>
-              <p className="text-base text-slate-600 leading-relaxed">
-                This is what saved feedback looks like in one place.
-              </p>
+              <h3 className="text-xl md:text-2xl font-semibold text-slate-900 mb-3">What your Nomee page looks like</h3>
+              <p className="text-base text-slate-600 leading-relaxed">Real feedback — saved as it happens.</p>
             </motion.div>
 
             <div className="relative max-w-6xl mx-auto">
