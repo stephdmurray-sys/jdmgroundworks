@@ -7,7 +7,6 @@ import { motion } from "framer-motion"
 import { SiteHeader } from "@/components/site-header"
 import { ArrowRight } from "lucide-react"
 import Link from "next/link"
-import { RealNomeeSlice } from "@/components/real-nomee-slice"
 
 export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -71,30 +70,8 @@ export default function Home() {
                     See an example →
                   </Link>
                 </div>
-
-                <p className="text-sm text-slate-500"> Start free. No card required.</p>
-              </motion.div>
-
-              {/* Right: Real Nomee Slice (Desktop) */}
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-                className="hidden lg:block"
-              >
-                <RealNomeeSlice />
               </motion.div>
             </div>
-
-            {/* Mobile: Real Nomee Slice below hero copy */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              className="lg:hidden mt-10"
-            >
-              <RealNomeeSlice />
-            </motion.div>
           </div>
         </section>
 
@@ -122,7 +99,7 @@ export default function Home() {
               >
                 <h4 className="text-xl md:text-2xl font-semibold text-slate-900">Collect feedback</h4>
                 <p className="text-base text-slate-700 leading-relaxed">
-                  Invite people to share short, honest feedback.
+                  Invite people to share feedback as it happens.
                 </p>
               </motion.div>
 
@@ -162,20 +139,14 @@ export default function Home() {
             </motion.div>
 
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
-              className="text-center mb-12 md:mb-16"
-            ></motion.div>
-
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.6, delay: 0.45 }}
-              className="text-center mb-8"
+              className="mb-8 md:mb-12 max-w-2xl mx-auto text-center px-4"
             >
-              <p className="text-sm font-medium text-slate-600 px-4">
-                This is the kind of feedback most people forget to save.
+              <h3 className="text-xl md:text-2xl font-semibold text-slate-900 mb-3">An example Nomee page</h3>
+              <p className="text-base text-slate-600 leading-relaxed">
+                This is what saved feedback looks like in one place.
               </p>
             </motion.div>
 
@@ -426,30 +397,24 @@ export default function Home() {
                   </svg>
                 </motion.div>
 
-                {/* Primary CTA */}
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: 1, ease: [0.16, 1, 0.3, 1] }}
-                  className="flex flex-col items-center gap-3 md:gap-4"
+                  className="flex flex-col items-center justify-center gap-4 pt-8 md:pt-16"
                 >
                   <Link
                     href="/auth/signup"
-                    className="w-full md:w-auto group relative inline-flex items-center justify-center px-8 md:px-10 py-4 bg-slate-900 text-white rounded-full font-medium text-base hover:bg-slate-800 transition-all duration-300 shadow-lg hover:shadow-2xl hover:scale-105"
+                    className="inline-flex items-center justify-center px-8 py-4 rounded-full bg-slate-900 text-white font-medium hover:bg-slate-800 transition-colors duration-200 text-lg"
                   >
-                    <span>Save my feedback</span>
-                    <svg
-                      className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform duration-300"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                    </svg>
+                    Save my feedback
                   </Link>
-                  <p className="text-xs text-slate-500 text-center px-4">
-                    Ready when it matters — not lost in messages
-                  </p>
+                  <Link
+                    href="/maya-torres"
+                    className="text-sm text-slate-500 hover:text-slate-700 transition-colors duration-200"
+                  >
+                    See the full example →
+                  </Link>
                 </motion.div>
               </div>
             </div>
