@@ -27,15 +27,14 @@ export default function Home() {
       <div className="min-h-screen bg-white">
         <SiteHeader onCreateClick={() => openModal("deck")} />
 
-        <section className="pt-24 md:pt-32 pb-16 md:pb-24 px-6">
+        <section className="pt-16 md:pt-20 pb-8 md:pb-12 px-6">
           <div className="max-w-7xl mx-auto">
-            <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-start">
-              {/* Left: Product-first copy */}
+            <div className="max-w-3xl mx-auto">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
-                className="space-y-6 lg:pt-8"
+                className="space-y-5"
               >
                 <p className="text-sm text-slate-600 font-medium">
                   Most people forget the best feedback they receive — until they need it.
@@ -53,7 +52,7 @@ export default function Home() {
                   Usually, that moment is a review, an interview, a client conversation, or an unexpected opportunity.
                 </p>
 
-                <div className="flex flex-col sm:flex-row items-start gap-4 pt-2 md:pt-4">
+                <div className="flex flex-col sm:flex-row items-start gap-4 pt-2">
                   <Button
                     onClick={() => openModal("deck")}
                     size="lg"
@@ -65,7 +64,7 @@ export default function Home() {
 
                   <Link
                     href="/maya-torres"
-                    className="w-full sm:w-auto text-center sm:text-left text-slate-600 hover:text-slate-900 font-medium text-base flex items-center justify-center gap-2 px-4 py-3"
+                    className="w-full sm:w-auto text-center sm:text-left text-slate-500 hover:text-slate-700 text-sm flex items-center gap-1.5 px-4 py-3 transition-colors"
                   >
                     See an example →
                   </Link>
@@ -75,11 +74,11 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="relative py-16 md:py-24 px-6 bg-gradient-to-b from-slate-50 to-white overflow-hidden">
+        <section className="relative py-12 md:py-16 px-6 bg-gradient-to-b from-slate-50 to-white overflow-hidden">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(59,130,246,0.03),transparent_50%)]" />
 
           <div className="relative max-w-7xl mx-auto">
-            <div className="text-center mb-12 md:mb-16">
+            <div className="text-center mb-10 md:mb-12">
               <motion.h3
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
