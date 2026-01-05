@@ -601,10 +601,10 @@ export default function Home() {
             className="text-center space-y-4 md:space-y-6 mb-12 md:mb-20"
           >
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-semibold text-slate-900 tracking-tight px-4">
-              For decision-makers
+              How work is evaluated — when it actually matters
             </h2>
             <p className="text-lg md:text-xl lg:text-2xl text-slate-600 max-w-3xl mx-auto leading-relaxed px-4">
-              When decisions are made, guessing isn't enough. Saved feedback shows how someone actually works.
+              When decisions matter, memory isn't enough. Saved feedback shows how someone truly works.
             </p>
           </motion.div>
 
@@ -663,11 +663,10 @@ export default function Home() {
                   <p className="text-sm font-medium text-slate-500 uppercase tracking-wider mb-2">
                     Decision-Maker View
                   </p>
-                  <h3 className="text-3xl font-semibold text-slate-900">
-                    {activeDecisionTab === "hiring" && "Candidate evaluation"}
-                    {activeDecisionTab === "partnerships" && "Partner validation"}
-                    {activeDecisionTab === "clients" && "Collaboration preview"}
-                  </h3>
+                  {/* CHANGE: Added paragraph to describe the card and remove h3 */}
+                  <p className="text-base text-slate-600 mt-2 max-w-xl">
+                    A real signal built from feedback shared over time — not summaries or self-reports.
+                  </p>
                 </div>
                 <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-lg border border-slate-200">
                   <svg className="w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -855,55 +854,33 @@ export default function Home() {
                 )}
               </div>
 
+              {/* CHANGE: Updated footer line */}
               <div className="pt-6 border-t border-slate-200">
                 <p className="text-sm text-slate-500">
-                  {activeDecisionTab === "hiring" && "Common themes across team feedback."}
-                  {activeDecisionTab === "partnerships" && "Common themes across partner feedback."}
-                  {activeDecisionTab === "clients" && "Common themes across client feedback."}
+                  This is the feedback teams usually lose — unless it's saved as it happens.
                 </p>
               </div>
             </div>
           </motion.div>
 
-          <motion.p
+          <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.3 }}
-            className="text-center text-slate-500 mt-8 text-sm max-w-2xl mx-auto px-4"
+            className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-12 px-4"
           >
-            {activeDecisionTab === "hiring" && "See real feedback before the interview. Don't rely on resumes alone."}
-            {activeDecisionTab === "partnerships" && "See how someone works before committing to a partnership."}
-            {activeDecisionTab === "clients" && "See what to expect before starting a project together."}
-          </motion.p>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-            className="text-center mt-12 md:mt-16 space-y-6"
-          >
-            <div className="flex flex-col gap-4 px-4">
-              <Link
-                href="/maya-torres"
-                className="w-full inline-flex items-center justify-center gap-2 bg-slate-900 text-white px-8 py-4 rounded-xl text-base md:text-lg font-semibold hover:bg-slate-800 transition-all duration-300 shadow-lg hover:shadow-xl"
-              >
+            <Link href="/maya-torres">
+              <Button size="lg" className="text-base">
                 See an example
-              </Link>
-              <Link
-                href="/auth/signup"
-                className="w-full inline-flex items-center justify-center gap-2 border-2 border-slate-300 text-slate-900 px-8 py-4 rounded-xl text-base md:text-lg font-semibold hover:bg-slate-50 transition-all duration-300"
-              >
-                Start saving feedback
-              </Link>
-            </div>
-
-            <p className="text-sm text-slate-500 px-4">Real names. Real relationships. One contribution per person.</p>
-
-            <p className="text-sm text-slate-400 max-w-2xl mx-auto leading-relaxed px-4">
-              Your Nomee page is free to share — forever. You only upgrade to keep feedback organized over time.
-            </p>
+              </Button>
+            </Link>
+            <Link
+              href="/auth/signup"
+              className="text-slate-600 hover:text-slate-900 transition-colors text-sm font-medium"
+            >
+              Encourage your team to save feedback early
+            </Link>
           </motion.div>
         </div>
       </section>
