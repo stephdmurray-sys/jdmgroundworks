@@ -51,8 +51,6 @@ export default function Home() {
               <strong className="font-semibold text-gray-900">throughout your career</strong>.
             </p>
 
-            
-
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
               <Button
                 variant="default"
@@ -60,12 +58,14 @@ export default function Home() {
               >
                 Build My Reputation Profile
               </Button>
-              <Button
-                variant="outline"
-                className="px-8 py-4 rounded-xl text-lg font-semibold hover:border-gray-300 transition-all bg-transparent"
-              >
-                See How It Works
-              </Button>
+              <Link href="/what-is-nomee">
+                <Button
+                  variant="outline"
+                  className="px-8 py-4 rounded-xl text-lg font-semibold hover:border-gray-300 transition-all bg-transparent"
+                >
+                  See How It Works
+                </Button>
+              </Link>
             </div>
 
             <div className="flex items-center justify-center space-x-8 text-sm text-gray-500">
@@ -487,7 +487,7 @@ export default function Home() {
                 <h3 className="text-2xl font-bold">Freelancers & Creators</h3>
               </div>
               <p className="text-lg text-gray-700 italic mb-6">
-                "You've completed 50 projects, but every new client asks for references. Again."
+                "You've completed 50 projects, but every client asks for references. Again."
               </p>
               <div className="space-y-4">
                 <div>

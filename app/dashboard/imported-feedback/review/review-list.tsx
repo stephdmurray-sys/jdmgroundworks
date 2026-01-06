@@ -272,6 +272,18 @@ export default function ReviewList({ initialPending, initialApproved }: ReviewLi
     }
   }
 
+  const hasMissingRequiredFields = (feedback: (typeof pending)[0]) => {
+    const name = editingId === feedback.id ? editForm.giverName : feedback?.giver_name
+    const company = editingId === feedback.id ? editForm.giverCompany : feedback?.giver_company
+    const role = editingId === feedback.id ? editForm.giverRole : feedback?.giver_role
+
+    const nameMissing = !name || name === "Review needed" || name === "Unknown" || name.trim() === ""
+    const companyMissing = !company || company === "Not specified" || company === "Needs input" || company.trim() === ""
+    const roleMissing = !role || role === "Not specified" || role === "Needs input" || role.trim() === ""
+
+    return nameMissing || companyMissing || roleMissing
+  }
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Pending Review Section */}
@@ -438,6 +450,18 @@ export default function ReviewList({ initialPending, initialApproved }: ReviewLi
                               </p>
                             </div>
 
+                            {hasMissingRequiredFields(feedback) && !isEditing && (
+                              <div className="rounded-lg border border-amber-200 bg-amber-50 p-3 mb-4">
+                                <div className="flex items-start gap-2">
+                                  <AlertCircle className="mt-0.5 h-4 w-4 text-amber-600" />
+                                  <p className="text-sm text-amber-900">
+                                    Please click <strong>"Edit Details"</strong> to fill in all required fields before
+                                    approving.
+                                  </p>
+                                </div>
+                              </div>
+                            )}
+
                             <div className="flex gap-2 pt-4">
                               {(feedback.extraction_status === "failed" ||
                                 (feedback.extraction_status === "success" &&
@@ -482,14 +506,31 @@ export default function ReviewList({ initialPending, initialApproved }: ReviewLi
                                   </TooltipContent>
                                 </Tooltip>
                               </TooltipProvider>
-                              <Button size="sm" onClick={() => handleApprove(feedback.id)} disabled={isProcessing}>
-                                {isProcessing ? (
-                                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                ) : (
-                                  <Check className="mr-2 h-4 w-4" />
-                                )}
-                                Approve & Publish
-                              </Button>
+                              <TooltipProvider>
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <span>
+                                      <Button
+                                        size="sm"
+                                        onClick={() => handleApprove(feedback.id)}
+                                        disabled={isProcessing || hasMissingRequiredFields(feedback)}
+                                      >
+                                        {isProcessing ? (
+                                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                        ) : (
+                                          <Check className="mr-2 h-4 w-4" />
+                                        )}
+                                        Approve & Publish
+                                      </Button>
+                                    </span>
+                                  </TooltipTrigger>
+                                  {hasMissingRequiredFields(feedback) && (
+                                    <TooltipContent>
+                                      <p>Complete all required fields to approve</p>
+                                    </TooltipContent>
+                                  )}
+                                </Tooltip>
+                              </TooltipProvider>
                             </div>
                           </>
                         ) : (
@@ -624,20 +665,33 @@ export default function ReviewList({ initialPending, initialApproved }: ReviewLi
                               <Button onClick={() => setEditingId(null)} variant="outline" className="flex-1">
                                 Cancel
                               </Button>
-                              <Button
-                                onClick={() => handleApprove(feedback.id)}
-                                disabled={isProcessing}
-                                className="flex-1"
-                              >
-                                {isProcessing ? (
-                                  "Saving..."
-                                ) : (
-                                  <>
-                                    <CheckCircle2 className="mr-2 h-4 w-4" />
-                                    Save & Approve
-                                  </>
-                                )}
-                              </Button>
+                              <TooltipProvider>
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <span className="flex-1">
+                                      <Button
+                                        onClick={() => handleApprove(feedback.id)}
+                                        disabled={isProcessing || hasMissingRequiredFields(feedback)}
+                                        className="w-full"
+                                      >
+                                        {isProcessing ? (
+                                          "Saving..."
+                                        ) : (
+                                          <>
+                                            <CheckCircle2 className="mr-2 h-4 w-4" />
+                                            Save & Approve
+                                          </>
+                                        )}
+                                      </Button>
+                                    </span>
+                                  </TooltipTrigger>
+                                  {hasMissingRequiredFields(feedback) && (
+                                    <TooltipContent>
+                                      <p>Fill in all required fields (Name, Company, Role) to approve</p>
+                                    </TooltipContent>
+                                  )}
+                                </Tooltip>
+                              </TooltipProvider>
                             </div>
                           </>
                         )}

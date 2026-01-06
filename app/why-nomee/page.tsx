@@ -44,7 +44,7 @@ export default function WhyNomeePage() {
               Build My Reputation Profile
             </button>
           </Link>
-          <Link href="/example">
+          <Link href="/what-is-nomee">
             <button className="bg-white border-2 border-gray-300 text-gray-900 px-8 py-3 rounded-lg font-medium hover:border-gray-400 transition-colors">
               See How It Works
             </button>
