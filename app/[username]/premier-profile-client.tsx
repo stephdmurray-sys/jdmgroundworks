@@ -9,6 +9,7 @@ import { useMemo, useEffect, useRef } from "react"
 import { dedupeContributions } from "@/lib/dedupe-contributions"
 import { usePinnedHighlights } from "@/components/pinned-highlights"
 import { TooltipProvider } from "@/components/ui/tooltip"
+import { useScrollToTop } from "@/lib/use-scroll-to-top"
 
 import { cn } from "@/lib/utils" // Added for cn utility
 
@@ -127,6 +128,7 @@ export function PremierProfileClient({
   profileAnalysis,
   isOwner = false,
 }: PremierProfileClientProps) {
+  const scrollToTop = useScrollToTop()
   const [activeTab, setActiveTab] = useState("summary")
   const [activeFilter, setActiveFilter] = useState("all")
   const [expandedTranscript, setExpandedTranscript] = useState<string | null>(null)
@@ -384,6 +386,11 @@ export function PremierProfileClient({
 
   const firstName = safeString(profile?.full_name).split(" ")[0] || "This person"
 
+  const handleTabChange = (tabKey: string) => {
+    scrollToTop()
+    setActiveTab(tabKey)
+  }
+
   return (
     <TooltipProvider>
       <div className="min-h-screen bg-gray-50">
@@ -418,7 +425,7 @@ export function PremierProfileClient({
               ].map((tab) => (
                 <button
                   key={tab.key}
-                  onClick={() => setActiveTab(tab.key)}
+                  onClick={() => handleTabChange(tab.key)}
                   className={cn(
                     "py-4 border-b-2 font-medium capitalize transition-colors duration-300",
                     activeTab === tab.key

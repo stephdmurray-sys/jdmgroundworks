@@ -24,11 +24,14 @@ export function SiteHeader({ onCreateClick }: SiteHeaderProps) {
             <Link href="/what-is-nomee" className="text-sm text-slate-600 hover:text-slate-900 transition-colors">
               What is Nomee
             </Link>
+            <Link
+              href="/personal-reputation-marketing"
+              className="text-sm text-slate-600 hover:text-slate-900 transition-colors"
+            >
+              Personal Reputation Marketing
+            </Link>
             <Link href="/why-nomee" className="text-sm text-slate-600 hover:text-slate-900 transition-colors">
               Why Nomee
-            </Link>
-            <Link href="/#decision-makers" className="text-sm text-slate-600 hover:text-slate-900 transition-colors">
-              For Decision-Makers
             </Link>
             <Link href="/pricing" className="text-sm text-slate-600 hover:text-slate-900 transition-colors">
               Pricing
@@ -87,18 +90,18 @@ export function SiteHeader({ onCreateClick }: SiteHeaderProps) {
               What is Nomee
             </Link>
             <Link
+              href="/personal-reputation-marketing"
+              className="text-base text-slate-600 hover:text-slate-900 transition-colors py-2"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Personal Reputation Marketing
+            </Link>
+            <Link
               href="/why-nomee"
               className="text-base text-slate-600 hover:text-slate-900 transition-colors py-2"
               onClick={() => setMobileMenuOpen(false)}
             >
               Why Nomee
-            </Link>
-            <Link
-              href="/#decision-makers"
-              className="text-base text-slate-600 hover:text-slate-900 transition-colors py-2"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              For Decision-Makers
             </Link>
             <Link
               href="/pricing"

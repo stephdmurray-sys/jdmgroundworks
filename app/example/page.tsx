@@ -3,8 +3,10 @@
 import { useState } from "react"
 import { Star, Linkedin, Mail, MapPin, Play, ChevronDown, ChevronUp, X } from "lucide-react"
 import Link from "next/link"
+import { useScrollToTop } from "@/lib/use-scroll-to-top"
 
 export default function NomeeProfilePage() {
+  const scrollToTop = useScrollToTop()
   const [activeFilter, setActiveFilter] = useState("all")
   const [activeTab, setActiveTab] = useState("summary")
   const [expandedTranscript, setExpandedTranscript] = useState<number | null>(null)
@@ -148,6 +150,11 @@ export default function NomeeProfilePage() {
     { name: "Advocate", count: 12 },
   ]
 
+  const handleTabChange = (tab: string) => {
+    scrollToTop()
+    setActiveTab(tab)
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -174,7 +181,7 @@ export default function NomeeProfilePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex space-x-8">
             <button
-              onClick={() => setActiveTab("summary")}
+              onClick={() => handleTabChange("summary")}
               className={`py-4 border-b-2 font-medium ${
                 activeTab === "summary"
                   ? "border-indigo-600 text-indigo-600"
@@ -184,7 +191,7 @@ export default function NomeeProfilePage() {
               Summary
             </button>
             <button
-              onClick={() => setActiveTab("voice")}
+              onClick={() => handleTabChange("voice")}
               className={`py-4 border-b-2 font-medium ${
                 activeTab === "voice"
                   ? "border-indigo-600 text-indigo-600"
@@ -194,7 +201,7 @@ export default function NomeeProfilePage() {
               Voice Notes
             </button>
             <button
-              onClick={() => setActiveTab("patterns")}
+              onClick={() => handleTabChange("patterns")}
               className={`py-4 border-b-2 font-medium ${
                 activeTab === "patterns"
                   ? "border-indigo-600 text-indigo-600"
@@ -204,7 +211,7 @@ export default function NomeeProfilePage() {
               Patterns
             </button>
             <button
-              onClick={() => setActiveTab("screenshots")}
+              onClick={() => handleTabChange("screenshots")}
               className={`py-4 border-b-2 font-medium ${
                 activeTab === "screenshots"
                   ? "border-indigo-600 text-indigo-600"

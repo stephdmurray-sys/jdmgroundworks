@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react"
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip"
+import { useScrollToTop } from "@/lib/use-scroll-to-top"
 
 // Safe utility functions
 function safeArray<T>(value: T[] | null | undefined): T[] {
@@ -98,6 +99,7 @@ export function VibeSection({
   totalContributions,
   totalUploads,
 }: VibeSectionProps) {
+  const scrollToTop = useScrollToTop()
   const [activeTab, setActiveTab] = useState<"work-style" | "impact">("work-style")
 
   // Combine vibeLabels and traitSignals into categorized vibes
@@ -148,6 +150,11 @@ export function VibeSection({
   const currentVibes = activeTab === "work-style" ? workStyleVibes : impactVibes
   const maxCount = Math.max(...currentVibes.map((v) => v.count), 1)
 
+  const handleTabChange = (tab: "work-style" | "impact") => {
+    scrollToTop()
+    setActiveTab(tab)
+  }
+
   // Don't render if no vibes
   if (vibeSignals.length === 0) return null
 
@@ -163,7 +170,7 @@ export function VibeSection({
         <div className="flex justify-center mb-6">
           <div className="inline-flex bg-neutral-100 rounded-full p-1">
             <button
-              onClick={() => setActiveTab("work-style")}
+              onClick={() => handleTabChange("work-style")}
               className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all ${
                 activeTab === "work-style"
                   ? "bg-white text-neutral-900 shadow-sm"
@@ -173,7 +180,7 @@ export function VibeSection({
               Work Style
             </button>
             <button
-              onClick={() => setActiveTab("impact")}
+              onClick={() => handleTabChange("impact")}
               className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all ${
                 activeTab === "impact"
                   ? "bg-white text-neutral-900 shadow-sm"

@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Copy, Check, Lock } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import Link from "next/link"
+import { useScrollToTop } from "@/lib/use-scroll-to-top"
 
 type ShareKitProps = {
   publicUrl: string
@@ -13,6 +14,7 @@ type ShareKitProps = {
 }
 
 export function ShareKit({ publicUrl, plan }: ShareKitProps) {
+  const scrollToTop = useScrollToTop()
   const [activeTab, setActiveTab] = useState("resume")
   const [websiteMode, setWebsiteMode] = useState<"link" | "embeds">("link")
   const [copied, setCopied] = useState(false)
@@ -23,6 +25,11 @@ export function ShareKit({ publicUrl, plan }: ShareKitProps) {
     await navigator.clipboard.writeText(text)
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
+  }
+
+  const handleTabChange = (tab: string) => {
+    scrollToTop()
+    setActiveTab(tab)
   }
 
   const tabs = [
@@ -46,7 +53,7 @@ export function ShareKit({ publicUrl, plan }: ShareKitProps) {
         {tabs.map((tab) => (
           <button
             key={tab.id}
-            onClick={() => setActiveTab(tab.id)}
+            onClick={() => handleTabChange(tab.id)}
             className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
               activeTab === tab.id ? "bg-slate-900 text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200"
             }`}

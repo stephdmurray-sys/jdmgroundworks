@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react"
 import { X } from "lucide-react"
+import { useScrollToTop } from "@/lib/use-scroll-to-top"
 
 interface Contribution {
   id: string
@@ -75,6 +76,7 @@ export function SmartVibePills({
   contributions,
   importedFeedback,
 }: SmartVibePillsProps) {
+  const scrollToTop = useScrollToTop()
   const [activeTab, setActiveTab] = useState<"work-style" | "impact">("work-style")
 
   const safeVibes = safeArray(vibes)
@@ -167,6 +169,11 @@ export function SmartVibePills({
 
   const currentPills = activeTab === "work-style" ? workStylePills : impactSignals
 
+  const handleTabChange = (tab: "work-style" | "impact") => {
+    scrollToTop()
+    setActiveTab(tab)
+  }
+
   if (workStylePills.length === 0 && impactSignals.length === 0) {
     return null
   }
@@ -176,7 +183,7 @@ export function SmartVibePills({
       {/* Tabs */}
       <div className="flex justify-center gap-1 p-1 bg-neutral-100 rounded-lg w-fit mx-auto">
         <button
-          onClick={() => setActiveTab("work-style")}
+          onClick={() => handleTabChange("work-style")}
           className={`px-4 py-1.5 text-sm font-medium rounded-md transition-all ${
             activeTab === "work-style"
               ? "bg-white text-neutral-900 shadow-sm"
@@ -186,7 +193,7 @@ export function SmartVibePills({
           Work Style
         </button>
         <button
-          onClick={() => setActiveTab("impact")}
+          onClick={() => handleTabChange("impact")}
           className={`px-4 py-1.5 text-sm font-medium rounded-md transition-all ${
             activeTab === "impact" ? "bg-white text-neutral-900 shadow-sm" : "text-neutral-600 hover:text-neutral-900"
           }`}
