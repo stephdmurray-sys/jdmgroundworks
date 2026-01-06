@@ -3,22 +3,8 @@
 import { useMemo } from "react"
 import { TrendingUp, Users, Zap, MessageSquare, Upload } from "lucide-react"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-
-interface Contribution {
-  id: string
-  written_note?: string | null
-  traits_category1?: string[] | null
-  traits_category2?: string[] | null
-  traits_category3?: string[] | null
-  traits_category4?: string[] | null
-  contributor_id?: string | null
-}
-
-interface ImportedFeedback {
-  id: string
-  ai_extracted_excerpt?: string | null
-  traits?: string[] | null
-}
+import type { Contribution } from "@/types"
+import { isSavedFeedback, getAllTraits, getContributionText } from "@/types"
 
 interface ProfileAnalysis {
   traitSignals: Array<{ label: string; count: number; sources: string[] }>
@@ -30,7 +16,6 @@ interface ProfileAnalysis {
 interface PremierSignalBarProps {
   profileAnalysis: ProfileAnalysis
   contributions: Contribution[]
-  importedFeedback: ImportedFeedback[]
   firstName?: string
 }
 
@@ -151,14 +136,8 @@ const IMPACT_PHRASE_MAP: Record<string, string> = {
   expanded: "Expanded reach",
 }
 
-export function PremierSignalBar({
-  profileAnalysis,
-  contributions,
-  importedFeedback,
-  firstName,
-}: PremierSignalBarProps) {
+export function PremierSignalBar({ profileAnalysis, contributions, firstName }: PremierSignalBarProps) {
   const safeContributions = safeArray(contributions)
-  const safeImportedFeedback = safeArray(importedFeedback)
   const safeFirstName = safeString(firstName) || "this person"
 
   const safeProfileAnalysis = {
@@ -168,31 +147,21 @@ export function PremierSignalBar({
     totalDataCount: safeNumber(profileAnalysis?.totalDataCount, 0),
   }
 
-  // Build allCards from contributions + importedFeedback
   const allCards = useMemo(() => {
-    const nomeeCards = safeContributions.map((c) => ({
-      id: safeString(c?.id),
-      excerpt: safeString(c?.written_note),
-      traits: [
-        ...safeArray(c?.traits_category1),
-        ...safeArray(c?.traits_category2),
-        ...safeArray(c?.traits_category3),
-        ...safeArray(c?.traits_category4),
-      ],
-      type: "nomee" as const,
-      contributorId: c?.contributor_id,
-    }))
+    return safeContributions.map((c) => {
+      const traits = getAllTraits(c)
+      const excerpt = getContributionText(c)
+      const contributorId = isSavedFeedback(c) ? undefined : c.contributor_id
 
-    const importedCards = safeImportedFeedback.map((f) => ({
-      id: safeString(f?.id),
-      excerpt: safeString(f?.ai_extracted_excerpt),
-      traits: safeArray(f?.traits),
-      type: "imported" as const,
-      contributorId: undefined,
-    }))
-
-    return [...nomeeCards, ...importedCards]
-  }, [safeContributions, safeImportedFeedback])
+      return {
+        id: c.id,
+        excerpt,
+        traits,
+        type: isSavedFeedback(c) ? ("imported" as const) : ("nomee" as const),
+        contributorId,
+      }
+    })
+  }, [safeContributions])
 
   // Common themes - ranked by count
   const topSignals = useMemo(() => {

@@ -2,37 +2,7 @@
 
 import { useState, useMemo } from "react"
 import { ChevronDown, X, Sparkles } from "lucide-react"
-
-interface Contribution {
-  id: string
-  written_note?: string | null
-  traits_category1?: string[] | null
-  traits_category2?: string[] | null
-  traits_category3?: string[] | null
-  traits_category4?: string[] | null
-}
-
-interface ImportedFeedback {
-  id: string
-  ai_extracted_excerpt?: string | null
-  traits?: string[] | null
-}
-
-interface TraitWithCount {
-  label: string
-  count: number
-  weightedCount: number
-  category: string
-  examples: string[]
-}
-
-interface PremierTraitBarProps {
-  traits: TraitWithCount[]
-  selectedTraits: string[]
-  onTraitSelect: (trait: string) => void
-  contributions: Contribution[]
-  importedFeedback: ImportedFeedback[]
-}
+import { isSavedFeedback, getAllTraits } from "@/types"
 
 function safeArray<T>(arr: T[] | null | undefined): T[] {
   return Array.isArray(arr) ? arr : []
@@ -46,24 +16,17 @@ function safeNumber(num: number | null | undefined, fallback = 0): number {
   return typeof num === "number" && !isNaN(num) ? num : fallback
 }
 
-export function PremierTraitBar({
-  traits,
-  selectedTraits,
-  onTraitSelect,
-  contributions,
-  importedFeedback,
-}: PremierTraitBarProps) {
+export function PremierTraitBar({ traits, selectedTraits, onTraitSelect, contributions }: any) {
   const [showAllTraits, setShowAllTraits] = useState(false)
 
   const safeTraits = safeArray(traits)
   const safeSelectedTraits = safeArray(selectedTraits)
   const safeContributions = safeArray(contributions)
-  const safeImportedFeedback = safeArray(importedFeedback)
 
-  const totalPeople = safeContributions.length
-  const totalUploads = safeImportedFeedback.length
+  const totalContributions = safeContributions.length
+  const writtenCount = safeContributions.filter((c) => !isSavedFeedback(c)).length
+  const uploadsCount = safeContributions.filter((c) => isSavedFeedback(c)).length
 
-  // Use traits directly - they come pre-computed from page.tsx
   const traitCounts = useMemo(() => {
     return safeTraits.map((trait, idx) => ({
       trait: trait?.label || "",
@@ -78,45 +41,17 @@ export function PremierTraitBar({
   const visibleTraits = showAllTraits ? traitCounts : traitCounts.slice(0, maxTraits)
   const hiddenCount = Math.max(0, traitCounts.length - maxTraits)
 
-  // Count how many cards match the selected trait filters
   const matchCount = useMemo(() => {
     if (safeSelectedTraits.length === 0) return 0
 
-    let count = 0
-
-    // Count contributions
-    safeContributions.forEach((c) => {
-      if (!c) return
-      const allTraits = [
-        ...safeArray(c.traits_category1),
-        ...safeArray(c.traits_category2),
-        ...safeArray(c.traits_category3),
-        ...safeArray(c.traits_category4),
-      ]
-      if (
-        safeSelectedTraits.some((selected) =>
-          allTraits.some((t) => safeString(t).toLowerCase() === selected.toLowerCase()),
-        )
-      ) {
-        count++
-      }
-    })
-
-    // Count imported feedback
-    safeImportedFeedback.forEach((f) => {
-      if (!f) return
-      const feedbackTraits = safeArray(f.traits)
-      if (
-        safeSelectedTraits.some((selected) =>
-          feedbackTraits.some((t) => safeString(t).toLowerCase() === selected.toLowerCase()),
-        )
-      ) {
-        count++
-      }
-    })
-
-    return count
-  }, [safeContributions, safeImportedFeedback, safeSelectedTraits])
+    return safeContributions.filter((c) => {
+      if (!c) return false
+      const allTraits = getAllTraits(c)
+      return safeSelectedTraits.some((selected) =>
+        allTraits.some((t) => safeString(t).toLowerCase() === selected.toLowerCase()),
+      )
+    }).length
+  }, [safeContributions, safeSelectedTraits])
 
   if (traitCounts.length === 0) {
     return null
@@ -132,8 +67,8 @@ export function PremierTraitBar({
         </div>
         <p className="text-xs text-neutral-500">Ranked by how consistently they appear across perspectives</p>
         <p className="text-xs text-neutral-400">
-          Based on feedback from {safeNumber(totalPeople)} {totalPeople === 1 ? "person" : "people"}
-          {totalUploads > 0 && ` + ${safeNumber(totalUploads)} ${totalUploads === 1 ? "upload" : "uploads"}`}
+          Based on {writtenCount} {writtenCount === 1 ? "contribution" : "contributions"}
+          {uploadsCount > 0 && ` + ${uploadsCount} ${uploadsCount === 1 ? "upload" : "uploads"}`}
         </p>
       </div>
 

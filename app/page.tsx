@@ -1,1091 +1,942 @@
 "use client"
 
 import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { ModalSignup } from "@/components/modal-signup"
-import { SiteHeader } from "@/components/site-header"
-import { motion } from "framer-motion"
-import { ArrowRight } from "lucide-react"
+import {
+  Check,
+  X,
+  Shield,
+  Users,
+  TrendingUp,
+  Mail,
+  Linkedin,
+  Briefcase,
+  Code,
+  DollarSign,
+  MessageSquare,
+  ArrowRight,
+} from "lucide-react"
 import Link from "next/link"
+import { Button } from "@/components/ui/button"
+import { SiteHeader } from "@/components/site-header"
 
 export default function Home() {
-  const [isModalOpen, setIsModalOpen] = useState(false)
-  const [modalType, setModalType] = useState<"deck" | "recognition">("deck")
-  const [expandedOutcome, setExpandedOutcome] = useState<number | null>(null)
-  const [expandedFramework, setExpandedFramework] = useState<string | null>(null)
-  const [heroTab, setHeroTab] = useState<"professional" | "decision-maker">("professional")
-  const [showAllTraits, setShowAllTraits] = useState(false)
-  const [activeDecisionTab, setActiveDecisionTab] = useState<"hiring" | "partnerships" | "clients">("hiring")
-
-  const openModal = (type: "deck" | "recognition") => {
-    setModalType(type)
-    setIsModalOpen(true)
-  }
+  const [activeTab, setActiveTab] = useState<"freelancer" | "contractor" | "sales" | "consultant" | "recruiter">(
+    "freelancer",
+  )
 
   return (
-    <>
-      <SiteHeader onCreateClick={() => openModal("deck")} />
+    <div className="min-h-screen bg-white">
+      <SiteHeader />
 
       {/* Hero Section */}
-      <section className="relative pt-28 md:pt-32 pb-16 md:pb-20 px-6">
+      <section className="pt-24 pb-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50">
         <div className="max-w-7xl mx-auto">
-          <div className="max-w-3xl mx-auto">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              className="space-y-4"
-            >
-              
+          <div className="text-center max-w-5xl mx-auto mb-16">
+            <div className="inline-flex items-center space-x-2 bg-indigo-50 text-indigo-700 px-4 py-2 rounded-full text-sm font-semibold mb-6">
+              <Shield className="w-4 h-4" />
+              <span>Trusted by 500+ professionals across industries</span>
+            </div>
 
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-slate-900 leading-tight tracking-tight">
-                Nomee is a living record of how people experience working with you.
-              </h1>
+            <h1 className="text-6xl md:text-7xl font-bold text-gray-900 mb-6 leading-tight">
+              Your reputation is
+              <br />
+              your biggest asset.
+              <br />
+              <span className="text-indigo-600">Stop losing it.</span>
+            </h1>
 
-              <p className="text-lg md:text-xl lg:text-2xl text-slate-700 leading-relaxed">
-                Built from real feedback shared over time — automatically organized into patterns decision-makers trust.
-              </p>
+            <p className="text-2xl text-gray-600 mb-4 font-light leading-relaxed">
+              Every professional says "trust me." You need to{" "}
+              <span className="font-semibold text-gray-900">show them.</span>
+            </p>
 
-              <p className="text-sm md:text-base text-slate-500 font-normal pt-1">
-                Not accomplishments. Not self-descriptions. Real experience.
-              </p>
+            <p className="text-lg text-gray-500 mb-10 max-w-3xl mx-auto">
+              Nomee turns scattered feedback from clients, colleagues, and collaborators into verified social proof that
+              wins deals, builds trust, and follows you throughout your career.
+            </p>
 
-              <div className="flex flex-col sm:flex-row items-start gap-4 pt-1">
-                <Button
-                  onClick={() => openModal("deck")}
-                  size="lg"
-                  className="w-full sm:w-auto bg-slate-900 text-white hover:bg-slate-800 rounded-full px-8 py-6 text-base font-medium shadow-lg hover:shadow-xl transition-all"
-                >
-                  Create your Nomee
-                  <ArrowRight className="w-5 h-5 ml-2" />
-                </Button>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+              <Button
+                variant="default"
+                className="px-8 py-4 rounded-xl text-lg font-semibold hover:bg-indigo-700 shadow-lg shadow-indigo-200 transition-all"
+              >
+                Build My Reputation Profile
+              </Button>
+              <Button
+                variant="outline"
+                className="px-8 py-4 rounded-xl text-lg font-semibold hover:border-gray-300 transition-all bg-transparent"
+              >
+                See How It Works
+              </Button>
+            </div>
 
-                <Link
-                  href="/maya-torres"
-                  className="w-full sm:w-auto text-center sm:text-left text-slate-500 hover:text-slate-700 text-sm flex items-center gap-1.5 px-4 py-3 transition-colors"
-                >
-                  See an example →
-                </Link>
+            <div className="flex items-center justify-center space-x-8 text-sm text-gray-500">
+              <div className="flex items-center space-x-2">
+                <Check className="w-5 h-5 text-green-500" />
+                <span>Free to start</span>
               </div>
-            </motion.div>
+              <div className="flex items-center space-x-2">
+                <Check className="w-5 h-5 text-green-500" />
+                <span>Setup in 5 minutes</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Check className="w-5 h-5 text-green-500" />
+                <span>No credit card required</span>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Two ways to save feedback */}
-      <section className="relative py-12 md:py-16 px-6 bg-gradient-to-b from-slate-50 to-white overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(148,163,184,0.05),transparent_50%)]" />
-        <div className="relative max-w-7xl mx-auto">
-          <div className="text-center mb-10 md:mb-12">
-            <motion.h3
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-              className="text-3xl md:text-4xl lg:text-5xl font-semibold text-slate-900 tracking-tight"
-            >
-              Two ways to save feedback
-            </motion.h3>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 mb-12 md:mb-16 max-w-6xl mx-auto">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-              className="bg-white rounded-2xl p-6 md:p-8 border border-slate-200 shadow-sm transition-all duration-300 ease-out hover:shadow-lg hover:-translate-y-1 hover:border-slate-300"
-            >
-              <h4 className="text-xl md:text-2xl font-semibold text-slate-900">Collect feedback</h4>
-              <p className="text-base text-slate-700 leading-relaxed">Invite people to share feedback as it happens.</p>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
-              className="bg-white rounded-2xl p-6 md:p-8 border border-slate-200 shadow-sm transition-all duration-300 ease-out hover:shadow-lg hover:-translate-y-1 hover:border-slate-300"
-            >
-              <h4 className="text-xl md:text-2xl font-semibold text-slate-900">Save existing feedback</h4>
-              <p className="text-base text-slate-700 leading-relaxed">
-                Save feedback you already have — emails, Slack messages, texts, or screenshots.
-              </p>
-            </motion.div>
-          </div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.35, ease: [0.16, 1, 0.3, 1] }}
-            className="mb-16 md:mb-20 max-w-2xl mx-auto text-center px-4"
-          >
-            <h3 className="text-2xl md:text-3xl font-semibold text-slate-900 mb-4">Your personal Nomee page</h3>
-            <p className="text-base md:text-lg text-slate-700 leading-relaxed mb-6">
-              One private link that keeps all your feedback in one place — ready to share when it matters.
+      {/* Visual Flow Section */}
+      <section className="py-32 bg-gradient-to-b from-white to-gray-50 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-20">
+            <h2 className="text-5xl md:text-6xl font-bold text-gray-900 mb-4">Real feedback — saved as it happens.</h2>
+            <p className="text-xl text-gray-600 font-light max-w-3xl mx-auto">
+              Transform scattered praise into a verified professional reputation
             </p>
-            <Link
-              href="/auth/signup"
-              className="inline-flex items-center justify-center px-6 py-3 rounded-full bg-slate-900 text-white font-medium hover:bg-slate-800 transition-colors duration-200"
-            >
-              Create my Nomee link
-            </Link>
-          </motion.div>
+          </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.35, ease: [0.16, 1, 0.3, 1] }}
-            className="mb-8 md:mb-12 max-w-2xl mx-auto text-center px-4"
-          >
-            <h3 className="text-xl md:text-2xl font-semibold text-slate-900 mb-3">What your Nomee page looks like</h3>
-            <p className="text-base text-slate-600 leading-relaxed">Real feedback — saved as it happens.</p>
-          </motion.div>
+          <div className="grid lg:grid-cols-[1fr_auto_1fr] gap-16 items-center max-w-7xl mx-auto">
+            {/* Left Side - Scattered Feedback */}
+            <div className="space-y-8">
+              <div className="text-center mb-8">
+                <p className="text-sm uppercase tracking-wider text-gray-500 font-semibold">Scattered Feedback</p>
+              </div>
 
-          <div className="relative max-w-7xl mx-auto px-4">
-            {/* Mobile: Vertical stack */}
-            <div className="md:hidden space-y-6">
-              {/* Feedback artifacts */}
-              <div className="space-y-4">
-                {/* iMessage snippet */}
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 0.5 }}
-                >
-                  <div className="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden h-60 flex flex-col">
-                    <div className="bg-[#f5f5f7] border-b border-slate-200 px-4 py-3 flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-slate-300 flex items-center justify-center text-white text-xs font-semibold">
-                        JL
-                      </div>
-                      <div>
-                        <div className="text-xs font-medium text-slate-900">Jessica Liu</div>
-                        <div className="text-[10px] text-slate-500">iMessage</div>
-                      </div>
-                    </div>
-                    <div className="p-4 space-y-2 flex-1 flex flex-col justify-end">
-                      <div className="bg-blue-500 text-white rounded-2xl rounded-br-sm px-4 py-2 text-sm ml-auto max-w-[85%]">
-                        Thanks again for yesterday!
-                      </div>
-                      <div className="bg-slate-200 text-slate-900 rounded-2xl rounded-bl-sm px-4 py-2.5 text-sm max-w-[85%] leading-snug">
-                        You totally saved us. Your ability to see three steps ahead is exactly what we needed. 🙏
-                      </div>
-                    </div>
+              {/* iMessage */}
+              <div className="bg-white rounded-2xl shadow-xl border border-gray-200 p-6 max-w-sm ml-auto transform hover:scale-105 transition-transform duration-200">
+                <div className="flex items-center space-x-3 mb-4">
+                  <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center">
+                    <span className="text-sm font-semibold text-blue-600">JL</span>
                   </div>
-                </motion.div>
+                  <div>
+                    <div className="font-semibold text-sm">Jessica Liu</div>
+                    <div className="text-xs text-gray-500">iMessage</div>
+                  </div>
+                </div>
+                <div className="space-y-3">
+                  <div className="bg-blue-500 text-white rounded-2xl rounded-tr-sm px-4 py-3 ml-auto inline-block text-sm max-w-xs">
+                    Thanks again for yesterday!
+                  </div>
+                  <div className="bg-gray-100 text-gray-900 rounded-2xl rounded-tl-sm px-4 py-3 text-sm max-w-xs">
+                    You totally saved us. Your ability to see three steps ahead is exactly what we needed. 🙏
+                  </div>
+                </div>
+              </div>
 
-                {/* Email snippet */}
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 0.6 }}
-                >
-                  <div className="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden h-60 flex flex-col">
-                    <div className="bg-white border-b border-slate-200 px-4 py-3">
-                      <div className="flex items-start gap-3">
-                        <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs font-semibold mt-0.5">
-                          MK
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="text-xs font-medium text-slate-900">Marcus Kim</div>
-                          <div className="text-[10px] text-slate-500 truncate">Re: Q4 Strategy Review</div>
-                        </div>
-                        <div className="text-[10px] text-slate-400">2:14 PM</div>
-                      </div>
+              {/* Email */}
+              <div className="bg-white rounded-2xl shadow-xl border border-gray-200 p-6 max-w-sm transform hover:scale-105 transition-transform duration-200">
+                <div className="flex items-center space-x-3 mb-4">
+                  <div className="w-12 h-12 rounded-full bg-blue-600 flex items-center justify-center">
+                    <span className="text-sm font-semibold text-white">MK</span>
+                  </div>
+                  <div className="flex-1">
+                    <div className="font-semibold text-sm">Marcus Kim</div>
+                    <div className="text-xs text-gray-500">Re: Q4 Strategy Review</div>
+                  </div>
+                  <div className="text-xs text-gray-400">2:14 PM</div>
+                </div>
+                <div className="text-sm text-gray-700 leading-relaxed">
+                  The way you reframed our approach completely shifted the conversation. I've worked with a lot of
+                  consultants, and your clarity stands out.
+                </div>
+              </div>
+
+              {/* Slack */}
+              <div className="bg-white rounded-lg shadow-xl border border-gray-200 overflow-hidden max-w-sm ml-auto transform hover:scale-105 transition-transform duration-200">
+                <div className="bg-purple-900 text-white px-4 py-2 flex items-center space-x-2">
+                  <span className="text-sm font-semibold">#project-team</span>
+                  <span className="text-sm">📌</span>
+                </div>
+                <div className="p-5">
+                  <div className="flex items-start space-x-3">
+                    <div className="w-10 h-10 rounded bg-teal-500 flex items-center justify-center flex-shrink-0">
+                      <span className="text-xs font-bold text-white">AS</span>
                     </div>
-                    <div className="p-4 flex-1 flex items-center">
-                      <p className="text-xs leading-relaxed text-slate-700">
-                        The way you reframed our approach completely shifted the conversation. I've worked with a lot of
-                        consultants, and your clarity stands out.
+                    <div className="flex-1">
+                      <div className="flex items-center space-x-2 mb-2">
+                        <span className="font-semibold text-sm">Aisha Singh</span>
+                        <span className="text-xs text-gray-500">11:23 AM</span>
+                      </div>
+                      <p className="text-sm text-gray-700 leading-relaxed">
+                        Just wrapped the client call — they were so impressed by how you handled your questions. That's
+                        the kind of thinking we need. 💯
                       </p>
                     </div>
                   </div>
-                </motion.div>
+                </div>
+              </div>
+            </div>
 
-                {/* Slack snippet */}
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 0.7 }}
-                >
-                  <div className="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden h-60 flex flex-col">
-                    <div className="bg-[#4a154b] px-4 py-3 flex items-center gap-2">
-                      <div className="flex items-center gap-2 flex-1">
-                        <div className="text-white text-xs font-semibold">#project-team</div>
-                      </div>
-                      <svg className="w-4 h-4 text-white/70" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M6 10.5C6 9.67157 6.67157 9 7.5 9C8.32843 9 9 9.67157 9 10.5C9 11.3284 8.32843 12 7.5 12H6V10.5Z" />
-                        <path d="M6 13.5C6 12.6716 6.67157 12 7.5 12C8.32843 12 9 12.6716 9 13.5V15C9 15.8284 8.32843 16.5 7.5 16.5C6.67157 16.5 6 15.8284 6 15V13.5Z" />
-                        <path d="M10.5 6C9.67157 6 9 6.67157 9 7.5C9 8.32843 9.67157 9 10.5 9H12V7.5C12 6.67157 11.3284 6 10.5 6Z" />
-                        <path d="M13.5 6C12.6716 6 12 6.67157 12 7.5C12 8.32843 12.6716 9 13.5 9H15C15.8284 9 16.5 8.32843 16.5 7.5C16.5 6.67157 15.8284 6 15 6H13.5Z" />
-                      </svg>
-                    </div>
-                    <div className="p-4 flex-1 flex flex-col justify-center">
-                      <div className="flex items-start gap-2 w-full">
-                        <div className="w-6 h-6 rounded bg-teal-500 flex items-center justify-center text-white text-[10px] font-semibold flex-shrink-0 mt-0.5">
-                          AS
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-baseline gap-2 mb-1">
-                            <span className="text-xs font-semibold text-slate-900">Aisha Singh</span>
-                            <span className="text-[10px] text-slate-500">11:23 AM</span>
-                          </div>
-                          <p className="text-xs leading-relaxed text-slate-700">
-                            Just wrapped the client call — they were so impressed by how you handled your questions and
-                            concerns. That's the kind of thinking we need. 💯
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </motion.div>
+            {/* Center - Transform Arrows */}
+            <div className="hidden lg:flex flex-col items-center space-y-6 px-8">
+              <div className="flex flex-col items-center space-y-3">
+                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg">
+                  <ArrowRight className="w-8 h-8 text-white" />
+                </div>
+                <div className="w-1 h-12 bg-gradient-to-b from-indigo-300 to-transparent"></div>
+              </div>
+              <div className="flex flex-col items-center space-y-3">
+                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg">
+                  <ArrowRight className="w-8 h-8 text-white" />
+                </div>
+                <div className="w-1 h-12 bg-gradient-to-b from-indigo-300 to-transparent"></div>
+              </div>
+              <div className="w-16 h-16 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg">
+                <ArrowRight className="w-8 h-8 text-white" />
+              </div>
+            </div>
+
+            {/* Right Side - Nomee Profile */}
+            <div>
+              <div className="text-center mb-8">
+                <p className="text-sm uppercase tracking-wider text-indigo-600 font-semibold">One Nomee Page</p>
               </div>
 
-              {/* Arrow indicator */}
-              <div className="flex justify-center py-4">
-                <svg className="w-8 h-8 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    strokeDasharray="4 4"
-                    d="M19 14l-7 7m0 0l-7-7m7 7V3"
-                  />
-                </svg>
-              </div>
-
-              {/* Transformation text */}
-              <motion.p
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.6, delay: 0.8 }}
-                className="text-center text-base text-slate-700 font-medium"
-              >
-                All of it becomes one Nomee page.
-              </motion.p>
-
-              {/* Maya page preview */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.9 }}
-                className="bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden p-6"
-              >
-                {/* Name header */}
-                <div className="mb-6">
-                  <h4 className="text-2xl font-bold text-slate-900">Maya Torres</h4>
-                  <p className="text-sm text-slate-600 mt-1">Product Designer</p>
+              <div className="bg-gradient-to-br from-white to-indigo-50 rounded-3xl shadow-2xl border-2 border-indigo-100 p-10 transform hover:scale-105 transition-transform duration-200">
+                <div className="mb-8">
+                  <h3 className="text-4xl font-bold text-gray-900 mb-2">Maya Torres</h3>
+                  <p className="text-lg text-gray-600">Product Designer</p>
                 </div>
 
-                {/* What consistently shows up */}
-                <div className="mb-6">
-                  <h5 className="text-sm font-medium text-slate-700 mb-3">
+                <div className="mb-8">
+                  <p className="text-sm text-gray-600 mb-4 font-medium">
                     What consistently shows up when people talk about working with Maya:
-                  </h5>
+                  </p>
                   <div className="flex flex-wrap gap-2">
-                    <span className="px-3 py-1.5 bg-blue-50 text-blue-700 rounded-full text-sm font-medium">
+                    <span className="bg-blue-100 text-blue-700 px-4 py-2 rounded-full text-sm font-semibold shadow-sm">
                       Strategic
                     </span>
-                    <span className="px-3 py-1.5 bg-purple-50 text-purple-700 rounded-full text-sm font-medium">
+                    <span className="bg-purple-100 text-purple-700 px-4 py-2 rounded-full text-sm font-semibold shadow-sm">
                       Problem solver
                     </span>
-                    <span className="px-3 py-1.5 bg-green-50 text-green-700 rounded-full text-sm font-medium">
+                    <span className="bg-green-100 text-green-700 px-4 py-2 rounded-full text-sm font-semibold shadow-sm">
                       Clear communicator
                     </span>
                   </div>
                 </div>
 
-                {/* One quote */}
-                <div className="bg-slate-50 rounded-xl p-4 border-l-4 border-blue-500">
-                  <p className="text-sm text-slate-700 italic leading-relaxed">
-                    "Maya brings incredible{" "}
-                    <span className="font-semibold not-italic text-slate-900">strategic clarity</span> to complex
-                    projects. She helped us restructure our product roadmap and the results were{" "}
-                    <span className="font-semibold not-italic text-slate-900">transformative</span>."
-                  </p>
-                  <p className="text-xs text-slate-500 mt-2">— Alex Rivera, TechCorp</p>
-                </div>
-              </motion.div>
-            </div>
-
-            {/* Desktop: Side-by-side with arrows */}
-            <div className="hidden md:grid md:grid-cols-[1fr_120px_1fr] gap-8 items-center">
-              {/* Left: Feedback artifacts */}
-              <div className="space-y-6">
-                {/* iMessage snippet */}
-                <motion.div
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.6, delay: 0.5 }}
-                >
-                  <div className="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden h-52 flex flex-col">
-                    <div className="bg-[#f5f5f7] border-b border-slate-200 px-4 py-3 flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-slate-300 flex items-center justify-center text-white text-xs font-semibold">
-                        JL
-                      </div>
-                      <div>
-                        <div className="text-xs font-medium text-slate-900">Jessica Liu</div>
-                        <div className="text-[10px] text-slate-500">iMessage</div>
-                      </div>
-                    </div>
-                    <div className="p-4 space-y-2 flex-1 flex flex-col justify-end">
-                      <div className="bg-blue-500 text-white rounded-2xl rounded-br-sm px-4 py-2 text-sm ml-auto max-w-[85%]">
-                        Thanks again for yesterday!
-                      </div>
-                      <div className="bg-slate-200 text-slate-900 rounded-2xl rounded-bl-sm px-4 py-2.5 text-sm max-w-[85%] leading-snug">
-                        You totally saved us. Your ability to see three steps ahead is exactly what we needed. 🙏
-                      </div>
-                    </div>
-                  </div>
-                </motion.div>
-
-                {/* Email snippet */}
-                <motion.div
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.6, delay: 0.6 }}
-                >
-                  <div className="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden h-52 flex flex-col">
-                    <div className="bg-white border-b border-slate-200 px-4 py-3">
-                      <div className="flex items-start gap-3">
-                        <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs font-semibold mt-0.5">
-                          MK
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="text-xs font-medium text-slate-900">Marcus Kim</div>
-                          <div className="text-[10px] text-slate-500 truncate">Re: Q4 Strategy Review</div>
-                        </div>
-                        <div className="text-[10px] text-slate-400">2:14 PM</div>
-                      </div>
-                    </div>
-                    <div className="p-4 flex-1 flex items-center">
-                      <p className="text-xs leading-relaxed text-slate-700">
-                        The way you reframed our approach completely shifted the conversation. I've worked with a lot of
-                        consultants, and your clarity stands out.
-                      </p>
-                    </div>
-                  </div>
-                </motion.div>
-
-                {/* Slack snippet */}
-                <motion.div
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.6, delay: 0.7 }}
-                >
-                  <div className="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden h-52 flex flex-col">
-                    <div className="bg-[#4a154b] px-4 py-3 flex items-center gap-2">
-                      <div className="flex items-center gap-2 flex-1">
-                        <div className="text-white text-xs font-semibold">#project-team</div>
-                      </div>
-                      <svg className="w-4 h-4 text-white/70" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M6 10.5C6 9.67157 6.67157 9 7.5 9C8.32843 9 9 9.67157 9 10.5C9 11.3284 8.32843 12 7.5 12H6V10.5Z" />
-                        <path d="M6 13.5C6 12.6716 6.67157 12 7.5 12C8.32843 12 9 12.6716 9 13.5V15C9 15.8284 8.32843 16.5 7.5 16.5C6.67157 16.5 6 15.8284 6 15V13.5Z" />
-                        <path d="M10.5 6C9.67157 6 9 6.67157 9 7.5C9 8.32843 9.67157 9 10.5 9H12V7.5C12 6.67157 11.3284 6 10.5 6Z" />
-                        <path d="M13.5 6C12.6716 6 12 6.67157 12 7.5C12 8.32843 12.6716 9 13.5 9H15C15.8284 9 16.5 8.32843 16.5 7.5C16.5 6.67157 15.8284 6 15 6H13.5Z" />
-                      </svg>
-                    </div>
-                    <div className="p-4 flex-1 flex flex-col justify-center">
-                      <div className="flex items-start gap-2 w-full">
-                        <div className="w-6 h-6 rounded bg-teal-500 flex items-center justify-center text-white text-[10px] font-semibold flex-shrink-0 mt-0.5">
-                          AS
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-baseline gap-2 mb-1">
-                            <span className="text-xs font-semibold text-slate-900">Aisha Singh</span>
-                            <span className="text-[10px] text-slate-500">11:23 AM</span>
-                          </div>
-                          <p className="text-xs leading-relaxed text-slate-700">
-                            Just wrapped the client call — they were so impressed by how you handled your questions.
-                            That's the kind of thinking we need. 💯
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </motion.div>
-              </div>
-
-              {/* Center: Arrow visualization */}
-              <div className="flex flex-col items-center justify-center space-y-8 py-12">
-                {/* Three dotted arrows pointing right */}
-                <svg className="w-24 h-4" viewBox="0 0 100 16" fill="none">
-                  <path d="M0 8 L90 8" stroke="#cbd5e1" strokeWidth="2" strokeDasharray="4 4" strokeLinecap="round" />
-                  <path
-                    d="M85 3 L95 8 L85 13"
-                    stroke="#cbd5e1"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-                <svg className="w-24 h-4" viewBox="0 0 100 16" fill="none">
-                  <path d="M0 8 L90 8" stroke="#cbd5e1" strokeWidth="2" strokeDasharray="4 4" strokeLinecap="round" />
-                  <path
-                    d="M85 3 L95 8 L85 13"
-                    stroke="#cbd5e1"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-                <svg className="w-24 h-4" viewBox="0 0 100 16" fill="none">
-                  <path d="M0 8 L90 8" stroke="#cbd5e1" strokeWidth="2" strokeDasharray="4 4" strokeLinecap="round" />
-                  <path
-                    d="M85 3 L95 8 L85 13"
-                    stroke="#cbd5e1"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </div>
-
-              {/* Right: Nomee page preview */}
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.6, delay: 0.8 }}
-                className="flex flex-col items-center"
-              >
-                {/* Transformation text */}
-                <p className="text-center text-lg text-slate-700 font-medium mb-6">All of it becomes one Nomee page.</p>
-
-                {/* Maya page preview */}
-                <div className="bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden p-8 w-full">
-                  {/* Name header */}
-                  <div className="mb-6">
-                    <h4 className="text-3xl font-bold text-slate-900">Maya Torres</h4>
-                    <p className="text-sm text-slate-600 mt-1">Product Designer</p>
-                  </div>
-
-                  {/* What consistently shows up */}
-                  <div className="mb-6">
-                    <h5 className="text-sm font-medium text-slate-700 mb-3">
-                      What consistently shows up when people talk about working with Maya:
-                    </h5>
-                    <div className="flex flex-wrap gap-2">
-                      <span className="px-3 py-1.5 bg-blue-50 text-blue-700 rounded-full text-sm font-medium">
-                        Strategic
-                      </span>
-                      <span className="px-3 py-1.5 bg-purple-50 text-purple-700 rounded-full text-sm font-medium">
-                        Problem solver
-                      </span>
-                      <span className="px-3 py-1.5 bg-green-50 text-green-700 rounded-full text-sm font-medium">
-                        Clear communicator
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* One quote */}
-                  <div className="bg-slate-50 rounded-xl p-4 border-l-4 border-blue-500">
-                    <p className="text-sm text-slate-700 italic leading-relaxed">
-                      "Maya brings incredible{" "}
-                      <span className="font-semibold not-italic text-slate-900">strategic clarity</span> to complex
-                      projects. She helped us restructure our product roadmap and the results were{" "}
-                      <span className="font-semibold not-italic text-slate-900">transformative</span>."
+                <div className="bg-white rounded-2xl border-2 border-indigo-200 p-8 shadow-lg">
+                  <div className="flex items-start space-x-1 mb-3">
+                    <span className="text-3xl text-indigo-300">"</span>
+                    <p className="text-gray-700 italic leading-relaxed text-base">
+                      <span className="font-semibold text-gray-900">Maya brings incredible strategic clarity</span> to
+                      complex projects. She helped us restructure our product roadmap and the results were{" "}
+                      <span className="font-semibold text-gray-900">transformative</span>."
                     </p>
-                    <p className="text-xs text-slate-500 mt-3">— Alex Rivera, TechCorp</p>
+                  </div>
+                  <div className="flex items-center justify-between mt-6 pt-6 border-t border-gray-100">
+                    <span className="text-sm text-gray-600 font-medium">— Alex Rivera, TechCorp</span>
+                    <Shield className="w-5 h-5 text-indigo-600" />
                   </div>
                 </div>
-              </motion.div>
-            </div>
 
-            {/* CTAs below transformation */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 1.0 }}
-              className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-16"
-            >
-              <Link
-                href="/auth/signup"
-                className="inline-flex items-center justify-center px-6 py-3 rounded-full bg-slate-900 text-white font-medium hover:bg-slate-800 transition-colors"
-              >
-                Save my feedback
-                <svg className="w-4 h-4 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </Link>
-              <Link
-                href="/maya-torres"
-                className="inline-flex items-center justify-center text-slate-600 hover:text-slate-900 font-medium text-sm transition-colors"
-              >
-                See the full example →
-              </Link>
-            </motion.div>
+                {/* See Full Example link */}
+                <div className="mt-8 text-center">
+                  <Link
+                    href="/example"
+                    className="inline-flex items-center space-x-2 bg-indigo-600 text-white px-6 py-3 rounded-full font-semibold hover:bg-indigo-700 transition-colors shadow-lg hover:shadow-xl"
+                  >
+                    <span>See Full Example</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Bottom Summary */}
+          <div className="text-center mt-20">
+            <p className="text-2xl text-gray-600 font-light">All of it becomes one Nomee page.</p>
           </div>
         </div>
       </section>
 
-      <section className="py-12 md:py-20 px-6 bg-gradient-to-b from-white to-slate-50">
-        <div className="max-w-4xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="text-center space-y-6"
-          >
-            {/* UPDATED CODE START */}
-            <h2 className="text-2xl md:text-3xl font-semibold text-slate-900">
-              When it matters,{" "}
-              <span className="relative inline-block">
-                <span className="relative z-10">you'll be ready</span>
-                <span className="absolute inset-0 bg-yellow-200/20 rounded-full -mx-2 -my-1" aria-hidden="true" />
-              </span>
-              .
-            </h2>
-            <p className="text-lg text-slate-600 max-w-2xl mx-auto">
-              Everything you've saved is already there — in one place.
-            </p>
-
-            <div className="pt-4">
-              <Button size="lg" asChild>
-                <Link href="/auth/signup">Create my Nomee link</Link>
-              </Button>
-            </div>
-            {/* UPDATED CODE END */}
-          </motion.div>
-        </div>
-      </section>
-
-      <section className="py-12 md:py-20 px-6 bg-slate-50">
-        <div className="max-w-5xl mx-auto space-y-8 md:space-y-12">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="text-center space-y-4 md:space-y-6"
-          >
-            <h2 className="text-2xl md:text-3xl lg:text-4xl font-semibold text-slate-900">Real feedback. Unedited.</h2>
-
-            <p className="text-base md:text-lg text-slate-600">What people actually said.</p>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6"
-          >
-            <div className="space-y-3 p-5 md:p-6 bg-white rounded-xl border border-slate-200">
-              <h3 className="text-base md:text-lg font-semibold text-slate-900">One voice per person</h3>
-              <p className="text-sm md:text-base text-slate-600 leading-relaxed">
-                Each person can only contribute once, ensuring authentic and diverse viewpoints.
-              </p>
-            </div>
-
-            <div className="space-y-3 p-5 md:p-6 bg-white rounded-xl border border-slate-200">
-              <h3 className="text-base md:text-lg font-semibold text-slate-900">Identity-backed</h3>
-              <p className="text-sm md:text-base text-slate-600 leading-relaxed">
-                Contributors provide their full name and company, creating accountability.
-              </p>
-            </div>
-
-            <div className="space-y-3 p-5 md:p-6 bg-white rounded-xl border border-slate-200">
-              <h3 className="text-base md:text-lg font-semibold text-slate-900">You control what's shown</h3>
-              <p className="text-sm md:text-base text-slate-600 leading-relaxed">
-                Choose which contributions appear without changing what was said.
-              </p>
-            </div>
-          </motion.div>
-        </div>
-      </section>
-
-      <section id="decision-makers" className="py-16 md:py-32 px-6 bg-white">
+      {/* How It Works */}
+      <section id="how-it-works" className="py-16 bg-white px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
-          {/* Header - Generous spacing */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="text-center space-y-4 md:space-y-6 mb-12 md:mb-20"
-          >
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-semibold text-slate-900 tracking-tight px-4">
-              How work is evaluated — when it actually matters
-            </h2>
-            <p className="text-lg md:text-xl lg:text-2xl text-slate-600 max-w-3xl mx-auto leading-relaxed px-4">
-              When decisions matter, memory isn't enough. Saved feedback shows how someone truly works.
-            </p>
-          </motion.div>
+          <h2 className="text-4xl font-bold text-center mb-12">
+            Request & Build reputation on autopilot. Deploy it where it matters.
+          </h2>
 
-          {/* Minimal Tab Pills - Centered */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.1 }}
-            className="flex items-center justify-center gap-2 md:gap-3 mb-10 md:mb-16 px-4 overflow-x-auto scrollbar-hide"
-          >
-            <button
-              onClick={() => setActiveDecisionTab("hiring")}
-              className={`px-5 md:px-6 py-2.5 rounded-full text-sm font-medium transition-all duration-300 whitespace-nowrap ${
-                activeDecisionTab === "hiring"
-                  ? "bg-slate-900 text-white shadow-lg"
-                  : "bg-slate-100 text-slate-600 hover:bg-slate-200"
-              }`}
-            >
-              Hiring
-            </button>
-            <button
-              onClick={() => setActiveDecisionTab("partnerships")}
-              className={`px-5 md:px-6 py-2.5 rounded-full text-sm font-medium transition-all duration-300 whitespace-nowrap ${
-                activeDecisionTab === "partnerships"
-                  ? "bg-slate-900 text-white shadow-lg"
-                  : "bg-slate-100 text-slate-600 hover:bg-slate-200"
-              }`}
-            >
-              Partnerships
-            </button>
-            <button
-              onClick={() => setActiveDecisionTab("clients")}
-              className={`px-5 md:px-6 py-2.5 rounded-full text-sm font-medium transition-all duration-300 whitespace-nowrap ${
-                activeDecisionTab === "clients"
-                  ? "bg-slate-900 text-white shadow-lg"
-                  : "bg-slate-100 text-slate-600 hover:bg-slate-200"
-              }`}
-            >
-              Clients
-            </button>
-          </motion.div>
-
-          {/* Hero Preview Card - LARGE and centered */}
-          <motion.div
-            key={activeDecisionTab}
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="max-w-4xl mx-auto"
-          >
-            <div className="bg-slate-50 rounded-2xl border-2 border-slate-200 shadow-2xl shadow-slate-200/50 p-12 space-y-10">
-              {/* Card Header */}
-              <div className="flex items-start justify-between">
-                <div>
-                  <p className="text-sm font-medium text-slate-500 uppercase tracking-wider mb-2">
-                    Decision-Maker View
-                  </p>
-                  {/* CHANGE: Added paragraph to describe the card and remove h3 */}
-                  <p className="text-base text-slate-600 mt-2 max-w-xl">
-                    A real signal built from feedback shared over time — not summaries or self-reports.
-                  </p>
-                </div>
-                <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-lg border border-slate-200">
-                  <svg className="w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
-                  <span className="text-sm font-medium text-slate-600">~1 min</span>
-                </div>
+          <div className="grid md:grid-cols-3 gap-8">
+            <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-200">
+              <div className="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center mb-4">
+                <span className="text-2xl font-bold text-indigo-600">1</span>
               </div>
-
-              <div className="space-y-5">
-                <p className="text-sm font-semibold text-slate-500 uppercase tracking-wider">Common themes</p>
-                <div className="flex flex-wrap gap-3">
-                  {activeDecisionTab === "hiring" && (
-                    <>
-                      <span className="px-5 py-3 bg-blue-100 text-blue-900 text-base font-semibold rounded-xl border-2 border-blue-200">
-                        Calm under pressure
-                      </span>
-                      <span className="px-5 py-3 bg-blue-100 text-blue-900 text-base font-semibold rounded-xl border-2 border-blue-200">
-                        Strategic thinker
-                      </span>
-                      <span className="px-5 py-3 bg-blue-100 text-blue-900 text-base font-semibold rounded-xl border-2 border-blue-200">
-                        Clear communicator
-                      </span>
-                    </>
-                  )}
-                  {activeDecisionTab === "partnerships" && (
-                    <>
-                      <span className="px-5 py-3 bg-blue-100 text-blue-900 text-base font-semibold rounded-xl border-2 border-blue-200">
-                        Reliable
-                      </span>
-                      <span className="px-5 py-3 bg-blue-100 text-blue-900 text-base font-semibold rounded-xl border-2 border-blue-200">
-                        Trustworthy
-                      </span>
-                      <span className="px-5 py-3 bg-blue-100 text-blue-900 text-base font-semibold rounded-xl border-2 border-blue-200">
-                        Proactive
-                      </span>
-                    </>
-                  )}
-                  {activeDecisionTab === "clients" && (
-                    <>
-                      <span className="px-5 py-3 bg-blue-100 text-blue-900 text-base font-semibold rounded-xl border-2 border-blue-200">
-                        Delivers results
-                      </span>
-                      <span className="px-5 py-3 bg-blue-100 text-blue-900 text-base font-semibold rounded-xl border-2 border-blue-200">
-                        Clear timelines
-                      </span>
-                      <span className="px-5 py-3 bg-blue-100 text-blue-900 text-base font-semibold rounded-xl border-2 border-blue-200">
-                        Great to work with
-                      </span>
-                    </>
-                  )}
-                </div>
-              </div>
-
-              <div className="space-y-5">
-                <p className="text-sm font-semibold text-slate-500 uppercase tracking-wider">What people say</p>
-
-                {activeDecisionTab === "hiring" && (
-                  <>
-                    {/* Quote 1 - Hiring: confidence under pressure */}
-                    <div className="bg-white rounded-xl p-6 border border-slate-200 shadow-sm">
-                      <p className="text-lg text-slate-800 leading-relaxed">
-                        "When the project shifted mid-sprint, she{" "}
-                        <span className="bg-yellow-200 px-1 rounded">stayed calm</span> and{" "}
-                        <span className="bg-yellow-200 px-1 rounded">mapped a new approach</span> in minutes."
-                      </p>
-                    </div>
-
-                    {/* Quote 2 */}
-                    <div className="bg-white rounded-xl p-6 border border-slate-200 shadow-sm">
-                      <p className="text-lg text-slate-800 leading-relaxed">
-                        "<span className="bg-yellow-200 px-1 rounded">Thinks three steps ahead.</span> Her planning
-                        saved us from major blockers."
-                      </p>
-                    </div>
-
-                    {/* Quote 3 - From email */}
-                    <div className="bg-white rounded-xl p-6 border-2 border-slate-300 shadow-sm">
-                      <div className="flex items-center gap-2 mb-3">
-                        <svg className="w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                          />
-                        </svg>
-                        <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                          From email
-                        </span>
-                      </div>
-                      <p className="text-lg text-slate-800 leading-relaxed">
-                        "Her updates were <span className="bg-yellow-200 px-1 rounded">always clear</span> — no
-                        surprises, no confusion."
-                      </p>
-                    </div>
-                  </>
-                )}
-
-                {activeDecisionTab === "partnerships" && (
-                  <>
-                    {/* Quote 1 - Partnerships: trust and reliability */}
-                    <div className="bg-white rounded-xl p-6 border border-slate-200 shadow-sm">
-                      <p className="text-lg text-slate-800 leading-relaxed">
-                        "Every commitment was met. <span className="bg-yellow-200 px-1 rounded">Zero surprises</span>,
-                        just <span className="bg-yellow-200 px-1 rounded">consistent delivery.</span>"
-                      </p>
-                    </div>
-
-                    {/* Quote 2 */}
-                    <div className="bg-white rounded-xl p-6 border border-slate-200 shadow-sm">
-                      <p className="text-lg text-slate-800 leading-relaxed">
-                        "<span className="bg-yellow-200 px-1 rounded">Flagged issues before they became problems.</span>{" "}
-                        That's the kind of partner you want."
-                      </p>
-                    </div>
-
-                    {/* Quote 3 - From Slack */}
-                    <div className="bg-white rounded-xl p-6 border-2 border-slate-300 shadow-sm">
-                      <div className="flex items-center gap-2 mb-3">
-                        <svg className="w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
-                          />
-                        </svg>
-                        <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                          From Slack
-                        </span>
-                      </div>
-                      <p className="text-lg text-slate-800 leading-relaxed">
-                        "I'd <span className="bg-yellow-200 px-1 rounded">work with them again</span> without
-                        hesitation."
-                      </p>
-                    </div>
-                  </>
-                )}
-
-                {activeDecisionTab === "clients" && (
-                  <>
-                    {/* Quote 1 - Clients: clarity and delivery */}
-                    <div className="bg-white rounded-xl p-6 border border-slate-200 shadow-sm">
-                      <p className="text-lg text-slate-800 leading-relaxed">
-                        "<span className="bg-yellow-200 px-1 rounded">Delivered exactly what we needed</span> — on time,
-                        no back-and-forth."
-                      </p>
-                    </div>
-
-                    {/* Quote 2 */}
-                    <div className="bg-white rounded-xl p-6 border border-slate-200 shadow-sm">
-                      <p className="text-lg text-slate-800 leading-relaxed">
-                        "Timelines were <span className="bg-yellow-200 px-1 rounded">clear from day one.</span> No
-                        guessing, no delays."
-                      </p>
-                    </div>
-
-                    {/* Quote 3 - From email */}
-                    <div className="bg-white rounded-xl p-6 border-2 border-slate-300 shadow-sm">
-                      <div className="flex items-center gap-2 mb-3">
-                        <svg className="w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                          />
-                        </svg>
-                        <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                          From email
-                        </span>
-                      </div>
-                      <p className="text-lg text-slate-800 leading-relaxed">
-                        "A pleasure to work with.{" "}
-                        <span className="bg-yellow-200 px-1 rounded">Made the whole process easy.</span>"
-                      </p>
-                    </div>
-                  </>
-                )}
-              </div>
-
-              {/* CHANGE: Updated footer line */}
-              <div className="pt-6 border-t border-slate-200">
-                <p className="text-sm text-slate-500">
-                  This is the feedback teams usually lose — unless it's saved as it happens.
-                </p>
+              <h3 className="text-xl font-bold mb-3">Collect Feedback After Every Project</h3>
+              <p className="text-gray-600 mb-4">
+                When a project wraps up, request feedback in 30 seconds. Nomee sends them a professional, automated
+                request.
+              </p>
+              <div className="bg-gray-50 p-3 rounded text-sm text-gray-600">
+                Takes 15 seconds per project. Client gets it when they've seen your value.
               </div>
             </div>
-          </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.3 }}
-            className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-12 px-4"
-          >
-            <Link href="/maya-torres">
-              <Button size="lg" className="text-base">
-                See an example
-              </Button>
-            </Link>
-            <Link
-              href="/auth/signup"
-              className="text-slate-600 hover:text-slate-900 transition-colors text-sm font-medium"
-            >
-              Encourage your team to save feedback early
-            </Link>
-          </motion.div>
+            <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-200">
+              <div className="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center mb-4">
+                <span className="text-2xl font-bold text-indigo-600">2</span>
+              </div>
+              <h3 className="text-xl font-bold mb-3">Save Existing Proof You Already Have</h3>
+              <p className="text-gray-600 mb-4">
+                Upload screenshots of Slack messages, text messages, and email replies. Nomee organizes them with
+                AI-detected themes.
+              </p>
+              <div className="bg-gray-50 p-3 rounded text-sm text-gray-600">
+                "Thanks for the great work!" becomes verified social proof.
+              </div>
+            </div>
+
+            <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-200">
+              <div className="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center mb-4">
+                <span className="text-2xl font-bold text-indigo-600">3</span>
+              </div>
+              <h3 className="text-xl font-bold mb-3">Share Your Nomee Link Everywhere</h3>
+              <p className="text-gray-600 mb-4">
+                Add to email signature, LinkedIn profile, cold emails, proposals. Your reputation works for you 24/7.
+              </p>
+              <div className="bg-indigo-50 p-3 rounded text-sm">
+                <Mail className="w-4 h-4 inline mr-2 text-indigo-600" />
+                <span className="text-gray-700">What people say: </span>
+                <span className="text-indigo-600 font-semibold">nomee.co/your-name</span>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* Pricing section - Updated */}
-      <section id="pricing" className="py-16 md:py-24 px-6 bg-white">
-        <div className="max-w-6xl mx-auto space-y-8 md:space-y-12">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="text-center space-y-4"
-          >
-            <h2 className="text-2xl md:text-3xl lg:text-4xl font-semibold text-slate-900">Pricing</h2>
-          </motion.div>
+      {/* Problem Section */}
+      <section className="py-16 bg-gray-50 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <h2 className="text-4xl font-bold text-center mb-4">You've done great work. Where's the proof?</h2>
+          <p className="text-xl text-gray-600 text-center mb-12 max-w-3xl mx-auto">
+            Great feedback on your work is buried in Slack, emails, old references from 3 years ago, screenshots you
+            can't find. Your reputation is scattered.
+          </p>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8"
-          >
-            {/* Collect tier (was Free) */}
-            <div className="border border-slate-200 rounded-xl p-8 bg-white space-y-6 hover:shadow-lg transition-shadow">
-              <div className="space-y-2">
-                <h3 className="text-2xl font-bold text-slate-900">Collect</h3>
-                <p className="text-4xl font-bold text-slate-900">$0</p>
-                <p className="text-sm text-slate-500">forever</p>
-                <p className="text-base font-medium text-slate-700 mt-4">Collect real feedback. See the patterns.</p>
+          <div className="max-w-6xl mx-auto">
+            {/* Header Row */}
+            <div className="grid grid-cols-3 gap-6 mb-4">
+              <div className="text-center">
+                <div className="text-xs uppercase tracking-wider text-gray-400 font-semibold">Your Reality</div>
+              </div>
+              <div className="text-center">
+                <div className="text-xs uppercase tracking-wider text-red-600 font-semibold">The Feedback Problem</div>
+              </div>
+              <div className="text-center">
+                <div className="text-xs uppercase tracking-wider text-green-600 font-semibold">What Clients Need</div>
+              </div>
+            </div>
+
+            {/* Row 1 */}
+            <div className="grid grid-cols-3 gap-6 mb-4">
+              <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 flex items-center space-x-3">
+                <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0">
+                  <MessageSquare className="w-5 h-5 text-gray-600" />
+                </div>
+                <div className="flex-1">
+                  <div className="font-semibold text-sm text-gray-900">Amazing client feedback</div>
+                  <div className="text-xs text-gray-500">Across Slack, texts, emails</div>
+                </div>
               </div>
 
-              <ul className="space-y-3 text-slate-600 min-h-[160px]">
-                <li className="flex items-start gap-2">
-                  <span className="text-blue-600 mt-1">✓</span>
-                  <span>Unlimited contributions</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-blue-600 mt-1">✓</span>
-                  <span>Public Nomee page</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-blue-600 mt-1">✓</span>
-                  <span>Core summary + traits</span>
-                </li>
-              </ul>
+              <div className="bg-gradient-to-br from-red-50 to-orange-50 rounded-xl p-4 border border-red-100 flex items-center space-x-3">
+                <div className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0">
+                  <X className="w-5 h-5 text-red-600" />
+                </div>
+                <div className="flex-1">
+                  <div className="font-semibold text-sm text-gray-900">Lost in 1000 messages</div>
+                  <div className="text-xs text-gray-600">Can't find when needed</div>
+                </div>
+              </div>
+
+              <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-4 border border-green-100 flex items-center space-x-3">
+                <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
+                  <Check className="w-5 h-5 text-green-600" />
+                </div>
+                <div className="flex-1">
+                  <div className="font-semibold text-sm text-gray-900">One organized place</div>
+                  <div className="text-xs text-gray-600">Always accessible</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Row 2 */}
+            <div className="grid grid-cols-3 gap-6 mb-4">
+              <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 flex items-center space-x-3">
+                <div className="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center flex-shrink-0">
+                  <Linkedin className="w-5 h-5 text-amber-600" />
+                </div>
+                <div className="flex-1">
+                  <div className="font-semibold text-sm text-gray-900">LinkedIn recommendations</div>
+                  <div className="text-xs text-gray-500">Last updated: 2020</div>
+                </div>
+              </div>
+
+              <div className="bg-gradient-to-br from-red-50 to-orange-50 rounded-xl p-4 border border-red-100 flex items-center space-x-3">
+                <div className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0">
+                  <X className="w-5 h-5 text-red-600" />
+                </div>
+                <div className="flex-1">
+                  <div className="font-semibold text-sm text-gray-900">Outdated & vague</div>
+                  <div className="text-xs text-gray-600">"Great to work with!"</div>
+                </div>
+              </div>
+
+              <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-4 border border-green-100 flex items-center space-x-3">
+                <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
+                  <Check className="w-5 h-5 text-green-600" />
+                </div>
+                <div className="flex-1">
+                  <div className="font-semibold text-sm text-gray-900">Recent, specific feedback</div>
+                  <div className="text-xs text-gray-600">Real work stories</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Row 3 */}
+            <div className="grid grid-cols-3 gap-6">
+              <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 flex items-center space-x-3">
+                <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0">
+                  <TrendingUp className="w-5 h-5 text-gray-400" />
+                </div>
+                <div className="flex-1">
+                  <div className="font-semibold text-sm text-gray-900">Cold outreach sent</div>
+                  <div className="text-xs text-gray-500">Generic pitch</div>
+                </div>
+              </div>
+
+              <div className="bg-gradient-to-br from-red-50 to-orange-50 rounded-xl p-4 border border-red-100 flex items-center space-x-3">
+                <div className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0">
+                  <X className="w-5 h-5 text-red-600" />
+                </div>
+                <div className="flex-1">
+                  <div className="font-semibold text-sm text-gray-900">No trust signals</div>
+                  <div className="text-xs text-gray-600">Ignored or deleted</div>
+                </div>
+              </div>
+
+              <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-4 border border-green-100 flex items-center space-x-3">
+                <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
+                  <Check className="w-5 h-5 text-green-600" />
+                </div>
+                <div className="flex-1">
+                  <div className="font-semibold text-sm text-gray-900">Social proof included</div>
+                  <div className="text-xs text-gray-600">Link to verified feedback</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-8 text-center">
+            <div className="inline-flex items-center space-x-2 bg-gray-900 text-white px-6 py-3 rounded-full">
+              <Shield className="w-5 h-5" />
+              <span className="font-medium">Nomee gives you column 3. Everyone else is stuck in column 2.</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Who This Is For */}
+      <section id="who-its-for" className="py-16 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <h2 className="text-4xl font-bold text-center mb-12">Built for professionals who compete on reputation</h2>
+
+          <div className="flex justify-center mb-8">
+            <div className="inline-flex bg-gray-100 rounded-lg p-1 flex-wrap gap-1">
+              <button
+                onClick={() => setActiveTab("freelancer")}
+                className={`px-4 py-2 rounded-md text-sm ${activeTab === "freelancer" ? "bg-white shadow-sm font-semibold" : ""}`}
+              >
+                Freelancers
+              </button>
+              <button
+                onClick={() => setActiveTab("contractor")}
+                className={`px-4 py-2 rounded-md text-sm ${activeTab === "contractor" ? "bg-white shadow-sm font-semibold" : ""}`}
+              >
+                Contractors
+              </button>
+              <button
+                onClick={() => setActiveTab("sales")}
+                className={`px-4 py-2 rounded-md text-sm ${activeTab === "sales" ? "bg-white shadow-sm font-semibold" : ""}`}
+              >
+                Sales
+              </button>
+              <button
+                onClick={() => setActiveTab("consultant")}
+                className={`px-4 py-2 rounded-md text-sm ${activeTab === "consultant" ? "bg-white shadow-sm font-semibold" : ""}`}
+              >
+                Consultants
+              </button>
+              <button
+                onClick={() => setActiveTab("recruiter")}
+                className={`px-4 py-2 rounded-md text-sm ${activeTab === "recruiter" ? "bg-white shadow-sm font-semibold" : ""}`}
+              >
+                Recruiters
+              </button>
+            </div>
+          </div>
+
+          {activeTab === "freelancer" && (
+            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-8 max-w-4xl mx-auto">
+              <div className="flex items-center space-x-3 mb-4">
+                <div className="w-12 h-12 bg-blue-500 rounded-xl flex items-center justify-center">
+                  <Code className="w-6 h-6 text-white" />
+                </div>
+                <h3 className="text-2xl font-bold">Freelancers & Creators</h3>
+              </div>
+              <p className="text-lg text-gray-700 italic mb-6">
+                "You've completed 50 projects, but every new client asks for references. Again."
+              </p>
+              <div className="space-y-4">
+                <div>
+                  <h4 className="font-semibold text-gray-900 mb-2">Your Challenge:</h4>
+                  <ul className="space-y-2 text-gray-600">
+                    <li>• Client testimonials scattered across Slack, email, and texts</li>
+                    <li>• New clients can't see your track record</li>
+                    <li>• Upwork/Fiverr reviews don't travel with you</li>
+                    <li>• Cold outreach gets ignored without social proof</li>
+                  </ul>
+                </div>
+                <div>
+                  <h4 className="font-semibold text-gray-900 mb-2">How Nomee Helps:</h4>
+                  <p className="text-gray-600">
+                    Upload screenshots of client praise, request feedback after each project. Your Nomee profile shows
+                    "Delivers on time" mentioned 23 times, "Great communication" mentioned 19 times. Put it in your
+                    email signature and watch response rates double.
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {activeTab === "contractor" && (
+            <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl p-8 max-w-4xl mx-auto">
+              <div className="flex items-center space-x-3 mb-4">
+                <div className="w-12 h-12 bg-purple-500 rounded-xl flex items-center justify-center">
+                  <Briefcase className="w-6 h-6 text-white" />
+                </div>
+                <h3 className="text-2xl font-bold">Independent Contractors</h3>
+              </div>
+              <p className="text-lg text-gray-700 italic mb-6">
+                "Every contract ends. Your reputation should follow you to the next one."
+              </p>
+              <div className="space-y-4">
+                <div>
+                  <h4 className="font-semibold text-gray-900 mb-2">Your Challenge:</h4>
+                  <ul className="space-y-2 text-gray-600">
+                    <li>• Reputation resets with each new contract</li>
+                    <li>• Previous clients won't write LinkedIn recommendations</li>
+                    <li>• Agency reputation doesn't transfer to independent work</li>
+                    <li>• Hard to differentiate from other contractors</li>
+                  </ul>
+                </div>
+                <div>
+                  <h4 className="font-semibold text-gray-900 mb-2">How Nomee Helps:</h4>
+                  <p className="text-gray-600">
+                    Build a portable reputation across all contracts. When clients end engagements with "Great work!"
+                    messages, save them. Request formal feedback. Show hiring managers 40+ verified contributions
+                    proving your reliability, technical skills, and communication style.
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {activeTab === "sales" && (
+            <div className="bg-gradient-to-br from-emerald-50 to-green-50 rounded-2xl p-8 max-w-4xl mx-auto">
+              <div className="flex items-center space-x-3 mb-4">
+                <div className="w-12 h-12 bg-emerald-500 rounded-xl flex items-center justify-center">
+                  <DollarSign className="w-6 h-6 text-white" />
+                </div>
+                <h3 className="text-2xl font-bold">Sales Professionals</h3>
+              </div>
+              <p className="text-lg text-gray-700 italic mb-6">
+                "You close deals by building trust. But prospects can't see your track record."
+              </p>
+              <div className="space-y-4">
+                <div>
+                  <h4 className="font-semibold text-gray-900 mb-2">Your Challenge:</h4>
+                  <ul className="space-y-2 text-gray-600">
+                    <li>• Prospects get cold emails from 10 other sales reps daily</li>
+                    <li>• No way to prove you're different from the rest</li>
+                    <li>• Client success stories buried in CRM notes</li>
+                    <li>• Switching companies means starting reputation from scratch</li>
+                  </ul>
+                </div>
+                <div>
+                  <h4 className="font-semibold text-gray-900 mb-2">How Nomee Helps:</h4>
+                  <p className="text-gray-600 mb-3">
+                    Include your Nomee link in cold outreach: "See what 35 clients say about working with me." Show
+                    patterns like "Responsive," "No pressure tactics," "Helped us choose right solution." Your
+                    reputation becomes your best closer.
+                  </p>
+                  <div className="bg-white p-4 rounded-lg border-2 border-emerald-200">
+                    <p className="text-sm font-semibold text-gray-900">
+                      Sales pros using Nomee see 3-4× higher reply rates on cold outreach.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {activeTab === "consultant" && (
+            <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl p-8 max-w-4xl mx-auto">
+              <div className="flex items-center space-x-3 mb-4">
+                <div className="w-12 h-12 bg-amber-500 rounded-xl flex items-center justify-center">
+                  <Users className="w-6 h-6 text-white" />
+                </div>
+                <h3 className="text-2xl font-bold">Consultants & Advisors</h3>
+              </div>
+              <p className="text-lg text-gray-700 italic mb-6">
+                "Clients pay you for expertise. But how do they know you're worth $300/hour?"
+              </p>
+              <div className="space-y-4">
+                <div>
+                  <h4 className="font-semibold text-gray-900 mb-2">Your Challenge:</h4>
+                  <ul className="space-y-2 text-gray-600">
+                    <li>• NDAs prevent you from sharing client names publicly</li>
+                    <li>• Generic testimonials don't convey specific expertise</li>
+                    <li>• Prospects need proof before paying premium rates</li>
+                    <li>• Referrals are word-of-mouth only</li>
+                  </ul>
+                </div>
+                <div>
+                  <h4 className="font-semibold text-gray-900 mb-2">How Nomee Helps:</h4>
+                  <p className="text-gray-600 mb-3">
+                    Collect anonymous feedback that shows your impact without revealing client identities. Prospects see
+                    verified patterns: "Strategic thinking," "ROI exceeded expectations," "Delivered actionable
+                    insights." Your expertise becomes provable.
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {activeTab === "recruiter" && (
+            <div className="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-2xl p-8 max-w-4xl mx-auto">
+              <div className="flex items-center space-x-3 mb-4">
+                <div className="w-12 h-12 bg-indigo-500 rounded-xl flex items-center justify-center">
+                  <Briefcase className="w-6 h-6 text-white" />
+                </div>
+                <h3 className="text-2xl font-bold">Agency Recruiters</h3>
+              </div>
+              <p className="text-lg text-gray-700 italic mb-6">
+                "You've placed 200 candidates, but you have zero portable proof."
+              </p>
+              <div className="space-y-4">
+                <div>
+                  <h4 className="font-semibold text-gray-900 mb-2">Your Challenge:</h4>
+                  <ul className="space-y-2 text-gray-600">
+                    <li>• Every recruiter claims to be "different"</li>
+                    <li>• Reputation trapped at your agency when you switch</li>
+                    <li>• Candidates ignore cold emails without trust signals</li>
+                    <li>• Competing against recruiters with 10+ years at one firm</li>
+                  </ul>
+                </div>
+                <div>
+                  <h4 className="font-semibold text-gray-900 mb-2">How Nomee Helps:</h4>
+                  <p className="text-gray-600 mb-3">
+                    47 verified contributions showing "Responsive" (31×), "Honest" (24×), "Follow-through" (17×). When
+                    candidates Google you before your call, they find proof. Add to email signatures, LinkedIn profiles.
+                    Your reputation becomes your unfair advantage.
+                  </p>
+                  <div className="bg-white p-4 rounded-lg border-2 border-indigo-200">
+                    <p className="text-sm font-semibold text-gray-900">
+                      Recruiters using Nomee see 2.5× higher callback rates and close 2-3 extra placements per year.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* Pricing */}
+      <section id="pricing" className="py-16 px-4 sm:px-6 lg:px-8 bg-gray-50">
+        <div className="max-w-7xl mx-auto">
+          <h2 className="text-4xl font-bold text-center mb-4">Simple pricing for professionals</h2>
+          <p className="text-gray-600 text-center mb-12">Start free, upgrade when you're ready</p>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-7xl mx-auto">
+            {/* Start Collecting - Free */}
+            <div className="bg-white rounded-2xl shadow-sm border-2 border-gray-200 p-6">
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">Start Collecting</h2>
+              <div className="mb-6">
+                <span className="text-5xl font-bold text-gray-900">$0</span>
+                <span className="text-gray-600">/forever</span>
+              </div>
+              <p className="text-gray-600 mb-8">Perfect for building initial proof</p>
+
+              <div className="space-y-4 mb-8">
+                <div className="flex items-start">
+                  <Check className="w-5 h-5 text-green-600 mr-3 flex-shrink-0 mt-0.5" />
+                  <span className="text-gray-700">Unlimited feedback requests</span>
+                </div>
+                <div className="flex items-start">
+                  <Check className="w-5 h-5 text-green-600 mr-3 flex-shrink-0 mt-0.5" />
+                  <span className="text-gray-700">Upload 10 saved feedback items</span>
+                </div>
+                <div className="flex items-start">
+                  <Check className="w-5 h-5 text-green-600 mr-3 flex-shrink-0 mt-0.5" />
+                  <span className="text-gray-700">Public Nomee page</span>
+                </div>
+                <div className="flex items-start">
+                  <Check className="w-5 h-5 text-green-600 mr-3 flex-shrink-0 mt-0.5" />
+                  <span className="text-gray-700">Auto-generated reputation themes</span>
+                </div>
+                <div className="flex items-start">
+                  <Check className="w-5 h-5 text-green-600 mr-3 flex-shrink-0 mt-0.5" />
+                  <span className="text-gray-700">Basic analytics</span>
+                </div>
+              </div>
 
               <Button
-                onClick={() => openModal("deck")}
-                className="w-full bg-slate-900 text-white hover:bg-slate-800 rounded-full py-6 text-base font-medium transition-all"
+                variant="outline"
+                className="w-full border-2 border-gray-300 text-gray-900 py-3 rounded-lg font-medium hover:border-gray-400 bg-transparent"
               >
-                Save my feedback
+                Start Free
+              </Button>
+              <p className="text-center text-sm text-gray-500 mt-3">No credit card required</p>
+            </div>
+
+            {/* Build Momentum - $15.99/month */}
+            <div className="bg-white rounded-2xl shadow-sm border-2 border-indigo-200 p-6">
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">Build Momentum</h2>
+              <div className="mb-6">
+                <span className="text-5xl font-bold text-gray-900">$15.99</span>
+                <span className="text-gray-600">/month</span>
+              </div>
+              <p className="text-gray-600 mb-2">or $149/year (save 22%)</p>
+              <p className="text-gray-600 mb-8">For growing professionals collecting more feedback</p>
+
+              <div className="space-y-4 mb-8">
+                <div className="flex items-start">
+                  <Check className="w-5 h-5 text-indigo-600 mr-3 flex-shrink-0 mt-0.5" />
+                  <span className="text-gray-700 font-semibold">Everything in Free, plus:</span>
+                </div>
+                <div className="flex items-start">
+                  <Check className="w-5 h-5 text-indigo-600 mr-3 flex-shrink-0 mt-0.5" />
+                  <span className="text-gray-700">Upload 30 saved feedback items</span>
+                </div>
+                <div className="flex items-start">
+                  <Check className="w-5 h-5 text-indigo-600 mr-3 flex-shrink-0 mt-0.5" />
+                  <span className="text-gray-700">Voice note collection</span>
+                </div>
+                <div className="flex items-start">
+                  <Check className="w-5 h-5 text-indigo-600 mr-3 flex-shrink-0 mt-0.5" />
+                  <span className="text-gray-700">Custom views & filtering</span>
+                </div>
+                <div className="flex items-start">
+                  <Check className="w-5 h-5 text-indigo-600 mr-3 flex-shrink-0 mt-0.5" />
+                  <span className="text-gray-700">3 featured contributions</span>
+                </div>
+                <div className="flex items-start">
+                  <Check className="w-5 h-5 text-indigo-600 mr-3 flex-shrink-0 mt-0.5" />
+                  <span className="text-gray-700">Standard support</span>
+                </div>
+              </div>
+
+              <Button className="w-full bg-indigo-600 text-white py-3 rounded-lg font-medium hover:bg-indigo-700 transition-colors">
+                Start 14-Day Free Trial
               </Button>
             </div>
 
-            {/* Maintain tier (was Pro) - $9/$79 */}
-            <div className="border-2 border-blue-600 rounded-xl p-8 bg-white space-y-6 shadow-lg relative">
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-blue-600 text-white px-4 py-1 rounded-full text-xs font-semibold uppercase tracking-wide">
-                Most Popular
+            {/* Reputation on Autopilot - $29.99/month - MOST POPULAR */}
+            <div className="bg-gradient-to-br from-indigo-600 to-purple-600 rounded-2xl shadow-lg p-6 text-white relative">
+              <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-amber-400 text-gray-900 px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap shadow-md">
+                MOST POPULAR
               </div>
-              <div className="space-y-2">
-                <h3 className="text-2xl font-bold text-slate-900">Maintain</h3>
-                <p className="text-4xl font-bold text-slate-900">
-                  $9<span className="text-lg font-normal text-slate-600">/month</span>
-                </p>
-                <p className="text-sm text-slate-500">$79 / year (Save ~27%)</p>
-                <p className="text-base font-medium text-slate-700 mt-4">
-                  Keep feedback organized and ready when it matters.
-                </p>
+              <h2 className="text-2xl font-bold mb-2 mt-2">Reputation on Autopilot</h2>
+              <div className="mb-6">
+                <span className="text-5xl font-bold">$29.99</span>
+                <span className="text-indigo-100">/month</span>
+              </div>
+              <p className="text-indigo-100 mb-2">or $249/year (save 31%)</p>
+              <p className="text-indigo-100 mb-8">For professionals who compete on trust daily</p>
+
+              <div className="space-y-4 mb-8">
+                <div className="flex items-start">
+                  <Check className="w-5 h-5 text-white mr-3 flex-shrink-0 mt-0.5" />
+                  <span className="font-semibold">Everything in Build Momentum, plus:</span>
+                </div>
+                <div className="flex items-start">
+                  <Check className="w-5 h-5 text-white mr-3 flex-shrink-0 mt-0.5" />
+                  <span>Unlimited saved feedback uploads</span>
+                </div>
+                <div className="flex items-start">
+                  <Check className="w-5 h-5 text-white mr-3 flex-shrink-0 mt-0.5" />
+                  <span>Unlimited featured contributions</span>
+                </div>
+                <div className="flex items-start">
+                  <Check className="w-5 h-5 text-white mr-3 flex-shrink-0 mt-0.5" />
+                  <span>Embed Nomee on your website</span>
+                </div>
+                <div className="flex items-start">
+                  <Check className="w-5 h-5 text-white mr-3 flex-shrink-0 mt-0.5" />
+                  <span>One-click PDF export</span>
+                </div>
+                <div className="flex items-start">
+                  <Check className="w-5 h-5 text-white mr-3 flex-shrink-0 mt-0.5" />
+                  <span>Monthly reputation digest</span>
+                </div>
+                <div className="flex items-start">
+                  <Check className="w-5 h-5 text-white mr-3 flex-shrink-0 mt-0.5" />
+                  <span>Advanced analytics & insights</span>
+                </div>
+                <div className="flex items-start">
+                  <Check className="w-5 h-5 text-white mr-3 flex-shrink-0 mt-0.5" />
+                  <span>Priority support</span>
+                </div>
               </div>
 
-              <ul className="space-y-3 text-slate-600 min-h-[160px]">
-                <li className="flex items-start gap-2">
-                  <span className="text-blue-600 mt-1">✓</span>
-                  <span>Everything in Collect</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-blue-600 mt-1">✓</span>
-                  <span>Saved feedback & secure storage</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-blue-600 mt-1">✓</span>
-                  <span>Feature, pin, or hide contributions</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-blue-600 mt-1">✓</span>
-                  <span>Track recent vs long-term feedback</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-blue-600 mt-1">✓</span>
-                  <span>Monthly "What's changed" digest</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-blue-600 mt-1">✓</span>
-                  <span>See common themes over time</span>
-                </li>
-              </ul>
-
-              <Button className="w-full bg-blue-600 text-white hover:bg-blue-700 rounded-full py-6 text-base font-medium transition-all">
-                Keep my feedback current
+              <Button className="w-full bg-white text-indigo-600 py-3 rounded-lg font-bold hover:bg-gray-50 transition-colors">
+                Start 14-Day Free Trial
               </Button>
             </div>
+          </div>
 
-            <div className="border border-slate-200 rounded-xl p-8 bg-white space-y-6 hover:shadow-lg transition-shadow">
-              <div className="space-y-2">
-                <h3 className="text-2xl font-bold text-slate-900">Showcase</h3>
-                <p className="text-4xl font-bold text-slate-900">
-                  $19<span className="text-lg font-normal text-slate-600">/month</span>
-                </p>
-                <p className="text-sm text-slate-500">$169 / year (Save ~26%)</p>
-                <p className="text-base font-medium text-slate-700 mt-4">Use feedback when decisions are being made.</p>
-              </div>
-
-              <ul className="space-y-3 text-slate-600 min-h-[160px]">
-                <li className="flex items-start gap-2">
-                  <span className="text-blue-600 mt-1">✓</span>
-                  <span>Everything in Maintain</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-blue-600 mt-1">✓</span>
-                  <span>Feedback tiles (embed websites, portfolios)</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-blue-600 mt-1">✓</span>
-                  <span>Saved views (Hiring · Clients · Partnerships)</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-blue-600 mt-1">✓</span>
-                  <span>One-page export (PDF)</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-blue-600 mt-1">✓</span>
-                  <span>Subtle branding control</span>
-                </li>
-              </ul>
-
-              <Button className="w-full bg-slate-900 text-white hover:bg-slate-800 rounded-full py-6 text-base font-medium transition-all">
-                Keep feedback ready
-              </Button>
-            </div>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-            className="text-center pt-6 md:pt-8 space-y-2"
-          >
-            <p className="text-sm text-slate-600 max-w-2xl mx-auto px-4">We don't charge for feedback or asking.</p>
-            <p className="text-sm text-slate-600 max-w-2xl mx-auto px-4">
-              We charge for keeping it organized — ready when it matters.
+          {/* Additional Info */}
+          <div className="mt-20 text-center">
+            <p className="text-gray-600 mb-4">
+              All plans include unlimited written contributions and basic reputation themes
             </p>
-          </motion.div>
+            <p className="text-gray-600">
+              Need a custom plan for your team?{" "}
+              <Link href="/contact" className="text-indigo-600 font-medium hover:text-indigo-700">
+                Contact us
+              </Link>
+            </p>
+          </div>
         </div>
       </section>
 
       {/* Final CTA */}
-      <section className="py-20 md:py-32 px-6 bg-slate-900">
-        <div className="max-w-3xl mx-auto text-center space-y-6 md:space-y-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="text-center space-y-6"
-          >
-            <h2 className="text-3xl md:text-4xl font-semibold text-white">
-              Ready when it matters — not lost in messages.
-            </h2>
-          </motion.div>
-
-          <motion.p
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="text-lg md:text-xl text-slate-300 px-4"
-          >
-            Save what people said before you need it.
-          </motion.p>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-            className="px-4"
-          >
+      <section className="py-20 bg-gradient-to-br from-indigo-600 to-purple-700 text-white px-4 sm:px-6 lg:px-8">
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="text-4xl md:text-5xl font-bold mb-6">Start building reputation that follows you forever</h2>
+          <p className="text-xl text-indigo-100 mb-8">
+            Your best work deserves to be seen. Nomee makes your reputation portable, verifiable, and working for you
+            24/7.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button
-              onClick={() => openModal("deck")}
-              size="lg"
-              className="w-full md:w-auto bg-white text-slate-900 hover:bg-slate-100 rounded-full px-8 py-6 text-base font-medium shadow-lg hover:shadow-xl transition-all"
+              variant="default"
+              className="bg-white text-indigo-600 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-indigo-50"
             >
-              Save my feedback
-              <ArrowRight className="w-5 h-5 ml-2" />
+              Start Free - Build My Nomee
             </Button>
-          </motion.div>
+            <Button
+              variant="outline"
+              className="border-2 border-white text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-white hover:bg-opacity-10 bg-transparent"
+            >
+              See Real Examples First
+            </Button>
+          </div>
+          <div className="flex items-center justify-center space-x-6 mt-8 text-indigo-100 text-sm">
+            <div className="flex items-center">
+              <Check className="w-4 h-4 mr-2" />
+              No credit card required
+            </div>
+            <div className="flex items-center">
+              <Check className="w-4 h-4 mr-2" />
+              Setup in 5 minutes
+            </div>
+            <div className="flex items-center">
+              <Check className="w-4 h-4 mr-2" />
+              14-day Pro trial
+            </div>
+          </div>
         </div>
       </section>
 
-      <ModalSignup initialType={modalType} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
-    </>
+      {/* Footer */}
+      <footer className="bg-gray-900 text-gray-400 py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex justify-between items-start mb-8">
+            <div className="max-w-xs">
+              <div
+                className="text-white text-2xl font-bold tracking-tight mb-3"
+                style={{ fontFamily: "system-ui, -apple-system, sans-serif", letterSpacing: "-0.02em" }}
+              >
+                nomee
+              </div>
+              <p className="text-sm text-gray-500">Portable reputation for professionals who compete on trust.</p>
+            </div>
+
+            <div className="flex space-x-16">
+              <div>
+                <h4 className="text-white font-semibold mb-3 text-sm">Product</h4>
+                <ul className="space-y-2 text-sm">
+                  <li>
+                    <a href="#" className="hover:text-white">
+                      How It Works
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#" className="hover:text-white">
+                      Who It's For
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#" className="hover:text-white">
+                      Pricing
+                    </a>
+                  </li>
+                </ul>
+              </div>
+              <div>
+                <h4 className="text-white font-semibold mb-3 text-sm">Company</h4>
+                <ul className="space-y-2 text-sm">
+                  <li>
+                    <a href="#" className="hover:text-white">
+                      About
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#" className="hover:text-white">
+                      Blog
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#" className="hover:text-white">
+                      Contact
+                    </a>
+                  </li>
+                </ul>
+              </div>
+              <div>
+                <h4 className="text-white font-semibold mb-3 text-sm">Legal</h4>
+                <ul className="space-y-2 text-sm">
+                  <li>
+                    <a href="#" className="hover:text-white">
+                      Privacy
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#" className="hover:text-white">
+                      Terms
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#" className="hover:text-white">
+                      Security
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div className="border-t border-gray-800 pt-6 text-sm text-center text-gray-500">
+            &copy; 2025 Nomee. All rights reserved.
+          </div>
+        </div>
+      </footer>
+    </div>
   )
 }

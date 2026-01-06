@@ -1,265 +1,199 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
 import { Check } from "lucide-react"
 import Link from "next/link"
 import { SiteHeader } from "@/components/site-header"
-import { useState } from "react"
 
 export default function PricingPage() {
-  const [billingPeriod, setBillingPeriod] = useState<"monthly" | "annual">("monthly")
-
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-gray-50">
       <SiteHeader />
 
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 py-16 sm:py-24">
-        {/* Hero */}
-        <div className="mb-16 text-center max-w-2xl mx-auto">
-          <h1 className="mb-4 text-4xl sm:text-5xl font-semibold tracking-tight text-slate-900">
-            Simple pricing. No pressure.
-          </h1>
-          <p className="text-lg text-slate-600">Start saving feedback for free. Upgrade only when it matters to you.</p>
+      {/* Hero Section */}
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-24 text-center">
+        <h1 className="text-6xl font-bold text-gray-900 mb-6 leading-tight">
+          What's your reputation
+          <br />
+          actually worth?
+        </h1>
+        <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
+          <span className="font-semibold text-gray-900">Trust is your competitive advantage.</span>
+        </p>
+        <p className="text-lg text-gray-700 max-w-2xl mx-auto">
+          Nomee turns trust into your competitive advantage. Start free, upgrade when you're ready
+        </p>
+      </div>
+
+      {/* Pricing Section */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
+        <div className="text-center mb-12">
+          <h2 className="text-4xl font-bold text-gray-900 mb-3">Simple pricing for professionals</h2>
+          <p className="text-lg text-gray-600">Start free, upgrade when you're ready</p>
         </div>
 
-        {/* Billing Toggle */}
-        <div className="flex justify-center mb-12">
-          <div className="inline-flex items-center gap-3 bg-slate-100 rounded-full p-1">
-            <button
-              onClick={() => setBillingPeriod("monthly")}
-              className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${
-                billingPeriod === "monthly"
-                  ? "bg-white text-slate-900 shadow-sm"
-                  : "text-slate-600 hover:text-slate-900"
-              }`}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-7xl mx-auto">
+          {/* Free Tier */}
+          <div className="bg-white rounded-2xl shadow-sm border-2 border-gray-200 p-6">
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">Start Collecting</h2>
+            <div className="mb-6">
+              <span className="text-5xl font-bold text-gray-900">$0</span>
+              <span className="text-gray-600">/forever</span>
+            </div>
+            <p className="text-gray-600 mb-8">Perfect for building initial proof</p>
+
+            <div className="space-y-4 mb-8">
+              <div className="flex items-start">
+                <Check className="w-5 h-5 text-green-600 mr-3 flex-shrink-0 mt-0.5" />
+                <span className="text-gray-700">Unlimited feedback requests</span>
+              </div>
+              <div className="flex items-start">
+                <Check className="w-5 h-5 text-green-600 mr-3 flex-shrink-0 mt-0.5" />
+                <span className="text-gray-700">Upload 10 saved feedback items</span>
+              </div>
+              <div className="flex items-start">
+                <Check className="w-5 h-5 text-green-600 mr-3 flex-shrink-0 mt-0.5" />
+                <span className="text-gray-700">Public Nomee page</span>
+              </div>
+              <div className="flex items-start">
+                <Check className="w-5 h-5 text-green-600 mr-3 flex-shrink-0 mt-0.5" />
+                <span className="text-gray-700">Auto-generated reputation themes</span>
+              </div>
+              <div className="flex items-start">
+                <Check className="w-5 h-5 text-green-600 mr-3 flex-shrink-0 mt-0.5" />
+                <span className="text-gray-700">Basic analytics</span>
+              </div>
+            </div>
+
+            <Button
+              variant="outline"
+              className="w-full border-2 border-gray-300 text-gray-900 py-3 rounded-lg font-medium hover:border-gray-400 bg-transparent"
+              asChild
             >
-              Monthly
-            </button>
-            <button
-              onClick={() => setBillingPeriod("annual")}
-              className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${
-                billingPeriod === "annual" ? "bg-white text-slate-900 shadow-sm" : "text-slate-600 hover:text-slate-900"
-              }`}
-            >
-              Annual
-            </button>
+              <Link href="/auth/signup">Start Free</Link>
+            </Button>
+            <p className="text-center text-sm text-gray-500 mt-3">No credit card required</p>
+          </div>
+
+          {/* Lite Tier */}
+          <div className="bg-white rounded-2xl shadow-sm border-2 border-indigo-200 p-6">
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">Build Momentum</h2>
+            <div className="mb-6">
+              <span className="text-5xl font-bold text-gray-900">$15.99</span>
+              <span className="text-gray-600">/month</span>
+            </div>
+            <p className="text-gray-600 mb-2">or $149/year (save 22%)</p>
+            <p className="text-gray-600 mb-8">For growing professionals collecting more feedback</p>
+
+            <div className="space-y-4 mb-8">
+              <div className="flex items-start">
+                <Check className="w-5 h-5 text-indigo-600 mr-3 flex-shrink-0 mt-0.5" />
+                <span className="text-gray-700 font-semibold">Everything in Free, plus:</span>
+              </div>
+              <div className="flex items-start">
+                <Check className="w-5 h-5 text-indigo-600 mr-3 flex-shrink-0 mt-0.5" />
+                <span className="text-gray-700">Upload 30 saved feedback items</span>
+              </div>
+              <div className="flex items-start">
+                <Check className="w-5 h-5 text-indigo-600 mr-3 flex-shrink-0 mt-0.5" />
+                <span className="text-gray-700">Voice note collection</span>
+              </div>
+              <div className="flex items-start">
+                <Check className="w-5 h-5 text-indigo-600 mr-3 flex-shrink-0 mt-0.5" />
+                <span className="text-gray-700">Custom views & filtering</span>
+              </div>
+              <div className="flex items-start">
+                <Check className="w-5 h-5 text-indigo-600 mr-3 flex-shrink-0 mt-0.5" />
+                <span className="text-gray-700">3 featured contributions</span>
+              </div>
+              <div className="flex items-start">
+                <Check className="w-5 h-5 text-indigo-600 mr-3 flex-shrink-0 mt-0.5" />
+                <span className="text-gray-700">Standard support</span>
+              </div>
+            </div>
+
+            <Button className="w-full bg-indigo-600 text-white py-3 rounded-lg font-medium hover:bg-indigo-700" asChild>
+              <Link href="/auth/signup?plan=lite">Start 14-Day Free Trial</Link>
+            </Button>
+          </div>
+
+          {/* Pro Tier */}
+          <div className="bg-gradient-to-br from-indigo-600 to-purple-600 rounded-2xl shadow-lg p-6 text-white relative">
+            <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-amber-400 text-gray-900 px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap shadow-md">
+              MOST POPULAR
+            </div>
+            <h2 className="text-2xl font-bold mb-2 mt-2">Reputation on Autopilot</h2>
+            <div className="mb-6">
+              <span className="text-5xl font-bold">$29.99</span>
+              <span className="text-indigo-100">/month</span>
+            </div>
+            <p className="text-indigo-100 mb-2">or $249/year (save 31%)</p>
+            <p className="text-indigo-100 mb-8">For professionals who compete on trust daily</p>
+
+            <div className="space-y-4 mb-8">
+              <div className="flex items-start">
+                <Check className="w-5 h-5 text-white mr-3 flex-shrink-0 mt-0.5" />
+                <span className="font-semibold">Everything in Build Momentum, plus:</span>
+              </div>
+              <div className="flex items-start">
+                <Check className="w-5 h-5 text-white mr-3 flex-shrink-0 mt-0.5" />
+                <span>Unlimited saved feedback uploads</span>
+              </div>
+              <div className="flex items-start">
+                <Check className="w-5 h-5 text-white mr-3 flex-shrink-0 mt-0.5" />
+                <span>Unlimited featured contributions</span>
+              </div>
+              <div className="flex items-start">
+                <Check className="w-5 h-5 text-white mr-3 flex-shrink-0 mt-0.5" />
+                <span>Embed Nomee on your website</span>
+              </div>
+              <div className="flex items-start">
+                <Check className="w-5 h-5 text-white mr-3 flex-shrink-0 mt-0.5" />
+                <span>One-click PDF export</span>
+              </div>
+              <div className="flex items-start">
+                <Check className="w-5 h-5 text-white mr-3 flex-shrink-0 mt-0.5" />
+                <span>Monthly reputation digest</span>
+              </div>
+              <div className="flex items-start">
+                <Check className="w-5 h-5 text-white mr-3 flex-shrink-0 mt-0.5" />
+                <span>Advanced analytics & insights</span>
+              </div>
+              <div className="flex items-start">
+                <Check className="w-5 h-5 text-white mr-3 flex-shrink-0 mt-0.5" />
+                <span>Priority support</span>
+              </div>
+            </div>
+
+            <Button className="w-full bg-white text-indigo-600 py-3 rounded-lg font-bold hover:bg-gray-50" asChild>
+              <Link href="/auth/signup?plan=pro">Start 14-Day Free Trial</Link>
+            </Button>
           </div>
         </div>
 
-        {/* Pricing Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
-          {/* Collect — Free */}
-          <Card className="p-8 border-2 border-slate-200 flex flex-col">
-            <div className="mb-6">
-              <h3 className="mb-2 text-2xl font-semibold text-slate-900">Collect</h3>
-              <p className="text-sm text-slate-600 mb-4">Collect real feedback. See the patterns.</p>
-              <div className="mb-6">
-                <span className="text-5xl font-bold text-slate-900">$0</span>
-              </div>
-            </div>
-
-            <div className="space-y-3 mb-8 flex-1">
-              <div className="flex items-start gap-3">
-                <Check className="h-5 w-5 text-slate-900 shrink-0 mt-0.5" strokeWidth={2.5} />
-                <span className="text-sm text-slate-700">Personal Nomee page (public link)</span>
-              </div>
-              <div className="flex items-start gap-3">
-                <Check className="h-5 w-5 text-slate-900 shrink-0 mt-0.5" strokeWidth={2.5} />
-                <span className="text-sm text-slate-700">Unlimited feedback requests</span>
-              </div>
-              <div className="flex items-start gap-3">
-                <Check className="h-5 w-5 text-slate-900 shrink-0 mt-0.5" strokeWidth={2.5} />
-                <span className="text-sm text-slate-700">Unlimited feedback collected</span>
-              </div>
-              <div className="flex items-start gap-3">
-                <Check className="h-5 w-5 text-slate-900 shrink-0 mt-0.5" strokeWidth={2.5} />
-                <span className="text-sm text-slate-700">Core trait & pattern recognition</span>
-              </div>
-              <div className="flex items-start gap-3">
-                <Check className="h-5 w-5 text-slate-900 shrink-0 mt-0.5" strokeWidth={2.5} />
-                <span className="text-sm text-slate-700">Control over what's visible and when</span>
-              </div>
-            </div>
-
-            <p className="text-xs text-slate-500 mb-6">Always free.</p>
-
-            <Button className="w-full bg-slate-900 hover:bg-slate-800 text-white" size="lg" asChild>
-              <Link href="/auth/signup">Start saving feedback</Link>
-            </Button>
-          </Card>
-
-          {/* Maintain — $9/month (MOST POPULAR) */}
-          <Card className="p-8 border-2 border-blue-500 bg-white flex flex-col relative shadow-lg scale-105">
-            <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-              <span className="bg-blue-500 text-white text-xs font-semibold px-4 py-1 rounded-full">Most popular</span>
-            </div>
-
-            <div className="mb-6">
-              <h3 className="mb-2 text-2xl font-semibold text-slate-900">Maintain</h3>
-              <p className="text-sm text-slate-600 mb-4">Keep feedback organized — ready when it matters.</p>
-              <div className="mb-6">
-                {billingPeriod === "monthly" ? (
-                  <>
-                    <span className="text-5xl font-bold text-slate-900">$9</span>
-                    <span className="text-slate-600 ml-2">/ month</span>
-                  </>
-                ) : (
-                  <>
-                    <span className="text-5xl font-bold text-slate-900">$79</span>
-                    <span className="text-slate-600 ml-2">/ year</span>
-                    <div className="text-sm text-blue-600 mt-1">Save ~27%</div>
-                  </>
-                )}
-              </div>
-            </div>
-
-            <div className="space-y-3 mb-8 flex-1">
-              <div className="flex items-start gap-3">
-                <Check className="h-5 w-5 text-slate-900 shrink-0 mt-0.5" strokeWidth={2.5} />
-                <span className="text-sm text-slate-900 font-medium">Everything in Collect, plus:</span>
-              </div>
-              <div className="flex items-start gap-3">
-                <Check className="h-5 w-5 text-slate-900 shrink-0 mt-0.5" strokeWidth={2.5} />
-                <span className="text-sm text-slate-700">Upload existing feedback (emails, Slack, screenshots)</span>
-              </div>
-              <div className="flex items-start gap-3">
-                <Check className="h-5 w-5 text-slate-900 shrink-0 mt-0.5" strokeWidth={2.5} />
-                <span className="text-sm text-slate-700">Secure long-term storage</span>
-              </div>
-              <div className="flex items-start gap-3">
-                <Check className="h-5 w-5 text-slate-900 shrink-0 mt-0.5" strokeWidth={2.5} />
-                <span className="text-sm text-slate-700">Pin, feature, or hide contributions</span>
-              </div>
-              <div className="flex items-start gap-3">
-                <Check className="h-5 w-5 text-slate-900 shrink-0 mt-0.5" strokeWidth={2.5} />
-                <span className="text-sm text-slate-700">See recent vs long-term feedback patterns</span>
-              </div>
-              <div className="flex items-start gap-3">
-                <Check className="h-5 w-5 text-slate-900 shrink-0 mt-0.5" strokeWidth={2.5} />
-                <span className="text-sm text-slate-700">Monthly "what's changed" signal</span>
-              </div>
-              <div className="flex items-start gap-3">
-                <Check className="h-5 w-5 text-slate-900 shrink-0 mt-0.5" strokeWidth={2.5} />
-                <span className="text-sm text-slate-700">Clear, human summaries</span>
-              </div>
-            </div>
-
-            <Button className="w-full bg-slate-900 hover:bg-slate-800 text-white" size="lg" asChild>
-              <Link href="/auth/signup?plan=maintain">Keep my feedback ready</Link>
-            </Button>
-          </Card>
-
-          {/* Showcase — $19/month */}
-          <Card className="p-8 border-2 border-slate-200 flex flex-col">
-            <div className="mb-6">
-              <h3 className="mb-2 text-2xl font-semibold text-slate-900">Showcase</h3>
-              <p className="text-sm text-slate-600 mb-4">Use feedback when decisions are being made.</p>
-              <div className="mb-6">
-                {billingPeriod === "monthly" ? (
-                  <>
-                    <span className="text-5xl font-bold text-slate-900">$19</span>
-                    <span className="text-slate-600 ml-2">/ month</span>
-                  </>
-                ) : (
-                  <>
-                    <span className="text-5xl font-bold text-slate-900">$169</span>
-                    <span className="text-slate-600 ml-2">/ year</span>
-                    <div className="text-sm text-blue-600 mt-1">Save ~26%</div>
-                  </>
-                )}
-              </div>
-            </div>
-
-            <div className="space-y-3 mb-8 flex-1">
-              <div className="flex items-start gap-3">
-                <Check className="h-5 w-5 text-slate-900 shrink-0 mt-0.5" strokeWidth={2.5} />
-                <span className="text-sm text-slate-900 font-medium">Everything in Maintain, plus:</span>
-              </div>
-              <div className="flex items-start gap-3">
-                <Check className="h-5 w-5 text-slate-900 shrink-0 mt-0.5" strokeWidth={2.5} />
-                <span className="text-sm text-slate-700">Embeddable feedback tiles (scrolling cards)</span>
-              </div>
-              <div className="flex items-start gap-3">
-                <Check className="h-5 w-5 text-slate-900 shrink-0 mt-0.5" strokeWidth={2.5} />
-                <span className="text-sm text-slate-700">Embed feedback on websites & portfolios</span>
-              </div>
-              <div className="flex items-start gap-3">
-                <Check className="h-5 w-5 text-slate-900 shrink-0 mt-0.5" strokeWidth={2.5} />
-                <span className="text-sm text-slate-700">Saved views (Hiring · Clients · Partnerships)</span>
-              </div>
-              <div className="flex items-start gap-3">
-                <Check className="h-5 w-5 text-slate-900 shrink-0 mt-0.5" strokeWidth={2.5} />
-                <span className="text-sm text-slate-700">One-page export (PDF)</span>
-              </div>
-              <div className="flex items-start gap-3">
-                <Check className="h-5 w-5 text-slate-900 shrink-0 mt-0.5" strokeWidth={2.5} />
-                <span className="text-sm text-slate-700">Subtle branding control</span>
-              </div>
-            </div>
-
-            <Button className="w-full bg-slate-900 hover:bg-slate-800 text-white" size="lg" asChild>
-              <Link href="/auth/signup?plan=showcase">Showcase my work</Link>
-            </Button>
-          </Card>
-        </div>
-
-        {/* Footer Copy */}
-        <div className="text-center max-w-2xl mx-auto mb-20 py-8 border-t border-slate-200">
-          <p className="text-slate-600 leading-relaxed">
-            We don't charge for feedback or asking.
-            <br />
-            We charge for keeping it organized — ready when it matters.
+        {/* FAQ or Additional Info */}
+        <div className="mt-20 text-center">
+          <p className="text-gray-600 mb-4">
+            All plans include unlimited written contributions and basic reputation themes
+          </p>
+          <p className="text-gray-600">
+            Need a custom plan for your team?{" "}
+            <Link href="/contact" className="text-indigo-600 font-medium hover:text-indigo-700">
+              Contact us
+            </Link>
           </p>
         </div>
-
-        {/* Trust Section */}
-        <div className="mb-20 max-w-3xl mx-auto">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            <div className="text-center">
-              <p className="text-sm text-slate-700">No contracts</p>
-            </div>
-            <div className="text-center">
-              <p className="text-sm text-slate-700">Cancel anytime</p>
-            </div>
-            <div className="text-center">
-              <p className="text-sm text-slate-700">No credit card to start</p>
-            </div>
-            <div className="text-center">
-              <p className="text-sm text-slate-700">No surprises</p>
-            </div>
-          </div>
-        </div>
-
-        {/* FAQ */}
-        <div className="mb-24 max-w-3xl mx-auto">
-          <div className="space-y-8">
-            <div>
-              <h3 className="text-lg font-semibold text-slate-900 mb-2">Can I use Nomee without my company?</h3>
-              <p className="text-slate-600">Yes. Nomee is personal. You decide if and when you share it.</p>
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold text-slate-900 mb-2">Is this performance review software?</h3>
-              <p className="text-slate-600">No. Nomee saves what people already say — it doesn't evaluate or score.</p>
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold text-slate-900 mb-2">When do people usually upgrade?</h3>
-              <p className="text-slate-600">
-                When something important is coming up and they want everything in one place.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* Final CTA */}
-        <div className="text-center max-w-2xl mx-auto py-12">
-          <h2 className="text-3xl sm:text-4xl font-semibold text-slate-900 mb-6">When it matters, you'll be ready.</h2>
-          <Button size="lg" className="bg-slate-900 hover:bg-slate-800 text-white mb-4" asChild>
-            <Link href="/auth/signup">Start your Nomee</Link>
-          </Button>
-          <p className="text-sm text-slate-500">Free to start. Upgrade only if you need more.</p>
-        </div>
       </div>
+
+      {/* Footer */}
+      <footer className="bg-white border-t border-gray-200 mt-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <div className="flex items-center justify-between">
+            <span className="text-xl font-bold text-gray-900">Nomee</span>
+            <div className="text-gray-600 text-sm">© 2026 Nomee. Your reputation, portable.</div>
+          </div>
+        </div>
+      </footer>
     </div>
   )
 }

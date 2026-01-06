@@ -32,7 +32,14 @@ export default function SignUpPage() {
       const data = await response.json()
 
       if (!response.ok || !data.ok) {
-        throw new Error(data.error || "Signup failed")
+        const errorMessage = data.error || "Signup failed"
+        if (
+          errorMessage.toLowerCase().includes("already registered") ||
+          errorMessage.toLowerCase().includes("already exists")
+        ) {
+          throw new Error("This email is already registered. Please sign in instead.")
+        }
+        throw new Error(errorMessage)
       }
 
       window.location.href = "/dashboard"
@@ -97,6 +104,11 @@ export default function SignUpPage() {
                   {error && (
                     <div className="rounded-md bg-red-50 p-3 border border-red-200">
                       <p className="text-sm text-red-600">{error}</p>
+                      {error.toLowerCase().includes("already registered") && (
+                        <Link href="/auth/login" className="text-sm text-blue-600 hover:underline mt-2 inline-block">
+                          Go to sign in →
+                        </Link>
+                      )}
                     </div>
                   )}
                   <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700" disabled={isLoading}>

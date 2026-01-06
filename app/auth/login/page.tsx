@@ -31,7 +31,13 @@ export default function LoginPage() {
       const data = await response.json()
 
       if (!response.ok || !data.ok) {
-        throw new Error(data.error || "Login failed")
+        const errorMessage = data.error || "Login failed"
+        if (errorMessage.includes("Invalid login credentials")) {
+          throw new Error(
+            "Invalid email or password. Please check your credentials or sign up if you don't have an account.",
+          )
+        }
+        throw new Error(errorMessage)
       }
 
       // Redirect to dashboard on success
@@ -83,6 +89,14 @@ export default function LoginPage() {
                   {error && (
                     <div className="rounded-md bg-red-50 p-3 border border-red-200">
                       <p className="text-sm text-red-600">{error}</p>
+                      {error.includes("Invalid email or password") && (
+                        <p className="text-sm text-red-600 mt-2">
+                          New to Nomee?{" "}
+                          <Link href="/auth/signup" className="font-medium underline underline-offset-4">
+                            Create an account
+                          </Link>
+                        </p>
+                      )}
                     </div>
                   )}
                   <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700" disabled={isLoading}>
