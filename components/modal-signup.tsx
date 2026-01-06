@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button"
 import { X } from "lucide-react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
+import { useScrollToTop } from "@/lib/use-scroll-to-top"
 
 interface ModalSignupProps {
   isOpen: boolean
@@ -12,15 +13,18 @@ interface ModalSignupProps {
 
 export function ModalSignup({ isOpen, onClose, initialType }: ModalSignupProps) {
   const router = useRouter()
+  const scrollToTop = useScrollToTop()
 
   if (!isOpen) return null
 
   const handleSignUp = () => {
+    scrollToTop()
     router.push("/auth/signup")
     onClose()
   }
 
   const handleLogin = () => {
+    scrollToTop()
     router.push("/auth/login")
     onClose()
   }
@@ -70,6 +74,10 @@ export function ModalSignup({ isOpen, onClose, initialType }: ModalSignupProps) 
             <Link
               href="/dashboard"
               className="text-xs text-primary-blue hover:text-primary-blue/80 hover:underline inline-block"
+              onClick={() => {
+                onClose()
+                scrollToTop()
+              }}
             >
               Just want to request a contribution?
             </Link>

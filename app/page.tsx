@@ -103,25 +103,59 @@ export default function Home() {
 
       {/* Visual Flow Section */}
       <section className="py-12 sm:py-16 lg:py-24 bg-gradient-to-b from-white to-gray-50 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-[1120px] mx-auto">
+        <div className="max-w-7xl mx-auto">
           <div className="space-y-8 text-center mb-16">
             <div>
               <h2 className="text-2xl sm:text-3xl lg:text-5xl font-bold text-gray-900 mb-6">
-                This is where your feedback actually lives.
+                Your proof already exists. It's just spread out.
               </h2>
-              <div className="max-w-3xl mx-auto text-base sm:text-lg text-gray-600 font-light leading-relaxed">
-                <ul className="space-y-3 mb-6">
-                  <li>Slack messages you'll never search again</li>
-                  <li>Emails buried months ago</li>
-                  <li>Texts sent after projects end</li>
-                  <li>Conversations no one documented</li>
-                </ul>
-                <p className="text-gray-600">None of this is easy to find. None of this is easy to share.</p>
+              <div className="max-w-3xl mx-auto space-y-4">
+                {/* Row 1 */}
+                <div className="flex flex-wrap justify-center gap-2">
+                  <span className="inline-flex items-center px-4 py-2 rounded-full bg-slate-100 text-slate-700 text-sm font-medium">
+                    Quick messages
+                  </span>
+                  <span className="inline-flex items-center px-4 py-2 rounded-full bg-slate-50 text-slate-600 text-sm font-medium">
+                    Side comments
+                  </span>
+                  <span className="inline-flex items-center px-4 py-2 rounded-full bg-stone-50 text-stone-600 text-sm font-medium">
+                    Nice work moments
+                  </span>
+                </div>
+
+                {/* Row 2 */}
+                <div className="flex flex-wrap justify-center gap-2">
+                  <span className="inline-flex items-center px-4 py-2 rounded-full bg-neutral-100 text-neutral-700 text-sm font-medium">
+                    Old threads
+                  </span>
+                  <span className="inline-flex items-center px-4 py-2 rounded-full bg-gray-50 text-gray-600 text-sm font-medium">
+                    After-the-fact notes
+                  </span>
+                  <span className="inline-flex items-center px-4 py-2 rounded-full bg-zinc-50 text-zinc-600 text-sm font-medium">
+                    Follow-up DMs
+                  </span>
+                </div>
+
+                {/* Row 3 */}
+                <div className="flex flex-wrap justify-center gap-2">
+                  <span className="inline-flex items-center px-4 py-2 rounded-full bg-slate-50 text-slate-600 text-sm font-medium">
+                    Calls that ended
+                  </span>
+                  <span className="inline-flex items-center px-4 py-2 rounded-full bg-neutral-50 text-neutral-600 text-sm font-medium">
+                    Meetings with no record
+                  </span>
+                  <span className="inline-flex items-center px-4 py-2 rounded-full bg-stone-100 text-stone-700 text-sm font-medium">
+                    Praise you didn't save
+                  </span>
+                </div>
+
+                {/* Closing line */}
+                <p className="text-gray-600 text-base sm:text-lg pt-2">Real feedback. No single place it lives.</p>
               </div>
             </div>
           </div>
 
-          <div className="space-y-12 lg:space-y-0 lg:grid lg:grid-cols-[1fr_auto_1fr] lg:gap-16 lg:items-center">
+          <div className="space-y-12 lg:space-y-0 lg:grid lg:grid-cols-[1fr_auto_1fr] lg:gap-12 lg:items-center">
             {/* Left Side - Scattered Feedback */}
             <div>
               <div className="text-center mb-4 lg:mb-8">
@@ -195,6 +229,23 @@ export default function Home() {
                     </div>
                   </div>
                 </div>
+
+                {/* Fourth Card - LinkedIn Message (for balance) */}
+                <div className="min-w-[280px] sm:min-w-[300px] lg:min-w-0 snap-center lg:snap-none flex-shrink-0 lg:flex-shrink bg-white rounded-2xl shadow-lg border border-gray-200 p-4 sm:p-5 lg:p-6 lg:max-w-sm transform hover:scale-105 transition-transform duration-200">
+                  <div className="flex items-center space-x-3 mb-4">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-indigo-500 flex items-center justify-center flex-shrink-0">
+                      <span className="text-xs sm:text-sm font-semibold text-white">PP</span>
+                    </div>
+                    <div>
+                      <div className="font-semibold text-sm">Priya Patel</div>
+                      <div className="text-xs text-gray-500">LinkedIn Recommendation</div>
+                    </div>
+                  </div>
+                  <div className="text-sm text-gray-700 leading-relaxed">
+                    I've worked with many consultants over my career, but they stand out for their business acumen and
+                    follow-through. They don't just deliver advice—they ensure you succeed with it.
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -223,7 +274,7 @@ export default function Home() {
 
           {/* Bottom Summary */}
           <div className="text-center mt-12 sm:mt-16 lg:mt-20">
-            <p className="text-lg sm:text-xl lg:text-2xl text-gray-600 font-light">All of it becomes one Nomee page.</p>
+            <p className="text-lg sm:text-xl lg:text-2xl text-gray-600 font-light">It all becomes one Nomee page.</p>
           </div>
         </div>
       </section>

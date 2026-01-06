@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { useState } from "react"
 import { X } from "lucide-react"
+import { useScrollToTop } from "@/lib/use-scroll-to-top"
 
 interface SiteHeaderProps {
   onCreateClick?: () => void
@@ -11,35 +12,50 @@ interface SiteHeaderProps {
 
 export function SiteHeader({ onCreateClick }: SiteHeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const scrollToTop = useScrollToTop()
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-sm border-b border-slate-100">
       <div className="max-w-7xl mx-auto">
         <div className="flex items-center justify-between h-16 px-6 lg:px-8">
-          <Link href="/" className="flex items-center -ml-1">
+          <Link href="/" className="flex items-center -ml-1" onClick={scrollToTop}>
             <img src="/images/nomee-20logo-20transparent.png" alt="Nomee" className="h-7.5 w-auto" />
           </Link>
 
           <div className="hidden md:flex items-center gap-8">
-            <Link href="/what-is-nomee" className="text-sm text-slate-600 hover:text-slate-900 transition-colors">
+            <Link
+              href="/what-is-nomee"
+              className="text-sm text-slate-600 hover:text-slate-900 transition-colors"
+              onClick={scrollToTop}
+            >
               What is Nomee
             </Link>
             <Link
               href="/personal-reputation-marketing"
               className="text-sm text-slate-600 hover:text-slate-900 transition-colors"
+              onClick={scrollToTop}
             >
               Personal Reputation Marketing
             </Link>
-            <Link href="/why-nomee" className="text-sm text-slate-600 hover:text-slate-900 transition-colors">
+            <Link
+              href="/why-nomee"
+              className="text-sm text-slate-600 hover:text-slate-900 transition-colors"
+              onClick={scrollToTop}
+            >
               Why Nomee
             </Link>
-            <Link href="/pricing" className="text-sm text-slate-600 hover:text-slate-900 transition-colors">
+            <Link
+              href="/pricing"
+              className="text-sm text-slate-600 hover:text-slate-900 transition-colors"
+              onClick={scrollToTop}
+            >
               Pricing
             </Link>
             <div className="flex items-center gap-4">
               <Link
                 href="/auth/login"
                 className="text-sm text-slate-600 hover:text-slate-900 transition-colors font-medium cursor-pointer"
+                onClick={scrollToTop}
               >
                 Login
               </Link>
@@ -55,7 +71,9 @@ export function SiteHeader({ onCreateClick }: SiteHeaderProps) {
                   asChild
                   className="bg-slate-900 hover:bg-slate-800 text-white rounded-full px-5 h-9 text-sm font-medium transition-all"
                 >
-                  <Link href="/auth/signup">Start Your Nomee</Link>
+                  <Link href="/auth/signup" onClick={scrollToTop}>
+                    Start Your Nomee
+                  </Link>
                 </Button>
               )}
             </div>
@@ -85,35 +103,50 @@ export function SiteHeader({ onCreateClick }: SiteHeaderProps) {
             <Link
               href="/what-is-nomee"
               className="text-base text-slate-600 hover:text-slate-900 transition-colors py-2"
-              onClick={() => setMobileMenuOpen(false)}
+              onClick={() => {
+                setMobileMenuOpen(false)
+                scrollToTop()
+              }}
             >
               What is Nomee
             </Link>
             <Link
               href="/personal-reputation-marketing"
               className="text-base text-slate-600 hover:text-slate-900 transition-colors py-2"
-              onClick={() => setMobileMenuOpen(false)}
+              onClick={() => {
+                setMobileMenuOpen(false)
+                scrollToTop()
+              }}
             >
               Personal Reputation Marketing
             </Link>
             <Link
               href="/why-nomee"
               className="text-base text-slate-600 hover:text-slate-900 transition-colors py-2"
-              onClick={() => setMobileMenuOpen(false)}
+              onClick={() => {
+                setMobileMenuOpen(false)
+                scrollToTop()
+              }}
             >
               Why Nomee
             </Link>
             <Link
               href="/pricing"
               className="text-base text-slate-600 hover:text-slate-900 transition-colors py-2"
-              onClick={() => setMobileMenuOpen(false)}
+              onClick={() => {
+                setMobileMenuOpen(false)
+                scrollToTop()
+              }}
             >
               Pricing
             </Link>
             <Link
               href="/auth/login"
               className="text-base text-slate-600 hover:text-slate-900 transition-colors font-medium py-2"
-              onClick={() => setMobileMenuOpen(false)}
+              onClick={() => {
+                setMobileMenuOpen(false)
+                scrollToTop()
+              }}
             >
               Login
             </Link>
@@ -132,7 +165,13 @@ export function SiteHeader({ onCreateClick }: SiteHeaderProps) {
                 asChild
                 className="bg-slate-900 hover:bg-slate-800 text-white rounded-full h-11 text-base font-medium transition-all"
               >
-                <Link href="/auth/signup" onClick={() => setMobileMenuOpen(false)}>
+                <Link
+                  href="/auth/signup"
+                  onClick={() => {
+                    setMobileMenuOpen(false)
+                    scrollToTop()
+                  }}
+                >
                   Start Your Nomee
                 </Link>
               </Button>

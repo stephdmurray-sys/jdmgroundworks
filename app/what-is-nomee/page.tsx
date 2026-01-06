@@ -6,6 +6,8 @@ import { ArrowRight, Mail, MessageSquare, Send, Check, Sparkles } from "lucide-r
 import { useState, useRef } from "react"
 import { ModalSignup } from "@/components/modal-signup"
 import Link from "next/link"
+import { DynamicMiniExample } from "@/components/dynamic-mini-example"
+import { useScrollToTop } from "@/lib/use-scroll-to-top"
 
 export default function WhatIsNomeePage() {
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -18,8 +20,10 @@ export default function WhatIsNomeePage() {
   const opacity = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0, 1, 1, 0])
   const scale = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0.8, 1, 1, 0.8])
 
+  const scrollToTop = useScrollToTop()
+
   return (
-    <>
+    <main className="min-h-screen bg-white">
       <div className="min-h-screen bg-white">
         <SiteHeader onCreateClick={() => setIsModalOpen(true)} />
 
@@ -335,76 +339,7 @@ export default function WhatIsNomeePage() {
                 </div>
 
                 {/* Visual Profile Mockup */}
-                <div className="bg-purple-50 rounded-3xl p-8 shadow-2xl border border-purple-200">
-                  <div className="mb-6">
-                    <div className="flex items-start gap-4">
-                      <div className="w-20 h-20 bg-gradient-to-br from-purple-400 to-purple-600 rounded-full shadow-lg flex-shrink-0" />
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-1">
-                          <h3 className="text-2xl font-bold text-slate-900">Maya Torres</h3>
-                          <span className="inline-flex items-center gap-1 text-xs font-semibold text-green-600 bg-green-100 px-2.5 py-1 rounded-full">
-                            <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                              <path
-                                fillRule="evenodd"
-                                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                clipRule="evenodd"
-                              />
-                            </svg>
-                            Verified
-                          </span>
-                        </div>
-                        <p className="text-sm font-medium text-slate-700">Product Designer • San Francisco</p>
-                        <p className="text-xs text-slate-500 mt-1">47 contributions • 12 years experience</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="mb-6 pb-6 border-b border-purple-200">
-                    <p className="text-sm font-semibold text-slate-700 mb-3">What consistently shows up:</p>
-                    <div className="flex flex-wrap gap-2">
-                      <span className="px-3 py-1.5 bg-blue-200 text-blue-900 rounded-full text-xs font-semibold">
-                        Strategic thinker
-                      </span>
-                      <span className="px-3 py-1.5 bg-purple-200 text-purple-900 rounded-full text-xs font-semibold">
-                        Problem solver
-                      </span>
-                      <span className="px-3 py-1.5 bg-green-200 text-green-900 rounded-full text-xs font-semibold">
-                        Clear communicator
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="mb-6">
-                    <p className="text-sm font-semibold text-slate-900 mb-3">Highlight</p>
-                    <div className="bg-white rounded-xl p-4 border-l-4 border-amber-500">
-                      <p className="text-sm text-slate-700 leading-relaxed">
-                        <span className="font-semibold text-slate-900">Maya brings</span>{" "}
-                        <span className="font-bold text-amber-600">incredible strategic clarity</span> to complex
-                        projects. She helped us structure our product roadmap and the results were transformative.
-                      </p>
-                      <p className="text-xs text-slate-600 mt-3 font-medium">— Alex Rivera, Product Director</p>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-3 gap-3 mb-6">
-                    <div className="bg-white rounded-lg p-3.5 text-center">
-                      <p className="text-2xl font-bold text-purple-600">47</p>
-                      <p className="text-xs font-medium text-slate-600 mt-1">Contributions</p>
-                    </div>
-                    <div className="bg-white rounded-lg p-3.5 text-center">
-                      <p className="text-2xl font-bold text-purple-600">23</p>
-                      <p className="text-xs font-medium text-slate-600 mt-1">Drafts</p>
-                    </div>
-                    <div className="bg-white rounded-lg p-3.5 text-center">
-                      <p className="text-2xl font-bold text-green-600">100%</p>
-                      <p className="text-xs font-medium text-slate-600 mt-1">Verified</p>
-                    </div>
-                  </div>
-
-                  <button className="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3.5 px-4 rounded-xl transition-colors">
-                    View Full Profile →
-                  </button>
-                </div>
+                <DynamicMiniExample />
               </motion.div>
             </div>
           </div>
@@ -592,6 +527,7 @@ export default function WhatIsNomeePage() {
               </button>
               <Link
                 href="/example"
+                onClick={scrollToTop}
                 className="px-10 py-5 bg-transparent border-2 border-white text-white rounded-2xl text-xl font-bold hover:bg-white/10 transition-all"
               >
                 See a Live Example
@@ -612,6 +548,6 @@ export default function WhatIsNomeePage() {
       </div>
 
       <ModalSignup isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
-    </>
+    </main>
   )
 }

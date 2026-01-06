@@ -11,6 +11,7 @@ import { createClient } from "@/lib/supabase/client"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { ArrowLeft, Check, X, Loader2 } from "lucide-react"
+import { useScrollToTop } from "@/lib/use-scroll-to-top"
 
 type Profile = {
   id: string
@@ -21,6 +22,7 @@ type Profile = {
 
 export default function SettingsClient({ profile, userEmail }: { profile: Profile; userEmail: string }) {
   const router = useRouter()
+  const scrollToTop = useScrollToTop()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
   const [success, setSuccess] = useState("")
@@ -105,6 +107,7 @@ export default function SettingsClient({ profile, userEmail }: { profile: Profil
     setLoading(false)
 
     setTimeout(() => {
+      scrollToTop()
       router.push("/dashboard")
       router.refresh()
     }, 1000)
@@ -117,6 +120,7 @@ export default function SettingsClient({ profile, userEmail }: { profile: Profil
           <Link
             href="/dashboard"
             className="inline-flex items-center gap-2 text-sm text-neutral-600 hover:text-neutral-900 transition-colors"
+            onClick={scrollToTop}
           >
             <ArrowLeft className="h-4 w-4" />
             Back to Dashboard

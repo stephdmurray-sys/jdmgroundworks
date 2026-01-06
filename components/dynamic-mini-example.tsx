@@ -1,9 +1,10 @@
 "use client"
 
 import type React from "react"
-
+import Link from "next/link"
 import { useState, useEffect, useRef } from "react"
 import { ArrowRight, X } from "lucide-react"
+import { useScrollToTop } from "@/lib/use-scroll-to-top"
 
 type TabType = "summary" | "patterns" | "contributions"
 
@@ -47,6 +48,7 @@ const feedbackItems = [
 ]
 
 export function DynamicMiniExample() {
+  const scrollToTop = useScrollToTop()
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [activeTab, setActiveTab] = useState<TabType>("summary")
   const feedbackScrollRef = useRef<HTMLDivElement>(null)
@@ -177,13 +179,14 @@ export function DynamicMiniExample() {
         </div>
 
         {/* CTA Button */}
-        <button
-          onClick={() => setIsModalOpen(true)}
-          className="w-full bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors flex items-center justify-center gap-2 min-h-[48px]"
+        <Link
+          href="/example"
+          onClick={scrollToTop}
+          className="w-full bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors flex items-center justify-center gap-2 min-h-[48px] cursor-pointer"
         >
           <span>See Full Example</span>
           <ArrowRight className="w-4 h-4" />
-        </button>
+        </Link>
       </div>
 
       {/* Modal Overlay */}

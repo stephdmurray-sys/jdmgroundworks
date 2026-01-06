@@ -1,6 +1,7 @@
 "use client"
 
 import type React from "react"
+import { useScrollToTop } from "@/lib/use-scroll-to-top"
 
 import { useState } from "react"
 import { Card } from "@/components/ui/card"
@@ -37,6 +38,7 @@ const SOURCE_OPTIONS = [
 
 export default function UploadForm({ profileId, currentCount, limit }: UploadFormProps) {
   const router = useRouter()
+  const scrollToTop = useScrollToTop()
   const [files, setFiles] = useState<UploadFile[]>([])
   const [isDragging, setIsDragging] = useState(false)
 
@@ -480,7 +482,13 @@ export default function UploadForm({ profileId, currentCount, limit }: UploadFor
             </Button>
 
             {allProcessed && (
-              <Button variant="default" onClick={() => router.push("/dashboard/imported-feedback/review")}>
+              <Button
+                variant="default"
+                onClick={() => {
+                  scrollToTop()
+                  router.push("/dashboard/imported-feedback/review")
+                }}
+              >
                 Review Extracted Feedback
               </Button>
             )}

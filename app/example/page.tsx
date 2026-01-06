@@ -176,7 +176,7 @@ export default function NomeeProfilePage() {
             <Link href="/" className="flex items-center space-x-2">
               <img src="/images/nomee-20logo-20transparent.png" alt="Nomee" className="h-7.5 w-auto" />
               <span className="text-gray-400">|</span>
-              <span className="text-gray-600">Portable Partnership Proof</span>
+              <span className="text-gray-600">Individual Reputation Marketing</span>
             </Link>
             <Link
               href="/auth/signup"

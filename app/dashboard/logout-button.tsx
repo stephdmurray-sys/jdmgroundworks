@@ -3,10 +3,12 @@
 import { Button } from "@/components/ui/button"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
+import { useScrollToTop } from "@/lib/use-scroll-to-top"
 
 export default function LogoutButton() {
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
+  const scrollToTop = useScrollToTop()
 
   const handleLogout = async () => {
     setIsLoading(true)
@@ -20,6 +22,7 @@ export default function LogoutButton() {
 
       if (result.ok) {
         console.log("[v0] Auth - Logged out successfully")
+        scrollToTop()
         router.refresh()
         router.push("/auth/login")
       } else {

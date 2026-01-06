@@ -3,6 +3,7 @@
 import { useState } from "react"
 import Link from "next/link"
 import { Home, Plus, Upload, Users, BarChart3, Settings, Share2, Menu, X, Star } from "lucide-react"
+import { useScrollToTop } from "@/lib/use-scroll-to-top"
 
 type SidebarProps = {
   activePage?: string
@@ -11,6 +12,7 @@ type SidebarProps = {
 
 export function DashboardSidebar({ activePage = "home", plan = "free" }: SidebarProps) {
   const [sidebarOpen, setSidebarOpen] = useState(true)
+  const scrollToTop = useScrollToTop()
 
   return (
     <div
@@ -18,7 +20,7 @@ export function DashboardSidebar({ activePage = "home", plan = "free" }: Sidebar
     >
       <div className="p-6 flex items-center justify-between">
         {sidebarOpen && (
-          <Link href="/" className="text-2xl font-bold">
+          <Link href="/" className="text-2xl font-bold" onClick={scrollToTop}>
             Nomee
           </Link>
         )}
@@ -40,6 +42,7 @@ export function DashboardSidebar({ activePage = "home", plan = "free" }: Sidebar
           <Link
             key={item.id}
             href={item.href}
+            onClick={scrollToTop}
             className={`w-full flex items-center space-x-3 px-3 py-3 rounded-lg mb-1 transition-colors ${
               activePage === item.id ? "bg-indigo-600 text-white" : "text-gray-400 hover:bg-gray-800 hover:text-white"
             }`}
@@ -59,7 +62,7 @@ export function DashboardSidebar({ activePage = "home", plan = "free" }: Sidebar
               <div className="text-xs text-indigo-100">
                 {plan === "free" ? "Free" : plan === "starter" ? "$15.99/month" : "$29.99/month"}
               </div>
-              <Link href="/pricing" className="text-xs underline mt-2 block">
+              <Link href="/pricing" className="text-xs underline mt-2 block" onClick={scrollToTop}>
                 Manage plan
               </Link>
             </div>
