@@ -43,7 +43,7 @@ export default function Home() {
             {/* Trust signal */}
             <div className="inline-flex items-center space-x-2 bg-white/80 backdrop-blur-sm border border-indigo-200 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full shadow-lg text-xs sm:text-sm font-semibold text-indigo-900">
               <Shield className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
-              <span>Trusted by 500+ professionals</span>
+              <span>The first personal reputation marketing platform</span>
             </div>
 
             <h1 className="text-4xl sm:text-6xl md:text-8xl font-bold text-slate-900 leading-[1.15] sm:leading-[1.1] tracking-tight">
@@ -56,11 +56,10 @@ export default function Home() {
 
             <div className="space-y-4">
               <p className="text-lg sm:text-2xl md:text-3xl text-slate-600 font-light leading-relaxed max-w-[34ch] mx-auto px-4">
-                Nomee brings real feedback together so you have clear proof of your work—and what it's like to work with
-                you.
+                Nomee captures real feedback and turns it into proof.
               </p>
               <p className="text-sm sm:text-base text-slate-500 font-light max-w-[34ch] mx-auto px-4">
-                Slack messages, emails, texts, and conversations—organized.
+                So your best work doesn't disappear when it matters most.
               </p>
             </div>
 
