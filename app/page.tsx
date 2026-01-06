@@ -32,38 +32,46 @@ export default function Home() {
       <section className="pt-24 pb-12 sm:pb-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50">
         <div className="max-w-[1120px] mx-auto">
           <div className="text-center max-w-5xl mx-auto mb-12 sm:mb-16">
-            <div className="inline-flex items-center space-x-2 bg-indigo-50 text-indigo-700 px-4 py-2 rounded-full text-sm font-semibold mb-6">
+            {/* Trust signal - matching What is Nomee pill style */}
+            <div className="inline-flex items-center space-x-2 bg-white/80 backdrop-blur-sm border border-indigo-200 px-4 py-2 rounded-full shadow-lg text-sm font-semibold text-indigo-900 mb-8">
               <Shield className="w-4 h-4" />
               <span>Trusted by 500+ professionals across industries</span>
             </div>
 
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 leading-[1.05]">
-              Your reputation is your biggest asset. Stop losing it.
+            {/* Two-part headline: match exact scale and weight from What is Nomee */}
+            <h1 className="text-6xl md:text-8xl font-bold text-slate-900 mb-6 leading-[1.1] tracking-tight">
+              Feedback fades.
+              <br />
+              <span className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+                Nomee keeps it forever.
+              </span>
             </h1>
 
-            <p className="text-base sm:text-lg lg:text-xl text-gray-600 mb-4 font-light leading-relaxed max-w-[36ch] sm:max-w-2xl mx-auto">
-              Nomee turns <strong className="font-semibold text-gray-900">scattered feedback</strong> from clients,
-              colleagues, and collaborators into verified social proof that wins deals, builds trust, and follows you{" "}
-              <strong className="font-semibold text-gray-900">throughout your career</strong>.
+            {/* Subheadline matching What is Nomee scale and tone */}
+            <p className="text-2xl md:text-3xl text-slate-600 mb-8 font-light leading-relaxed max-w-4xl mx-auto">
+              Nomee captures real feedback as it happens and turns it into verified proof that follows you throughout
+              your career.
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8 sm:mb-12">
+            {/* CTAs */}
+            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-10">
               <Button
                 variant="default"
-                className="w-full sm:w-auto px-8 h-12 sm:h-auto sm:py-4 rounded-xl text-base sm:text-lg font-semibold hover:bg-indigo-700 shadow-lg shadow-indigo-200 transition-all"
+                className="w-full sm:w-auto px-10 h-14 sm:h-auto sm:py-5 rounded-xl text-lg font-semibold bg-indigo-600 hover:bg-indigo-700 shadow-xl shadow-indigo-200 transition-all"
               >
                 Build My Reputation Profile
               </Button>
               <Link href="/what-is-nomee" className="w-full sm:w-auto">
                 <Button
                   variant="outline"
-                  className="w-full px-8 h-12 sm:h-auto sm:py-4 rounded-xl text-base sm:text-lg font-semibold hover:border-gray-300 transition-all bg-transparent"
+                  className="w-full px-10 h-14 sm:h-auto sm:py-5 rounded-xl text-lg font-semibold border-2 border-gray-300 hover:border-gray-400 hover:bg-gray-50 transition-all bg-white"
                 >
                   See How It Works
                 </Button>
               </Link>
             </div>
 
+            {/* Trust signals */}
             <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-sm text-gray-500">
               <div className="flex items-center space-x-2">
                 <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
@@ -260,7 +268,7 @@ export default function Home() {
       <section id="how-it-works" className="py-12 sm:py-16 bg-white px-4 sm:px-6 lg:px-8">
         <div className="max-w-[1120px] mx-auto">
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-center mb-8 sm:mb-12 leading-tight">
-            Request & Build reputation on autopilot. Deploy it where it matters.
+            Build your reputation on autopilot. Deploy it where it matters.
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
@@ -392,8 +400,8 @@ export default function Home() {
                     Your Reality
                   </div>
                   <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center flex-shrink-0">
-                      <Linkedin className="w-5 h-5 text-amber-600" />
+                    <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 bg-gray-200">
+                      <Linkedin className="w-5 h-5 text-gray-700" />
                     </div>
                     <div className="flex-1">
                       <div className="font-semibold text-sm text-gray-900">LinkedIn recommendations</div>
