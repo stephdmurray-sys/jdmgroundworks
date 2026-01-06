@@ -21,6 +21,7 @@ import {
   X,
 } from "lucide-react"
 import Link from "next/link"
+import RequestFeedbackForm from "./request-feedback-form" // fixed import path to use kebab-case filename
 
 interface DashboardLayoutProps {
   profile: any
@@ -351,6 +352,13 @@ export default function DashboardLayout({
           </div>
         )}
 
+        {/* Request Feedback Page */}
+        {activePage === "request" && (
+          <div className="p-8">
+            <RequestFeedbackForm recipientName={profile.full_name || "this person"} />
+          </div>
+        )}
+
         {/* Other pages placeholders */}
         {activePage === "settings" && (
           <div className="p-8">
@@ -367,7 +375,7 @@ export default function DashboardLayout({
           </div>
         )}
 
-        {activePage !== "home" && activePage !== "settings" && (
+        {activePage !== "home" && activePage !== "request" && activePage !== "settings" && (
           <div className="p-8">
             <div className="bg-white rounded-xl shadow-sm p-12 text-center">
               <div className="text-gray-400 mb-4">

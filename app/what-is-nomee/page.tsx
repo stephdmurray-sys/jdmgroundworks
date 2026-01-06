@@ -2,7 +2,7 @@
 
 import { motion, useScroll, useTransform } from "framer-motion"
 import { SiteHeader } from "@/components/site-header"
-import { ArrowRight, Mail, MessageSquare, Linkedin, Send, Check, Shield, Sparkles } from "lucide-react"
+import { ArrowRight, Mail, MessageSquare, Send, Check, Sparkles } from "lucide-react"
 import { useState, useRef } from "react"
 import { ModalSignup } from "@/components/modal-signup"
 import Link from "next/link"
@@ -45,11 +45,7 @@ export default function WhatIsNomeePage() {
               transition={{ duration: 0.8, delay: 0.2 }}
               className="text-6xl md:text-8xl font-bold text-slate-900 leading-[1.1] tracking-tight"
             >
-              Feedback disappears.
-              <br />
-              <span className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
-                Nomee keeps it forever.
-              </span>
+              What is Nomee?
             </motion.h1>
 
             <motion.p
@@ -58,9 +54,8 @@ export default function WhatIsNomeePage() {
               transition={{ duration: 0.8, delay: 0.4 }}
               className="text-2xl md:text-3xl text-slate-600 leading-relaxed max-w-4xl mx-auto font-light"
             >
-              Turn scattered feedback from <strong className="font-semibold text-slate-900">every platform</strong> into
-              one verified reputation profile that follows you{" "}
-              <strong className="font-semibold text-slate-900">throughout your career</strong>.
+              Nomee helps you save and organize real feedback from the people you work with—so you're not relying on
+              memory, screenshots, or outdated recommendations.
             </motion.p>
 
             <motion.div
@@ -105,15 +100,12 @@ export default function WhatIsNomeePage() {
               className="text-center mb-20"
             >
               <h2 className="text-5xl md:text-6xl font-bold text-slate-900 mb-6">
-                From scattered chaos to organized proof
+                The problem isn't getting feedback. It's finding it.
               </h2>
-              <p className="text-xl text-slate-600 max-w-3xl mx-auto">
-                Watch how feedback from Slack, email, texts, and LinkedIn transforms into your professional reputation
-              </p>
             </motion.div>
 
             <div className="grid lg:grid-cols-[1.2fr_auto_1fr] gap-12 items-center">
-              {/* Left: Scattered Feedback with Staggered Animation */}
+              {/* Left: Scattered Feedback with Visual Cards */}
               <motion.div
                 initial={{ opacity: 0, x: -50 }}
                 whileInView={{ opacity: 1, x: 0 }}
@@ -126,110 +118,150 @@ export default function WhatIsNomeePage() {
                   <p className="text-2xl font-bold text-slate-900 mt-2">Scattered everywhere</p>
                 </div>
 
-                {/* Slack Message */}
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.6, delay: 0.2 }}
-                  className="bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden transform hover:scale-105 transition-all duration-300"
-                >
-                  <div className="bg-purple-900 px-4 py-3 flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-full bg-white" />
-                    <span className="text-white text-sm font-semibold">#product-team</span>
-                    <MessageSquare className="w-4 h-4 text-white/70 ml-auto" />
+                {/* Message Card 1 - Slack */}
+                <div className="bg-white rounded-2xl shadow-lg border border-slate-100 overflow-hidden">
+                  <div className="bg-blue-50 text-blue-700 px-4 py-3 flex items-center gap-2 border-b border-blue-100">
+                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M6.915 13.25c0 .83-.674 1.504-1.504 1.504H3.504C2.674 14.754 2 14.08 2 13.25c0-.83.674-1.504 1.504-1.504h1.907c.83 0 1.504.674 1.504 1.504zm.754 0c0-.83.674-1.504 1.504-1.504h5.672c.83 0 1.504.674 1.504 1.504v1.907c0 .83-.674 1.504-1.504 1.504H9.173c-.83 0-1.504-.674-1.504-1.504v-1.907zm0-5.418C7.669 6.004 8.343 5.33 9.173 5.33h5.672c.83 0 1.504.674 1.504 1.504v1.907c0 .83-.674 1.504-1.504 1.504H9.173c-.83 0-1.504-.674-1.504-1.504V7.832zm-5.418 0c0 .83-.674 1.504-1.504 1.504H3.504C2.674 9.336 2 8.662 2 7.832V5.925c0-.83.674-1.504 1.504-1.504h1.907c.83 0 1.504.674 1.504 1.504v1.907z" />
+                    </svg>
+                    <span className="text-xs font-bold">Slack</span>
                   </div>
-                  <div className="p-6">
-                    <div className="flex items-start gap-3">
-                      <div className="w-10 h-10 rounded bg-gradient-to-br from-teal-400 to-teal-600 flex items-center justify-center flex-shrink-0">
-                        <span className="text-sm font-bold text-white">AS</span>
+                  <div className="p-4">
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="w-10 h-10 bg-teal-500 rounded flex items-center justify-center flex-shrink-0 text-white font-bold text-sm">
+                        AS
                       </div>
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-2">
-                          <span className="font-semibold text-sm">Aisha Singh</span>
-                          <span className="text-xs text-slate-400">11:23 AM</span>
-                        </div>
-                        <p className="text-sm text-slate-700 leading-relaxed">
-                          Just wrapped the client call — they were <strong>so impressed</strong> by how you handled
-                          their questions. That's exactly the kind of thinking we need. 💯
+                      <div>
+                        <p className="text-sm font-semibold text-slate-900">Aisha Singh, Manager • Acme Corp</p>
+                        <p className="text-xs text-slate-500">11:23 AM</p>
+                      </div>
+                    </div>
+                    <p className="text-sm text-slate-700 mb-3">
+                      Just wrapped the client call — they were{" "}
+                      <span className="font-semibold text-slate-900">so impressed</span> by how you handled their
+                      questions. That's exactly the kind of thinking we need. 💡
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      <span className="inline-block bg-blue-100 text-blue-700 text-xs font-medium px-3 py-1 rounded-full">
+                        Great communication
+                      </span>
+                      <span className="inline-block bg-blue-100 text-blue-700 text-xs font-medium px-3 py-1 rounded-full">
+                        Problem solver
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Message Card 2 - Email */}
+                <div className="bg-white rounded-2xl shadow-lg border border-slate-100 overflow-hidden">
+                  <div className="bg-blue-100 border-b border-blue-200 px-4 py-3 flex items-center gap-2">
+                    <svg className="w-4 h-4 text-blue-600 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 12H6v-2h14v2zm0-3H6V9h14v2zm0-3H6V6h14v2z" />
+                    </svg>
+                    <p className="text-xs font-bold text-blue-800">Re: Q4 Strategy Review</p>
+                  </div>
+                  <div className="p-4">
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="w-10 h-10 bg-blue-300 rounded-full flex items-center justify-center flex-shrink-0">
+                        <span className="text-sm font-bold text-blue-700">MK</span>
+                      </div>
+                      <div>
+                        <p className="text-sm font-semibold text-slate-900">Marcus Kim, VP Strategy • TechFlow</p>
+                        <p className="text-xs text-slate-500">2:14 PM</p>
+                      </div>
+                    </div>
+                    <p className="text-sm text-slate-700 mb-3">
+                      The way you <span className="font-semibold text-slate-900">reframed our approach</span> completely
+                      shifted the conversation. I've worked with a lot of consultants, and your{" "}
+                      <span className="font-semibold text-slate-900">clarity</span> stands out.
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      <span className="inline-block bg-blue-100 text-blue-700 text-xs font-medium px-3 py-1 rounded-full">
+                        Strategic thinker
+                      </span>
+                      <span className="inline-block bg-blue-100 text-blue-700 text-xs font-medium px-3 py-1 rounded-full">
+                        Clear communicator
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Message Card 3 - LinkedIn */}
+                <div className="bg-white rounded-2xl shadow-lg border border-slate-100 overflow-hidden">
+                  <div className="bg-blue-150 border-b border-blue-300 px-4 py-3 flex items-center gap-2">
+                    <svg className="w-4 h-4 text-blue-700 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.475-2.236-1.986-2.236-1.081 0-1.722.722-2.004 1.418-.103.249-.129.597-.129.946v5.441h-3.554s.05-8.82 0-9.737h3.554v1.38c.43-.664 1.199-1.61 2.922-1.61 2.135 0 3.731 1.395 3.731 4.397v5.57zM5.337 8.855c-1.144 0-1.915-.759-1.915-1.71 0-.951.77-1.71 1.915-1.71 1.144 0 1.914.759 1.914 1.71 0 .951-.77 1.71-1.914 1.71zm1.575 11.597H3.762V9.57h3.15v10.882zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.225 0z" />
+                    </svg>
+                    <p className="text-xs font-bold text-blue-800">LinkedIn</p>
+                  </div>
+                  <div className="p-4">
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="w-10 h-10 bg-blue-400 rounded-full flex items-center justify-center flex-shrink-0 text-white">
+                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.475-2.236-1.986-2.236-1.081 0-1.722.722-2.004 1.418-.103.249-.129.597-.129.946v5.441h-3.554s.05-8.82 0-9.737h3.554v1.38c.43-.664 1.199-1.61 2.922-1.61 2.135 0 3.731 1.395 3.731 4.397v5.57zM5.337 8.855c-1.144 0-1.915-.759-1.915-1.71 0-.951.77-1.71 1.915-1.71 1.144 0 1.914.759 1.914 1.71 0 .951-.77 1.71-1.914 1.71zm1.575 11.597H3.762V9.57h3.15v10.882zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.225 0z" />
+                        </svg>
+                      </div>
+                      <div>
+                        <p className="text-sm font-semibold text-slate-900">
+                          Taylor Rodriguez, Design Lead • CreativeStudio
+                        </p>
+                        <p className="text-xs text-slate-500">LinkedIn</p>
+                      </div>
+                    </div>
+                    <p className="text-sm text-slate-700 mb-3">
+                      Your presentation yesterday was <span className="font-semibold text-slate-900">incredible</span>.
+                      The way you broke down complex data into actionable insights — that's a rare skill. Would love to
+                      work together again.
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      <span className="inline-block bg-blue-100 text-blue-700 text-xs font-medium px-3 py-1 rounded-full">
+                        Data expert
+                      </span>
+                      <span className="inline-block bg-blue-100 text-blue-700 text-xs font-medium px-3 py-1 rounded-full">
+                        Insightful
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Message Card 4 - Text/iMessage */}
+                <div className="bg-white rounded-2xl shadow-lg border border-slate-100 overflow-hidden">
+                  <div className="bg-blue-200 border-b border-blue-300 px-4 py-3 flex items-center gap-2">
+                    <svg className="w-4 h-4 text-blue-900 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 12H6v-2h14v2zm0-3H6V9h14v2zm0-3H6V6h14v2z" />
+                    </svg>
+                    <p className="text-xs font-bold text-blue-900">Text • 3:45 PM</p>
+                  </div>
+                  <div className="p-4 space-y-3">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0 text-white font-bold text-sm">
+                        JL
+                      </div>
+                      <div>
+                        <p className="text-sm font-semibold text-slate-900">
+                          Jessica Liu, Director • NextGen Solutions
                         </p>
                       </div>
                     </div>
-                  </div>
-                </motion.div>
-
-                {/* Email */}
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.6, delay: 0.4 }}
-                  className="bg-white rounded-2xl shadow-2xl border border-slate-200 p-6 transform hover:scale-105 transition-all duration-300"
-                >
-                  <div className="flex items-center gap-3 pb-4 border-b border-slate-100">
-                    <Mail className="w-5 h-5 text-indigo-600" />
-                    <div className="flex-1">
-                      <div className="font-semibold text-sm text-slate-900">Marcus Kim</div>
-                      <div className="text-xs text-slate-500">Re: Q4 Strategy Review</div>
+                    <div className="ml-13 space-y-2 mb-3">
+                      <div className="bg-blue-500 text-white rounded-2xl px-4 py-2 text-sm max-w-xs">
+                        Thanks again for yesterday! 🙌
+                      </div>
+                      <div className="bg-slate-100 text-slate-900 rounded-2xl px-4 py-2 text-sm">
+                        You totally <span className="font-semibold">saved us</span>. Your ability to see three steps
+                        ahead is exactly what we needed.
+                      </div>
                     </div>
-                    <div className="text-xs text-slate-400">2:14 PM</div>
-                  </div>
-                  <p className="text-sm text-slate-700 leading-relaxed mt-4">
-                    The way you <strong>reframed our approach</strong> completely shifted the conversation. I've worked
-                    with a lot of consultants, and your <strong>clarity</strong> stands out.
-                  </p>
-                </motion.div>
-
-                {/* LinkedIn DM */}
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.6, delay: 0.6 }}
-                  className="bg-white rounded-2xl shadow-2xl border border-slate-200 p-6 transform hover:scale-105 transition-all duration-300"
-                >
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center">
-                      <Linkedin className="w-6 h-6 text-white" />
-                    </div>
-                    <div>
-                      <div className="font-semibold text-sm text-slate-900">Taylor Rodriguez</div>
-                      <div className="text-xs text-slate-500">via LinkedIn</div>
+                    <div className="flex flex-wrap gap-2">
+                      <span className="inline-block bg-blue-100 text-blue-700 text-xs font-medium px-3 py-1 rounded-full">
+                        Strategic thinker
+                      </span>
+                      <span className="inline-block bg-blue-100 text-blue-700 text-xs font-medium px-3 py-1 rounded-full">
+                        Reliable
+                      </span>
                     </div>
                   </div>
-                  <p className="text-sm text-slate-700 leading-relaxed">
-                    Your presentation yesterday was <strong>incredible</strong>. The way you broke down complex data
-                    into actionable insights — that's a rare skill. Would love to work together again.
-                  </p>
-                </motion.div>
-
-                {/* Text Message */}
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.6, delay: 0.8 }}
-                  className="bg-white rounded-2xl shadow-2xl border border-slate-200 p-6 transform hover:scale-105 transition-all duration-300"
-                >
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center">
-                      <MessageSquare className="w-6 h-6 text-white" />
-                    </div>
-                    <div>
-                      <div className="font-semibold text-sm text-slate-900">Jessica Liu</div>
-                      <div className="text-xs text-slate-500">iMessage • 3:45 PM</div>
-                    </div>
-                  </div>
-                  <div className="space-y-3">
-                    <div className="bg-blue-500 text-white rounded-2xl rounded-tr-sm px-4 py-3 inline-block text-sm max-w-xs ml-auto">
-                      Thanks again for yesterday! 🙌
-                    </div>
-                    <div className="bg-slate-100 text-slate-900 rounded-2xl rounded-tl-sm px-4 py-3 text-sm max-w-sm">
-                      You totally <strong>saved us</strong>. Your ability to see three steps ahead is exactly what we
-                      needed.
-                    </div>
-                  </div>
-                </motion.div>
+                </div>
               </motion.div>
 
               {/* Center: Animated Flow Arrows */}
@@ -302,104 +334,77 @@ export default function WhatIsNomeePage() {
                   <p className="text-2xl font-bold text-slate-900 mt-2">One powerful profile</p>
                 </div>
 
-                <motion.div
-                  whileHover={{ scale: 1.02 }}
-                  className="bg-gradient-to-br from-white via-indigo-50 to-purple-50 rounded-3xl shadow-2xl border-2 border-indigo-200 p-10 relative overflow-hidden"
-                >
-                  {/* Decorative elements */}
-                  <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-br from-indigo-400 to-purple-600 rounded-full blur-3xl opacity-20" />
-                  <div className="absolute bottom-0 left-0 w-32 h-32 bg-gradient-to-tr from-pink-400 to-purple-600 rounded-full blur-3xl opacity-20" />
-
-                  <div className="relative z-10">
-                    {/* Profile Header */}
-                    <div className="mb-8">
-                      <div className="flex items-center gap-3 mb-3">
-                        <h3 className="text-4xl font-bold text-slate-900">Maya Torres</h3>
-                        <div className="flex items-center gap-1 bg-green-100 px-3 py-1 rounded-full">
-                          <Shield className="w-4 h-4 text-green-600" />
-                          <span className="text-xs font-semibold text-green-700">Verified</span>
+                {/* Visual Profile Mockup */}
+                <div className="bg-purple-50 rounded-3xl p-8 shadow-2xl border border-purple-200">
+                  <div className="mb-6">
+                    <div className="flex items-start gap-4">
+                      <div className="w-20 h-20 bg-gradient-to-br from-purple-400 to-purple-600 rounded-full shadow-lg flex-shrink-0" />
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-1">
+                          <h3 className="text-2xl font-bold text-slate-900">Maya Torres</h3>
+                          <span className="inline-flex items-center gap-1 text-xs font-semibold text-green-600 bg-green-100 px-2.5 py-1 rounded-full">
+                            <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                              <path
+                                fillRule="evenodd"
+                                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                clipRule="evenodd"
+                              />
+                            </svg>
+                            Verified
+                          </span>
                         </div>
+                        <p className="text-sm font-medium text-slate-700">Product Designer • San Francisco</p>
+                        <p className="text-xs text-slate-500 mt-1">47 contributions • 12 years experience</p>
                       </div>
-                      <p className="text-lg text-slate-600">Product Designer • San Francisco</p>
-                      <div className="flex items-center gap-4 mt-3 text-sm text-slate-500">
-                        <span>47 contributions</span>
-                        <span>•</span>
-                        <span>12 years experience</span>
-                      </div>
-                    </div>
-
-                    {/* Patterns Section */}
-                    <div className="mb-8">
-                      <p className="text-sm font-semibold text-slate-700 mb-4">What consistently shows up:</p>
-                      <div className="flex flex-wrap gap-2">
-                        <span className="bg-blue-100 text-blue-700 px-4 py-2 rounded-full text-sm font-semibold shadow-sm border border-blue-200">
-                          Strategic thinker
-                        </span>
-                        <span className="bg-purple-100 text-purple-700 px-4 py-2 rounded-full text-sm font-semibold shadow-sm border border-purple-200">
-                          Problem solver
-                        </span>
-                        <span className="bg-green-100 text-green-700 px-4 py-2 rounded-full text-sm font-semibold shadow-sm border border-green-200">
-                          Clear communicator
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Featured Quote */}
-                    <div className="bg-white rounded-2xl border-2 border-indigo-200 p-6 shadow-xl">
-                      <div className="flex items-start gap-2 mb-3">
-                        <span className="text-5xl text-indigo-300 leading-none">"</span>
-                        <p className="text-slate-700 italic leading-relaxed pt-2">
-                          Maya brings{" "}
-                          <mark className="bg-yellow-200/60 px-1 rounded font-semibold text-slate-900">
-                            incredible strategic clarity
-                          </mark>{" "}
-                          to complex projects. She helped us restructure our product roadmap and the results were{" "}
-                          <mark className="bg-yellow-200/60 px-1 rounded font-semibold text-slate-900">
-                            transformative
-                          </mark>
-                          .
-                        </p>
-                      </div>
-                      <div className="flex items-center justify-between pt-4 border-t border-slate-100">
-                        <div>
-                          <div className="font-semibold text-sm text-slate-900">Alex Rivera</div>
-                          <div className="text-xs text-slate-500">VP Product, TechCorp</div>
-                        </div>
-                        <div className="flex items-center gap-1 text-xs text-slate-500">
-                          <Check className="w-4 h-4 text-green-600" />
-                          <span>Verified</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Stats */}
-                    <div className="grid grid-cols-3 gap-4 mt-6">
-                      <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 text-center border border-indigo-100">
-                        <div className="text-2xl font-bold text-indigo-600">47</div>
-                        <div className="text-xs text-slate-600">Contributions</div>
-                      </div>
-                      <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 text-center border border-purple-100">
-                        <div className="text-2xl font-bold text-purple-600">23</div>
-                        <div className="text-xs text-slate-600">Clients</div>
-                      </div>
-                      <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 text-center border border-pink-100">
-                        <div className="text-2xl font-bold text-pink-600">100%</div>
-                        <div className="text-xs text-slate-600">Verified</div>
-                      </div>
-                    </div>
-
-                    {/* CTA */}
-                    <div className="mt-8 text-center">
-                      <Link
-                        href="/example"
-                        className="inline-flex items-center gap-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-6 py-3 rounded-full font-semibold hover:shadow-2xl hover:shadow-indigo-300 transition-all transform hover:scale-105"
-                      >
-                        <span>View Full Profile</span>
-                        <ArrowRight className="w-4 h-4" />
-                      </Link>
                     </div>
                   </div>
-                </motion.div>
+
+                  <div className="mb-6 pb-6 border-b border-purple-200">
+                    <p className="text-sm font-semibold text-slate-700 mb-3">What consistently shows up:</p>
+                    <div className="flex flex-wrap gap-2">
+                      <span className="px-3 py-1.5 bg-blue-200 text-blue-900 rounded-full text-xs font-semibold">
+                        Strategic thinker
+                      </span>
+                      <span className="px-3 py-1.5 bg-purple-200 text-purple-900 rounded-full text-xs font-semibold">
+                        Problem solver
+                      </span>
+                      <span className="px-3 py-1.5 bg-green-200 text-green-900 rounded-full text-xs font-semibold">
+                        Clear communicator
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="mb-6">
+                    <p className="text-sm font-semibold text-slate-900 mb-3">Highlight</p>
+                    <div className="bg-white rounded-xl p-4 border-l-4 border-amber-500">
+                      <p className="text-sm text-slate-700 leading-relaxed">
+                        <span className="font-semibold text-slate-900">Maya brings</span>{" "}
+                        <span className="font-bold text-amber-600">incredible strategic clarity</span> to complex
+                        projects. She helped us structure our product roadmap and the results were transformative.
+                      </p>
+                      <p className="text-xs text-slate-600 mt-3 font-medium">— Alex Rivera, Product Director</p>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-3 gap-3 mb-6">
+                    <div className="bg-white rounded-lg p-3.5 text-center">
+                      <p className="text-2xl font-bold text-purple-600">47</p>
+                      <p className="text-xs font-medium text-slate-600 mt-1">Contributions</p>
+                    </div>
+                    <div className="bg-white rounded-lg p-3.5 text-center">
+                      <p className="text-2xl font-bold text-purple-600">23</p>
+                      <p className="text-xs font-medium text-slate-600 mt-1">Drafts</p>
+                    </div>
+                    <div className="bg-white rounded-lg p-3.5 text-center">
+                      <p className="text-2xl font-bold text-green-600">100%</p>
+                      <p className="text-xs font-medium text-slate-600 mt-1">Verified</p>
+                    </div>
+                  </div>
+
+                  <button className="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3.5 px-4 rounded-xl transition-colors">
+                    View Full Profile →
+                  </button>
+                </div>
               </motion.div>
             </div>
           </div>

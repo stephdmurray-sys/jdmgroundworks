@@ -369,8 +369,12 @@ export function PremierProfileClient({
   }, [writtenContributions, activeFilter])
 
   const filteredImportedFeedback = useMemo(() => {
-    return safeImportedFeedback
-  }, [safeImportedFeedback])
+    let filtered = safeImportedFeedback
+    if (activeFilter !== "all") {
+      filtered = filtered.filter((f) => f?.giver_relationship?.toLowerCase() === activeFilter.toLowerCase())
+    }
+    return filtered
+  }, [safeImportedFeedback, activeFilter])
 
   const handleTraitFilterSelect = (trait: string) => {
     setSelectedTraitFilters((prev) => {
@@ -564,14 +568,22 @@ export function PremierProfileClient({
               {/* All Contributions */}
               <div className="bg-white rounded-xl shadow-sm p-8">
                 <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-2xl font-bold text-gray-900">All Contributions ({contributions.length})</h2>
+                  <h2 className="text-2xl font-bold text-gray-900">
+                    All Contributions (
+                    {filteredContributionsForDisplay.length +
+                      filteredVoiceContributions.length +
+                      filteredImportedFeedback.length}
+                    )
+                  </h2>
                   <div className="relative">
                     <select
                       value={activeFilter}
                       onChange={(e) => setActiveFilter(e.target.value)}
                       className="appearance-none bg-white border border-gray-300 rounded-lg px-4 py-2 pr-10 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                     >
-                      <option value="all">All ({contributions.length})</option>
+                      <option value="all">
+                        All ({contributions.length + voiceNotes.length + safeImportedFeedback.length})
+                      </option>
                       <option value="client">Clients ({stats.clients})</option>
                       <option value="collaborator">Collaborators ({stats.collaborators})</option>
                       <option value="colleague">Colleagues ({stats.colleagues})</option>
@@ -580,6 +592,7 @@ export function PremierProfileClient({
                   </div>
                 </div>
                 <div className="space-y-6">
+                  {/* Written Contributions */}
                   {filteredContributionsForDisplay.map((contribution) => {
                     const allTraits = [
                       ...safeArray(contribution.traits_category1),
@@ -636,6 +649,113 @@ export function PremierProfileClient({
                       </div>
                     )
                   })}
+
+                  {/* Voice Notes in Summary */}
+                  {filteredVoiceContributions.map((note) => {
+                    const allTraits = [...safeArray(note.traits_category1), ...safeArray(note.traits_category2)].slice(
+                      0,
+                      5,
+                    )
+
+                    return (
+                      <div key={note.id} className="border border-gray-200 rounded-lg p-6">
+                        <div className="flex items-start justify-between mb-4">
+                          <div className="flex items-start space-x-3">
+                            <div className="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center">
+                              <span className="text-sm font-bold text-indigo-600">
+                                {note.contributor_name
+                                  ?.split(" ")
+                                  .map((n) => n[0])
+                                  .join("") || "??"}
+                              </span>
+                            </div>
+                            <div>
+                              <div className="font-semibold text-gray-900">{note.contributor_name || "Anonymous"}</div>
+                              <div className="text-sm text-gray-600">
+                                {note.contributor_title || "Professional"}
+                                {note.contributor_company && ` · ${note.contributor_company}`}
+                              </div>
+                              <div className="text-xs text-gray-500 mt-1">Voice Note</div>
+                            </div>
+                          </div>
+                          <button className="w-8 h-8 bg-indigo-600 rounded-full flex items-center justify-center hover:bg-indigo-700">
+                            <Play className="w-4 h-4 text-white fill-current" />
+                          </button>
+                        </div>
+                        {note.written_note && (
+                          <div className="bg-gray-50 rounded-lg p-4 mb-4">
+                            <p className="text-gray-700 leading-relaxed italic text-sm">
+                              {expandedTranscript === note.id
+                                ? note.written_note
+                                : note.written_note.substring(0, 150) + "..."}
+                            </p>
+                            <button
+                              onClick={() => setExpandedTranscript(expandedTranscript === note.id ? null : note.id)}
+                              className="text-indigo-600 text-xs mt-2 hover:text-indigo-700 flex items-center"
+                            >
+                              {expandedTranscript === note.id ? (
+                                <>
+                                  Show less <ChevronUp className="w-4 h-4 ml-1" />
+                                </>
+                              ) : (
+                                <>
+                                  Read full transcript <ChevronDownIcon className="w-4 h-4 ml-1" />
+                                </>
+                              )}
+                            </button>
+                          </div>
+                        )}
+                        <div className="flex flex-wrap gap-2">
+                          {allTraits.map((trait, idx) => (
+                            <span
+                              key={`${trait}-${idx}`}
+                              className="px-2 py-1 bg-indigo-100 text-indigo-700 rounded text-xs"
+                            >
+                              {trait}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )
+                  })}
+
+                  {/* Uploaded Feedback in Summary */}
+                  {filteredImportedFeedback.map((screenshot) => (
+                    <div key={screenshot.id} className="border border-gray-200 rounded-lg p-6">
+                      <div className="flex items-start justify-between mb-4">
+                        <div className="flex items-start space-x-3">
+                          <div className="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center">
+                            <span className="text-sm font-bold text-indigo-600">
+                              {screenshot.giver_name
+                                ?.split(" ")
+                                .map((n) => n[0])
+                                .join("") || "??"}
+                            </span>
+                          </div>
+                          <div>
+                            <div className="font-semibold text-gray-900">{screenshot.giver_name || "Anonymous"}</div>
+                            <div className="text-sm text-gray-600">{screenshot.giver_company || "Professional"}</div>
+                            <div className="text-xs text-gray-500 mt-1 capitalize">
+                              {screenshot.source_type || "Upload"}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <p className="text-gray-700 leading-relaxed">{screenshot.ai_extracted_excerpt}</p>
+                      <div className="flex flex-wrap gap-2 mt-4">
+                        {safeArray(screenshot.traits)
+                          .slice(0, 5)
+                          .map((trait, idx) => (
+                            <span
+                              key={`${trait}-${idx}`}
+                              className="px-2 py-1 bg-indigo-100 text-indigo-700 rounded text-xs"
+                            >
+                              {trait}
+                            </span>
+                          ))}
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
             </>
@@ -646,7 +766,7 @@ export function PremierProfileClient({
             <div className="bg-white rounded-xl shadow-sm p-8">
               <h2 className="text-2xl font-bold text-gray-900 mb-6">Voice Notes ({voiceNotes.length})</h2>
               <div className="space-y-6">
-                {voiceNotes.map((note) => {
+                {filteredVoiceContributions.map((note) => {
                   const allTraits = [...safeArray(note.traits_category1), ...safeArray(note.traits_category2)].slice(
                     0,
                     5,

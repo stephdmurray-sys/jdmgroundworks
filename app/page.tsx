@@ -19,6 +19,7 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { SiteHeader } from "@/components/site-header"
 import { useScrollToTop } from "@/lib/use-scroll-to-top"
+import { DynamicMiniExample } from "@/components/dynamic-mini-example"
 
 export default function Home() {
   const scrollToTop = useScrollToTop()
@@ -45,20 +46,23 @@ export default function Home() {
               <span>Trusted by 500+ professionals</span>
             </div>
 
-            {/* Two-part headline - mobile optimized */}
             <h1 className="text-4xl sm:text-6xl md:text-8xl font-bold text-slate-900 leading-[1.15] sm:leading-[1.1] tracking-tight">
-              Feedback fades.
+              Your best feedback is
               <br />
               <span className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
-                Nomee keeps it forever.
+                scattered.
               </span>
             </h1>
 
-            {/* Subheadline */}
-            <p className="text-lg sm:text-2xl md:text-3xl text-slate-600 font-light leading-relaxed max-w-[34ch] mx-auto px-4">
-              Nomee captures real feedback as it happens and turns it into verified proof that follows you throughout
-              your career.
-            </p>
+            <div className="space-y-4">
+              <p className="text-lg sm:text-2xl md:text-3xl text-slate-600 font-light leading-relaxed max-w-[34ch] mx-auto px-4">
+                Nomee brings real feedback together so you have clear proof of your work—and what it's like to work with
+                you.
+              </p>
+              <p className="text-sm sm:text-base text-slate-500 font-light max-w-[34ch] mx-auto px-4">
+                Slack messages, emails, texts, and conversations—organized.
+              </p>
+            </div>
 
             {/* CTAs */}
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center max-w-md sm:max-w-none mx-auto px-4">
@@ -100,13 +104,21 @@ export default function Home() {
       {/* Visual Flow Section */}
       <section className="py-12 sm:py-16 lg:py-24 bg-gradient-to-b from-white to-gray-50 px-4 sm:px-6 lg:px-8">
         <div className="max-w-[1120px] mx-auto">
-          <div className="text-center mb-8 sm:mb-12 space-y-3">
-            <h2 className="text-2xl sm:text-3xl lg:text-5xl font-bold text-gray-900">
-              Real feedback — saved as it happens.
-            </h2>
-            <p className="text-base sm:text-lg lg:text-xl text-gray-600 font-light max-w-3xl mx-auto">
-              Transform scattered praise into a verified professional reputation
-            </p>
+          <div className="space-y-8 text-center mb-16">
+            <div>
+              <h2 className="text-2xl sm:text-3xl lg:text-5xl font-bold text-gray-900 mb-6">
+                This is where your feedback actually lives.
+              </h2>
+              <div className="max-w-3xl mx-auto text-base sm:text-lg text-gray-600 font-light leading-relaxed">
+                <ul className="space-y-3 mb-6">
+                  <li>Slack messages you'll never search again</li>
+                  <li>Emails buried months ago</li>
+                  <li>Texts sent after projects end</li>
+                  <li>Conversations no one documented</li>
+                </ul>
+                <p className="text-gray-600">None of this is easy to find. None of this is easy to share.</p>
+              </div>
+            </div>
           </div>
 
           <div className="space-y-12 lg:space-y-0 lg:grid lg:grid-cols-[1fr_auto_1fr] lg:gap-16 lg:items-center">
@@ -206,63 +218,7 @@ export default function Home() {
             </div>
 
             {/* Right Side - Nomee Profile */}
-            <div className="mt-8 lg:mt-0">
-              <div className="text-center mb-4 lg:mb-8">
-                <p className="text-xs sm:text-sm uppercase tracking-wider text-indigo-600 font-semibold">
-                  One Nomee Page
-                </p>
-              </div>
-
-              <div className="bg-gradient-to-br from-white to-indigo-50 rounded-3xl shadow-2xl border-2 border-indigo-100 p-5 sm:p-6 lg:p-10 transform hover:scale-105 transition-transform duration-200">
-                <div className="mb-6 sm:mb-8">
-                  <h3 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-2">Maya Torres</h3>
-                  <p className="text-base sm:text-lg text-gray-600">Product Designer</p>
-                </div>
-
-                <div className="mb-6 sm:mb-8">
-                  <p className="text-sm text-gray-600 mb-4 font-medium">
-                    What consistently shows up when people talk about working with Maya:
-                  </p>
-                  <div className="flex flex-wrap gap-2">
-                    <span className="bg-blue-100 text-blue-700 px-4 py-2 rounded-full text-sm font-semibold shadow-sm">
-                      Strategic
-                    </span>
-                    <span className="bg-purple-100 text-purple-700 px-4 py-2 rounded-full text-sm font-semibold shadow-sm">
-                      Problem solver
-                    </span>
-                    <span className="bg-green-100 text-green-700 px-4 py-2 rounded-full text-sm font-semibold shadow-sm">
-                      Clear communicator
-                    </span>
-                  </div>
-                </div>
-
-                <div className="bg-white rounded-2xl border-2 border-indigo-200 p-6 sm:p-8 shadow-lg">
-                  <div className="flex items-start space-x-1 mb-3">
-                    <span className="text-3xl text-indigo-300">"</span>
-                    <p className="text-gray-700 italic leading-relaxed text-sm sm:text-base">
-                      <span className="font-semibold text-gray-900">Maya brings incredible strategic clarity</span> to
-                      complex projects. She helped us restructure our product roadmap and the results were{" "}
-                      <span className="font-semibold text-gray-900">transformative</span>."
-                    </p>
-                  </div>
-                  <div className="flex items-center justify-between mt-6 pt-6 border-t border-gray-100">
-                    <span className="text-sm text-gray-600 font-medium">— Alex Rivera, TechCorp</span>
-                    <Shield className="w-5 h-5 text-indigo-600 flex-shrink-0" />
-                  </div>
-                </div>
-
-                {/* See Full Example link */}
-                <div className="mt-6 sm:mt-8 text-center">
-                  <Link
-                    href="/example"
-                    className="inline-flex items-center justify-center space-x-2 bg-indigo-600 text-white px-6 py-3 rounded-full font-semibold hover:bg-indigo-700 transition-colors shadow-lg hover:shadow-xl w-full sm:w-auto min-h-[48px]"
-                  >
-                    <span>See Full Example</span>
-                    <ArrowRight className="w-4 h-4 flex-shrink-0" />
-                  </Link>
-                </div>
-              </div>
-            </div>
+            <DynamicMiniExample />
           </div>
 
           {/* Bottom Summary */}
@@ -644,34 +600,49 @@ export default function Home() {
             Built for professionals who compete on reputation
           </h2>
 
-          <div className="mb-6 sm:mb-8 overflow-x-auto scrollbar-hide -mx-5 px-5 sm:mx-0 sm:px-0">
-            <div className="inline-flex bg-gray-100 rounded-lg p-1 gap-1 min-w-max">
+          <div className="flex justify-center mb-6 sm:mb-8 -mx-5 px-5 sm:mx-0 sm:px-0">
+            <div className="inline-flex bg-gray-100 rounded-lg p-1 gap-1">
               <button
-                onClick={() => handleTabChange("freelancer")}
+                onClick={() => {
+                  handleTabChange("freelancer")
+                  window.scrollTo({ top: 0, behavior: "smooth" })
+                }}
                 className={`px-4 py-2 rounded-md text-sm whitespace-nowrap min-h-[44px] ${activeTab === "freelancer" ? "bg-white shadow-sm font-semibold" : ""}`}
               >
                 Freelancers
               </button>
               <button
-                onClick={() => handleTabChange("contractor")}
+                onClick={() => {
+                  handleTabChange("contractor")
+                  window.scrollTo({ top: 0, behavior: "smooth" })
+                }}
                 className={`px-4 py-2 rounded-md text-sm whitespace-nowrap min-h-[44px] ${activeTab === "contractor" ? "bg-white shadow-sm font-semibold" : ""}`}
               >
                 Contractors
               </button>
               <button
-                onClick={() => handleTabChange("sales")}
+                onClick={() => {
+                  handleTabChange("sales")
+                  window.scrollTo({ top: 0, behavior: "smooth" })
+                }}
                 className={`px-4 py-2 rounded-md text-sm whitespace-nowrap min-h-[44px] ${activeTab === "sales" ? "bg-white shadow-sm font-semibold" : ""}`}
               >
                 Sales
               </button>
               <button
-                onClick={() => handleTabChange("consultant")}
+                onClick={() => {
+                  handleTabChange("consultant")
+                  window.scrollTo({ top: 0, behavior: "smooth" })
+                }}
                 className={`px-4 py-2 rounded-md text-sm whitespace-nowrap min-h-[44px] ${activeTab === "consultant" ? "bg-white shadow-sm font-semibold" : ""}`}
               >
                 Consultants
               </button>
               <button
-                onClick={() => handleTabChange("recruiter")}
+                onClick={() => {
+                  handleTabChange("recruiter")
+                  window.scrollTo({ top: 0, behavior: "smooth" })
+                }}
                 className={`px-4 py-2 rounded-md text-sm whitespace-nowrap min-h-[44px] ${activeTab === "recruiter" ? "bg-white shadow-sm font-semibold" : ""}`}
               >
                 Recruiters
@@ -891,7 +862,7 @@ export default function Home() {
                 </div>
                 <div className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                  <span className="text-sm sm:text-base text-gray-700 leading-relaxed">Public Nomee page</span>
+                  <span className="text-sm sm:text-base text-gray-700">Public Nomee page</span>
                 </div>
                 <div className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />

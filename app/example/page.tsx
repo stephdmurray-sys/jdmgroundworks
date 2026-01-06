@@ -108,25 +108,37 @@ export default function NomeeProfilePage() {
       id: 1,
       type: "Slack",
       from: "Jake Martinez",
+      relationship: "Team Lead",
+      company: "Acme Corp",
       text: "Thanks again Jordan! You totally saved us. Best collaboration we've ever had 🙏",
+      traits: ["Collaboration", "Problem solver"],
     },
     {
       id: 2,
       type: "Email",
       from: "Lisa Chen",
+      relationship: "Project Manager",
+      company: "TechStart Inc",
       text: "Jordan - just wanted to say the plan you created worked perfectly! Exactly what we needed. Really appreciate your partnership.",
+      traits: ["Strategic thinker", "Detail-oriented"],
     },
     {
       id: 3,
       type: "Text",
       from: "Marcus Lee",
+      relationship: "Designer",
+      company: "Creative Studio",
       text: "You're one of the few who actually listened to what we wanted instead of just pitching solutions. Appreciate you!",
+      traits: ["Great listener", "Client-focused"],
     },
     {
       id: 4,
       type: "LinkedIn",
       from: "Amelia Foster",
+      relationship: "VP of Product",
+      company: "Innovation Labs",
       text: "Jordan's strategic thinking and attention to detail made our project so much easier. Highly recommend working with them.",
+      traits: ["Strategic thinker", "Attention to detail"],
     },
   ]
 
@@ -580,21 +592,43 @@ export default function NomeeProfilePage() {
           <div className="bg-white rounded-xl shadow-sm p-8">
             <h2 className="text-2xl font-bold text-gray-900 mb-6">Screenshots ({screenshots.length})</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {screenshots.map((screenshot) => (
-                <div
-                  key={screenshot.id}
-                  className="border border-gray-200 rounded-lg p-6 cursor-pointer hover:shadow-lg transition-shadow"
-                  onClick={() => setViewingScreenshot(screenshot)}
-                >
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs font-medium">
-                      {screenshot.type}
-                    </span>
-                    <span className="text-xs text-gray-500">from {screenshot.from}</span>
+              {screenshots.map((screenshot) => {
+                const badgeColors = {
+                  Slack: "bg-blue-50 text-blue-700",
+                  Email: "bg-blue-100 text-blue-700",
+                  Text: "bg-blue-150 text-blue-700",
+                  LinkedIn: "bg-blue-200 text-blue-800",
+                }
+                return (
+                  <div
+                    key={screenshot.id}
+                    className="border border-gray-200 rounded-lg p-6 cursor-pointer hover:shadow-lg transition-shadow"
+                    onClick={() => setViewingScreenshot(screenshot)}
+                  >
+                    <div className="flex items-center justify-between mb-4">
+                      <span className={`px-3 py-1 ${badgeColors[screenshot.type]} rounded text-xs font-medium`}>
+                        {screenshot.type}
+                      </span>
+                      <span className="text-xs text-gray-600">
+                        {screenshot.from} • {screenshot.relationship} • {screenshot.company}
+                      </span>
+                    </div>
+                    <p className="text-gray-700 mb-4">{screenshot.text}</p>
+                    {screenshot.traits && screenshot.traits.length > 0 && (
+                      <div className="flex flex-wrap gap-2">
+                        {screenshot.traits.map((trait, index) => (
+                          <span
+                            key={index}
+                            className="px-2 py-1 bg-blue-50 text-blue-700 rounded-full text-xs font-medium"
+                          >
+                            {trait}
+                          </span>
+                        ))}
+                      </div>
+                    )}
                   </div>
-                  <p className="text-gray-700">{screenshot.text}</p>
-                </div>
-              ))}
+                )
+              })}
             </div>
           </div>
         )}
