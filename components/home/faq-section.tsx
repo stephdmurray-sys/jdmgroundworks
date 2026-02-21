@@ -88,7 +88,7 @@ export function FAQSection() {
               >
                 <button
                   onClick={() => setOpenIndex(openIndex === index ? null : index)}
-                  className="w-full flex items-center justify-between p-5 sm:p-6 text-left hover:bg-muted/50 transition-colors"
+                  className="w-full flex items-center justify-between p-5 sm:p-6 text-left hover:bg-muted/50 transition-colors touch-manipulation min-h-[56px]"
                 >
                   <span className="text-base sm:text-lg font-semibold text-foreground pr-4">
                     {faq.question}

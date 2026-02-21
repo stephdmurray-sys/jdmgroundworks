@@ -39,18 +39,18 @@ export function CTASection() {
         </div>
 
         {/* Trust signals */}
-        <div className="mt-10 sm:mt-12 grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-3xl mx-auto">
+        <div className="mt-10 sm:mt-12 grid grid-cols-3 gap-4 sm:gap-6 max-w-3xl mx-auto">
           <div className="flex flex-col items-center gap-2 text-primary-foreground/80">
-            <Shield className="h-8 w-8 text-primary-foreground" />
-            <p className="text-sm font-medium">100% Satisfaction Guarantee</p>
+            <Shield className="h-6 w-6 sm:h-8 sm:w-8 text-primary-foreground" />
+            <p className="text-xs sm:text-sm font-medium text-center">100% Satisfaction Guarantee</p>
           </div>
           <div className="flex flex-col items-center gap-2 text-primary-foreground/80">
-            <Clock className="h-8 w-8 text-primary-foreground" />
-            <p className="text-sm font-medium">24-Hour Response Time</p>
+            <Clock className="h-6 w-6 sm:h-8 sm:w-8 text-primary-foreground" />
+            <p className="text-xs sm:text-sm font-medium text-center">24-Hour Response Time</p>
           </div>
           <div className="flex flex-col items-center gap-2 text-primary-foreground/80">
-            <Award className="h-8 w-8 text-primary-foreground" />
-            <p className="text-sm font-medium">Licensed & Fully Insured</p>
+            <Award className="h-6 w-6 sm:h-8 sm:w-8 text-primary-foreground" />
+            <p className="text-xs sm:text-sm font-medium text-center">Licensed & Fully Insured</p>
           </div>
         </div>
 

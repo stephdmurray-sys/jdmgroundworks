@@ -38,7 +38,7 @@ export function TestimonialsSection() {
           <p className="text-sm font-semibold text-primary uppercase tracking-wider mb-3">
             Client Reviews
           </p>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-4">
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground mb-4 text-balance">
             Trusted by Homeowners & Builders Across Kitsap County
           </h2>
           <p className="text-base sm:text-lg text-muted-foreground">
@@ -73,8 +73,8 @@ export function TestimonialsSection() {
           ))}
         </div>
 
-        <div className="mt-12 text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 rounded-full">
+        <div className="mt-10 sm:mt-12 text-center">
+          <div className="inline-flex flex-col sm:flex-row items-center gap-3 sm:gap-2 px-4 py-3 sm:py-2 bg-primary/10 rounded-2xl sm:rounded-full">
             <div className="flex -space-x-2">
               {[...Array(4)].map((_, i) => (
                 <div key={i} className="h-8 w-8 rounded-full bg-primary/20 border-2 border-background flex items-center justify-center text-xs font-bold text-primary">
