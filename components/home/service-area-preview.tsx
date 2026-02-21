@@ -7,7 +7,9 @@ const serviceAreas = [
   "Silverdale",
   "Poulsbo",
   "Port Orchard",
+  "Bainbridge Island",
   "Seabeck",
+  "Kingston",
   "Rural Kitsap",
 ]
 
@@ -23,9 +25,10 @@ export function ServiceAreaPreview() {
               Serving All of Kitsap County, Washington
             </h2>
             <p className="mt-4 text-base sm:text-lg text-muted-foreground leading-relaxed">
-              From the urban areas of Bremerton and Silverdale to the rural properties 
-              of Seabeck and beyond, we provide professional groundworks services 
-              throughout Kitsap County.
+              From the urban areas of Bremerton and Silverdale to Bainbridge Island 
+              and the rural properties of Seabeck and beyond, we provide professional 
+              land clearing, excavation, and building demolition services throughout 
+              Kitsap County.
             </p>
             <p className="mt-4 text-sm sm:text-base text-muted-foreground leading-relaxed">
               Our local expertise means we understand the unique terrain, soil conditions, 

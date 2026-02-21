@@ -1,12 +1,35 @@
 # Allow all crawlers
 User-agent: *
 Allow: /
+Disallow: /api/
 
-# Crawl-delay for polite crawling
+# Google
+User-agent: Googlebot
+Allow: /
 Crawl-delay: 0
+
+# Bing
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 1
+
+# Yahoo / Slurp
+User-agent: Slurp
+Allow: /
+Crawl-delay: 1
+
+# DuckDuckGo
+User-agent: DuckDuckBot
+Allow: /
+
+# Yandex
+User-agent: Yandex
+Allow: /
+Crawl-delay: 2
+
+# Apple
+User-agent: Applebot
+Allow: /
 
 # Sitemap location
 Sitemap: https://jdmgroundworks.com/sitemap.xml
-
-# Block access to admin or private areas (if any)
-Disallow: /api/

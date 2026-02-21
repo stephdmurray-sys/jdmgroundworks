@@ -4,21 +4,33 @@ import { Button } from "@/components/ui/button"
 import { ArrowRight, MapPin, Phone } from "lucide-react"
 
 export const metadata: Metadata = {
-  title: "Service Areas - Excavation Services Throughout Kitsap County",
-  description: "JDM Groundworks provides excavation, land clearing, and site preparation services throughout Kitsap County, WA. Serving Bremerton, Silverdale, Poulsbo, Port Orchard, Seabeck and surrounding areas. Local excavation experts.",
+  title: "Service Areas - Excavation, Demolition & Land Clearing in Kitsap County",
+  description: "JDM Groundworks provides excavation, land clearing, building demolition, and site preparation services throughout Kitsap County, WA. Serving Bremerton, Silverdale, Poulsbo, Port Orchard, Bainbridge Island, Seabeck and all surrounding areas. Local excavation and demolition experts.",
   keywords: [
     "excavation Bremerton WA",
     "land clearing Silverdale",
     "tree removal Poulsbo",
     "site preparation Port Orchard",
+    "building demolition Bremerton",
+    "house demolition Silverdale WA",
+    "barn demolition Poulsbo",
+    "demolition contractor Port Orchard",
     "excavation contractors Kitsap County",
     "land clearing Seabeck",
+    "excavation Bainbridge Island",
+    "demolition Bainbridge Island WA",
     "excavation services Kitsap WA",
-    "local excavation contractor"
+    "local excavation contractor",
+    "groundworks Kitsap Peninsula",
+    "land clearing Kingston WA",
+    "excavation Gorst WA",
+    "tree removal Suquamish",
+    "site prep Indianola WA",
+    "excavation contractor near me Kitsap"
   ],
   openGraph: {
-    title: "Service Areas | Excavation Services Throughout Kitsap County, WA",
-    description: "Providing excavation and land clearing services throughout Kitsap County including Bremerton, Silverdale, Poulsbo, and Port Orchard.",
+    title: "Service Areas | Excavation, Demolition & Land Clearing Throughout Kitsap County, WA",
+    description: "Professional excavation, land clearing, and building demolition services throughout Kitsap County including Bremerton, Silverdale, Poulsbo, Port Orchard, and Bainbridge Island.",
     url: "https://jdmgroundworks.com/service-area",
   },
   alternates: {
@@ -30,22 +42,27 @@ const mainAreas = [
   {
     name: "Bremerton",
     description: "Full-service groundworks for Bremerton and surrounding neighborhoods. From East Bremerton to Charleston and everywhere in between.",
-    services: ["Land clearing", "Excavation", "Site preparation", "Drainage systems"],
+    services: ["Land clearing", "Excavation", "Building demolition", "Drainage systems"],
   },
   {
     name: "Silverdale",
     description: "Serving the Silverdale area including Clear Creek, Ridgetop, and Newberry Hill communities with comprehensive land development services.",
-    services: ["Tree removal", "Grading", "Driveway construction", "Lot clearing"],
+    services: ["Tree removal", "Demolition", "Driveway construction", "Lot clearing"],
   },
   {
     name: "Poulsbo",
     description: "Expert groundworks services for Poulsbo properties from waterfront lots to hillside developments in the surrounding area.",
-    services: ["Site preparation", "Excavation", "View clearing", "Foundation work"],
+    services: ["Site preparation", "Excavation", "Building demolition", "Foundation work"],
   },
   {
     name: "Port Orchard",
     description: "Complete groundworks solutions for Port Orchard and South Kitsap including Bethel, Sedgwick, and surrounding communities.",
-    services: ["Land clearing", "Grading", "Erosion control", "Access roads"],
+    services: ["Land clearing", "Demolition", "Erosion control", "Access roads"],
+  },
+  {
+    name: "Bainbridge Island",
+    description: "Professional excavation, land clearing, and demolition services for Bainbridge Island properties, including waterfront lots and wooded acreage.",
+    services: ["Land clearing", "Excavation", "Building demolition", "Site preparation"],
   },
 ]
 
@@ -55,6 +72,7 @@ const additionalAreas = [
   "Indianola",
   "Suquamish",
   "Hansville",
+  "Kingston",
   "Olalla",
   "Gorst",
   "Tracyton",
@@ -62,6 +80,8 @@ const additionalAreas = [
   "Rolling Bay",
   "Manchester",
   "Fragaria",
+  "Brownsville",
+  "Chico",
 ]
 
 export default function ServiceAreaPage() {
@@ -76,10 +96,11 @@ export default function ServiceAreaPage() {
               Serving All of Kitsap County, Washington
             </h1>
             <p className="mt-4 sm:mt-6 text-base sm:text-lg leading-relaxed text-background/80">
-              From Bremerton to Port Orchard, Poulsbo to Silverdale, JDM Groundworks 
-              provides professional land clearing, excavation, and site preparation services 
-              throughout Kitsap County. Our local expertise means we understand the unique 
-              terrain, soil conditions, and permitting requirements of each community.
+              From Bremerton to Port Orchard, Poulsbo to Silverdale, and Bainbridge Island 
+              to Seabeck, JDM Groundworks provides professional land clearing, excavation, 
+              building demolition, and site preparation services throughout Kitsap County. 
+              Our local expertise means we understand the unique terrain, soil conditions, 
+              and permitting requirements of each community.
             </p>
           </div>
         </div>
@@ -238,7 +259,7 @@ export default function ServiceAreaPage() {
           </h2>
           <p className="mt-4 text-base sm:text-lg text-primary-foreground/80 max-w-2xl mx-auto">
             No matter where you are in Kitsap County, we can help with your land clearing, 
-            excavation, or site preparation needs. Contact us for a free site evaluation.
+            excavation, building demolition, or site preparation needs. Contact us for a free site evaluation.
           </p>
           <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
             <Button asChild size="lg" variant="secondary" className="w-full sm:w-auto bg-background text-foreground hover:bg-background/90 h-12 sm:h-11 text-base transition-all duration-200 active:scale-[0.98]">
