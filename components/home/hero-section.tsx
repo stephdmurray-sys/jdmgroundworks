@@ -35,7 +35,7 @@ export function HeroSection() {
               href="tel:+13603557006" 
               className="inline-flex w-full sm:w-auto items-center justify-center gap-3 px-6 py-3.5 bg-white/15 backdrop-blur-sm rounded-xl border-2 border-white/30 hover:bg-white/20 hover:border-white/40 transition-all text-white group"
             >
-              <Phone className="h-5 w-5 shrink-0 text-background" />
+              <Phone className="h-5 w-5 shrink-0 text-white" />
               <span className="font-bold text-lg sm:text-xl">(360) 355-7006</span>
             </a>
             <div className="flex items-center justify-center sm:justify-start gap-2 mt-2.5 text-sm text-white/75">

@@ -51,9 +51,27 @@ export default function ContactPage() {
       {/* Contact Section */}
       <section className="py-12 sm:py-16 lg:py-24 bg-background">
         <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-12">
+          {/* Quick contact on mobile - visible before the form */}
+          <div className="flex flex-col sm:flex-row gap-3 lg:hidden mb-8">
+            <a
+              href="tel:+13603557006"
+              className="flex items-center justify-center gap-2 px-4 py-3 bg-primary text-primary-foreground rounded-lg text-base font-semibold active:scale-[0.98] transition-all touch-manipulation"
+            >
+              <Phone className="h-5 w-5 shrink-0" />
+              Call (360) 355-7006
+            </a>
+            <a
+              href="mailto:info@jdmgroundworks.com"
+              className="flex items-center justify-center gap-2 px-4 py-3 bg-secondary text-secondary-foreground rounded-lg text-base font-medium active:scale-[0.98] transition-all touch-manipulation"
+            >
+              <Mail className="h-5 w-5 shrink-0" />
+              Email Us
+            </a>
+          </div>
+
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 sm:gap-12 lg:gap-16">
             {/* Contact Info */}
-            <div className="lg:col-span-1 order-2 lg:order-1">
+            <div className="lg:col-span-1">
               <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">
                 Get in Touch
               </h2>
@@ -138,7 +156,7 @@ export default function ContactPage() {
             </div>
 
             {/* Contact Form */}
-            <div className="lg:col-span-2 order-1 lg:order-2">
+            <div className="lg:col-span-2">
               <div className="bg-card border border-border rounded-lg p-5 sm:p-6 lg:p-8">
                 <h2 className="text-lg sm:text-xl font-bold tracking-tight text-card-foreground mb-5 sm:mb-6">
                   Request a Quote

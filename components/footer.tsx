@@ -25,11 +25,11 @@ const serviceAreas = [
 
 export function Footer() {
   return (
-    <footer className="bg-foreground text-background">
+    <footer className="bg-foreground text-background pb-[env(safe-area-inset-bottom)]">
       <div className="mx-auto max-w-7xl px-6 py-12 sm:px-8 sm:py-14 lg:py-16 lg:px-12">
         <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4 lg:gap-10">
           {/* Company Info */}
-          <div className="col-span-1 sm:col-span-2 lg:col-span-1">
+          <div className="col-span-1">
             <Link href="/" className="inline-block mb-4">
               <Image
                 src="/images/jdm-groundworks-logo.png"
@@ -61,12 +61,12 @@ export function Footer() {
           {/* Services */}
           <div>
             <h3 className="text-sm font-semibold uppercase tracking-wider mb-4">Services</h3>
-            <ul className="space-y-2.5">
+            <ul className="space-y-1">
               {services.map((service) => (
                 <li key={service.name}>
                   <Link
                     href={service.href}
-                    className="text-sm text-background/70 hover:text-background transition-colors inline-block active:text-background"
+                    className="text-sm text-background/70 hover:text-background transition-colors inline-block py-1 active:text-background"
                   >
                     {service.name}
                   </Link>
@@ -78,12 +78,12 @@ export function Footer() {
           {/* Service Areas */}
           <div>
             <h3 className="text-sm font-semibold uppercase tracking-wider mb-4">Service Areas</h3>
-            <ul className="space-y-2.5">
+            <ul className="space-y-1">
               {serviceAreas.map((area) => (
                 <li key={area}>
                   <Link
                     href="/service-area"
-                    className="text-sm text-background/70 hover:text-background transition-colors inline-block active:text-background"
+                    className="text-sm text-background/70 hover:text-background transition-colors inline-block py-1 active:text-background"
                   >
                     {area}
                   </Link>
@@ -95,19 +95,19 @@ export function Footer() {
           {/* Quick Links */}
           <div>
             <h3 className="text-sm font-semibold uppercase tracking-wider mb-4">Quick Links</h3>
-            <ul className="space-y-2.5">
+            <ul className="space-y-1">
               <li>
-                <Link href="/about" className="text-sm text-background/70 hover:text-background transition-colors inline-block active:text-background">
+                <Link href="/about" className="text-sm text-background/70 hover:text-background transition-colors inline-block py-1 active:text-background">
                   About Us
                 </Link>
               </li>
               <li>
-                <Link href="/contact" className="text-sm text-background/70 hover:text-background transition-colors inline-block active:text-background">
+                <Link href="/contact" className="text-sm text-background/70 hover:text-background transition-colors inline-block py-1 active:text-background">
                   Request a Quote
                 </Link>
               </li>
               <li>
-                <Link href="/service-area" className="text-sm text-background/70 hover:text-background transition-colors inline-block active:text-background">
+                <Link href="/service-area" className="text-sm text-background/70 hover:text-background transition-colors inline-block py-1 active:text-background">
                   Service Area
                 </Link>
               </li>

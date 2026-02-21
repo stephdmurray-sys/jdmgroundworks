@@ -78,18 +78,18 @@ export function Header() {
 
       {/* Mobile menu */}
       <div 
-        className={`lg:hidden bg-foreground border-t border-background/10 overflow-hidden transition-all duration-300 ease-in-out ${
-          mobileMenuOpen ? "max-h-[32rem] opacity-100" : "max-h-0 opacity-0"
+        className={`lg:hidden bg-foreground border-t border-background/10 overflow-hidden transition-all duration-300 ease-in-out will-change-[max-height,opacity] ${
+          mobileMenuOpen ? "max-h-[80vh] opacity-100" : "max-h-0 opacity-0"
         }`}
         role="navigation"
         aria-label="Mobile navigation"
       >
         <div className="px-6 py-4 space-y-1">
           {navigation.map((item) => (
-            <Link
+              <Link
               key={item.name}
               href={item.href}
-              className="block py-3.5 px-3 text-base font-medium text-background/80 hover:text-background hover:bg-background/5 rounded-lg transition-colors active:bg-background/10 min-h-[44px] flex items-center"
+              className="flex py-3.5 px-3 text-base font-medium text-background/80 hover:text-background hover:bg-background/5 rounded-lg transition-colors active:bg-background/10 min-h-[44px] items-center touch-manipulation"
               onClick={() => setMobileMenuOpen(false)}
             >
               {item.name}
@@ -98,12 +98,12 @@ export function Header() {
           <div className="pt-4 mt-2 border-t border-background/10">
             <a
               href="tel:+13603557006"
-              className="flex items-center gap-3 py-3.5 px-3 text-base font-medium text-background/80 hover:bg-background/5 rounded-lg transition-colors active:bg-background/10 min-h-[44px]"
+              className="flex items-center gap-3 py-3.5 px-3 text-base font-medium text-background/80 hover:bg-background/5 rounded-lg transition-colors active:bg-background/10 min-h-[44px] touch-manipulation"
             >
               <Phone className="h-5 w-5 shrink-0" />
               (360) 355-7006
             </a>
-            <Button asChild className="w-full mt-3 bg-primary hover:bg-primary/90 h-12 text-base font-medium">
+            <Button asChild className="w-full mt-3 bg-primary hover:bg-primary/90 h-12 text-base font-medium active:scale-[0.98] touch-manipulation">
               <Link href="/contact" onClick={() => setMobileMenuOpen(false)}>Get a Free Quote</Link>
             </Button>
           </div>
