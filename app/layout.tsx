@@ -13,13 +13,20 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   metadataBase: new URL('https://jdmgroundworks.com'),
   title: {
-    default: 'JDM Groundworks | Professional Land Clearing & Excavation in Kitsap County, WA',
-    template: '%s | JDM Groundworks - Kitsap County Excavation Experts'
+    default: 'JDM Groundworks | Land Clearing, Excavation & Demolition in Kitsap County, WA',
+    template: '%s | JDM Groundworks - Kitsap County Excavation & Demolition Experts'
   },
-  description: 'Expert land clearing, excavation, tree removal, and site preparation services in Kitsap County, WA. Licensed & insured excavation contractors serving Bremerton, Silverdale, Poulsbo, and Port Orchard. Free estimates.',
+  description: 'Expert land clearing, excavation, building demolition, tree removal, and site preparation services in Kitsap County, WA. House, barn, shed & garage demolition. Licensed & insured contractors serving Bremerton, Silverdale, Poulsbo, and Port Orchard. Free estimates.',
   keywords: [
     'land clearing Kitsap County',
     'excavation contractors Kitsap County WA',
+    'building demolition Kitsap County',
+    'house demolition Bremerton WA',
+    'barn demolition Kitsap County',
+    'shed removal Silverdale',
+    'garage demolition Poulsbo',
+    'structure demolition Port Orchard',
+    'demolition contractors Kitsap WA',
     'tree removal Bremerton',
     'driveway construction Kitsap County',
     'RV pad installation Silverdale',
@@ -61,8 +68,8 @@ export const metadata: Metadata = {
     locale: 'en_US',
     url: 'https://jdmgroundworks.com',
     siteName: 'JDM Groundworks',
-    title: 'JDM Groundworks | Professional Land Clearing & Excavation in Kitsap County, WA',
-    description: 'Expert land clearing, excavation, tree removal, and site preparation services in Kitsap County, WA. Licensed & insured excavation contractors serving Bremerton, Silverdale, Poulsbo, and Port Orchard.',
+    title: 'JDM Groundworks | Land Clearing, Excavation & Demolition in Kitsap County, WA',
+    description: 'Expert land clearing, excavation, building demolition, tree removal, and site preparation services in Kitsap County, WA. Licensed & insured contractors serving Bremerton, Silverdale, Poulsbo, and Port Orchard.',
     images: [
       {
         url: '/images/hero-excavator.jpg',
@@ -74,8 +81,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'JDM Groundworks | Professional Land Clearing & Excavation in Kitsap County, WA',
-    description: 'Expert land clearing, excavation, tree removal, and site preparation services in Kitsap County, WA.',
+    title: 'JDM Groundworks | Land Clearing, Excavation & Demolition in Kitsap County, WA',
+    description: 'Expert land clearing, excavation, building demolition, tree removal, and site preparation in Kitsap County, WA.',
     images: ['/images/hero-excavator.jpg'],
   },
   alternates: {

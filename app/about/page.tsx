@@ -5,8 +5,8 @@ import { Button } from "@/components/ui/button"
 import { ArrowRight, Shield, Truck, Users, MapPin, Award, Clock } from "lucide-react"
 
 export const metadata: Metadata = {
-  title: "About Our Company - Licensed Excavation Contractors",
-  description: "JDM Groundworks is a licensed & insured excavation and land clearing company serving Kitsap County since [year]. Modern equipment, experienced operators, and commitment to quality. Locally owned and operated in Washington State.",
+  title: "About Our Company - Licensed Excavation & Demolition Contractors",
+  description: "JDM Groundworks is a licensed & insured excavation, land clearing, and building demolition company serving Kitsap County, WA. Modern equipment, experienced operators, and commitment to quality.",
   keywords: [
     "licensed excavation contractor Kitsap County",
     "insured land clearing company WA",
@@ -67,10 +67,10 @@ export default function AboutPage() {
                 Professional Groundworks for Kitsap County
               </h1>
               <p className="mt-4 sm:mt-6 text-base sm:text-lg leading-relaxed text-background/80">
-                JDM Groundworks is a full-service land clearing and excavation contractor 
-                serving residential and commercial clients throughout Kitsap County, Washington. 
-                We bring years of local experience, professional equipment, and a commitment 
-                to quality to every project.
+                JDM Groundworks is a full-service land clearing, excavation, and building 
+                demolition contractor serving residential and commercial clients throughout 
+                Kitsap County, Washington. We bring years of local experience, professional 
+                equipment, and a commitment to quality to every project.
               </p>
               <p className="mt-3 sm:mt-4 text-sm sm:text-base text-background/70 leading-relaxed">
                 Whether you are a homeowner preparing land for construction, a developer 

@@ -5,6 +5,7 @@ import { Phone, Mail, MapPin } from "lucide-react"
 const services = [
   { name: "Land Clearing", href: "/services#land-clearing" },
   { name: "Tree Removal", href: "/services#tree-removal" },
+  { name: "Building Demolition", href: "/services#demolition" },
   { name: "Excavation", href: "/services#excavation" },
   { name: "Grading & Leveling", href: "/services#grading" },
   { name: "Site Preparation", href: "/services#site-prep" },

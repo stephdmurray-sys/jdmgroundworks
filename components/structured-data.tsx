@@ -103,6 +103,14 @@ export function StructuredData() {
           "@type": "Offer",
           "itemOffered": {
             "@type": "Service",
+            "name": "Building Demolition",
+            "description": "Professional demolition of houses, barns, sheds, garages, and old structures with complete debris removal and site cleanup in Kitsap County"
+          }
+        },
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service",
             "name": "Excavation Services",
             "description": "Expert excavation services including foundation digging, utility trenching, basement excavation, and site grading throughout Kitsap County"
           }

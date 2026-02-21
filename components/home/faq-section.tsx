@@ -17,6 +17,10 @@ const faqs = [
     answer: "Yes! We specialize in RV pad and boat parking area construction throughout Kitsap County. We'll excavate, grade, and compact a stable base, install proper drainage, and surface with gravel or crushed rock. RV pads typically range from 12x40 feet to 14x50 feet depending on your RV size. We also build equipment storage pads and additional parking areas."
   },
   {
+    question: "Do you offer building demolition services?",
+    answer: "Yes, JDM Groundworks provides professional demolition services for residential and light commercial structures throughout Kitsap County. We demolish and remove old houses, barns, sheds, garages, carports, mobile homes, and other structures. Our services include complete teardown, foundation and slab removal, debris hauling, and site grading after demolition so your property is clean and ready for new construction or landscaping."
+  },
+  {
     question: "Do you offer tree removal and stump grinding services?",
     answer: "Absolutely. JDM Groundworks provides complete tree removal services including stump grinding and debris removal for properties in Bremerton, Silverdale, Poulsbo, and throughout Kitsap County. We safely remove trees of all sizes, grind stumps below grade, and can chip or haul away all debris. This service is often combined with land clearing for new construction sites."
   },

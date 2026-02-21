@@ -1,7 +1,7 @@
 import Image from "next/image"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { ArrowRight, TreeDeciduous, Shovel, Mountain, Building2, Route, Droplets } from "lucide-react"
+import { ArrowRight, TreeDeciduous, Shovel, Mountain, Building2, Route, Hammer } from "lucide-react"
 
 const services = [
   {
@@ -15,6 +15,12 @@ const services = [
     description: "Safe and efficient removal of trees of all sizes, including stumps and root systems.",
     icon: TreeDeciduous,
     href: "/services#tree-removal",
+  },
+  {
+    title: "Building Demolition",
+    description: "Professional teardown and removal of old houses, barns, sheds, garages, and other structures.",
+    icon: Hammer,
+    href: "/services#demolition",
   },
   {
     title: "Excavation",

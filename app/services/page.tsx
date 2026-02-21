@@ -5,11 +5,21 @@ import { Button } from "@/components/ui/button"
 import { ArrowRight, Check } from "lucide-react"
 
 export const metadata: Metadata = {
-  title: "Excavation & Land Clearing Services",
-  description: "Complete excavation and land clearing services in Kitsap County, WA. Tree removal, stump grinding, gravel driveways, RV pads, boat parking, site preparation, drainage systems & more. Licensed contractors serving Bremerton, Silverdale, Poulsbo & Port Orchard. Free estimates.",
+  title: "Excavation, Land Clearing & Demolition Services",
+  description: "Complete excavation, land clearing, building demolition, and site preparation services in Kitsap County, WA. Demolition of houses, barns, sheds, garages & old structures. Tree removal, gravel driveways, RV pads, drainage systems & more. Licensed contractors serving Bremerton, Silverdale, Poulsbo & Port Orchard. Free estimates.",
   keywords: [
     "excavation services Kitsap County",
     "land clearing contractors WA",
+    "building demolition Kitsap County",
+    "house demolition Bremerton WA",
+    "barn demolition Kitsap County",
+    "shed demolition Silverdale",
+    "garage demolition Poulsbo WA",
+    "structure removal Port Orchard",
+    "residential demolition Kitsap County",
+    "commercial demolition Washington",
+    "demolition contractors Bremerton",
+    "old building tear down Kitsap",
     "tree removal Bremerton",
     "stump grinding Kitsap County",
     "driveway construction Silverdale",
@@ -33,8 +43,8 @@ export const metadata: Metadata = {
     "access road construction Kitsap County"
   ],
   openGraph: {
-    title: "Professional Excavation & Land Clearing Services | JDM Groundworks",
-    description: "Complete excavation and land clearing services in Kitsap County, WA. Licensed contractors with modern equipment.",
+    title: "Professional Excavation, Land Clearing & Demolition Services | JDM Groundworks",
+    description: "Complete excavation, land clearing, and building demolition services in Kitsap County, WA. Licensed contractors with modern equipment.",
     url: "https://jdmgroundworks.com/services",
   },
   alternates: {
@@ -72,6 +82,21 @@ const services = [
       "Property protection",
     ],
     idealFor: ["Construction site clearing", "Hazard tree removal", "Storm damage cleanup", "Lot clearing", "View enhancement"],
+  },
+  {
+    id: "demolition",
+    title: "Building Demolition",
+    subtitle: "Complete teardown and removal of old structures",
+    description: "We provide professional demolition services for residential and commercial structures throughout Kitsap County. From old barns, sheds, and garages to full house demolitions, we safely tear down structures, remove all debris, and leave your site clean and ready for new construction or landscaping.",
+    image: "/images/building-demolition.jpg",
+    benefits: [
+      "Houses, barns, sheds, and garages",
+      "Complete debris removal and hauling",
+      "Foundation and slab removal",
+      "Safe asbestos and hazmat awareness",
+      "Site grading after demolition",
+    ],
+    idealFor: ["Old barn removal", "Condemned structure teardown", "Shed and outbuilding removal", "House demolition", "Garage and carport removal"],
   },
   {
     id: "excavation",
@@ -162,8 +187,8 @@ export default function ServicesPage() {
             </h1>
             <p className="mt-4 sm:mt-6 text-base sm:text-lg leading-relaxed text-background/80">
               Comprehensive groundworks services for residential and commercial projects 
-              throughout Kitsap County, WA. From initial land clearing to final grading, 
-              we deliver professional results on every project.
+              throughout Kitsap County, WA. From land clearing and building demolition to 
+              excavation and final grading, we deliver professional results on every project.
             </p>
           </div>
         </div>
