@@ -12,11 +12,18 @@ export const metadata: Metadata = {
     "insured land clearing company WA",
     "local excavation services Bremerton",
     "professional groundworks contractor",
-    "Kitsap County excavation company"
+    "Kitsap County excavation company",
+    "demolition contractor Kitsap County",
+    "licensed demolition company Bremerton",
+    "building demolition Kitsap WA",
+    "excavation company Silverdale",
+    "land clearing Poulsbo WA",
+    "groundworks contractor Port Orchard",
+    "excavation Bainbridge Island"
   ],
   openGraph: {
-    title: "About JDM Groundworks | Licensed Kitsap County Excavation Contractor",
-    description: "Licensed & insured excavation company serving Kitsap County with modern equipment and experienced operators.",
+    title: "About JDM Groundworks | Licensed Excavation & Demolition Contractors in Kitsap County",
+    description: "Licensed & insured excavation, land clearing, and building demolition company serving Kitsap County, WA with modern equipment and experienced operators.",
     url: "https://jdmgroundworks.com/about",
   },
   alternates: {
@@ -256,7 +263,7 @@ export default function AboutPage() {
           </h2>
           <p className="mt-4 text-base sm:text-lg text-primary-foreground/80 max-w-2xl mx-auto">
             Contact us today for a free site evaluation and quote. We look forward 
-            to helping you with your next land clearing or excavation project.
+            to helping you with your next land clearing, excavation, or demolition project.
           </p>
           <Button asChild size="lg" variant="secondary" className="mt-6 sm:mt-8 bg-background text-foreground hover:bg-background/90 h-12 sm:h-11 text-base transition-all duration-200 active:scale-[0.98]">
             <Link href="/contact">

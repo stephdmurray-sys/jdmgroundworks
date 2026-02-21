@@ -59,9 +59,10 @@ export function ServicesOverview() {
             Full-Service Groundworks for Every Project
           </h2>
           <p className="mt-4 text-base sm:text-lg text-muted-foreground leading-relaxed">
-            From initial land clearing to final grading, we provide comprehensive 
-            groundworks services for residential and commercial projects throughout 
-            Kitsap County.
+            From land clearing and building demolition to excavation and final grading, 
+            we provide comprehensive groundworks services for residential and commercial 
+            projects throughout Kitsap County, including Bremerton, Silverdale, Poulsbo, 
+            Port Orchard, and Bainbridge Island.
           </p>
         </div>
 

@@ -23,10 +23,10 @@ export function HeroSection() {
       <div className="relative z-10 w-full mx-auto max-w-7xl px-6 sm:px-8 lg:px-12 py-12 pb-20 sm:py-20 sm:pb-28 lg:py-24 lg:pb-32 leading-4">
         <div className="max-w-3xl flex flex-col justify-center">
           <h1 className="text-[1.875rem] font-bold tracking-tight text-white sm:text-4xl md:text-5xl lg:text-6xl leading-[1.15] text-balance">
-            Land Clearing & Groundworks Kitsap County
+            Land Clearing, Excavation & Demolition in Kitsap County
           </h1>
           <p className="mt-4 sm:mt-6 text-base sm:text-lg leading-relaxed text-white/95 max-w-lg sm:max-w-2xl">
-            Full-service excavation, land clearing, tree removal, and site preparation for homeowners, developers, and builders across Kitsap County, Washington.
+            Full-service excavation, land clearing, building demolition, tree removal, and site preparation for homeowners, developers, and builders across Kitsap County, Washington.
           </p>
           
           {/* Call Now Button */}

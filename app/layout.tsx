@@ -47,7 +47,17 @@ export const metadata: Metadata = {
     'driveway grading Port Orchard',
     'RV parking pad Silverdale',
     'boat parking construction',
-    'equipment pad installation'
+    'equipment pad installation',
+    'excavation Bainbridge Island WA',
+    'land clearing Bainbridge Island',
+    'demolition contractor Bainbridge Island',
+    'excavation near me Kitsap County',
+    'demolition near me Kitsap WA',
+    'land clearing near me Bremerton',
+    'groundworks contractor Kitsap Peninsula',
+    'excavation Kingston WA',
+    'tree removal Suquamish WA',
+    'site prep Gorst Washington'
   ],
   authors: [{ name: 'JDM Groundworks', url: 'https://jdmgroundworks.com' }],
   creator: 'JDM Groundworks',

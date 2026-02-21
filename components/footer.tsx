@@ -10,6 +10,7 @@ const services = [
   { name: "Grading & Leveling", href: "/services#grading" },
   { name: "Site Preparation", href: "/services#site-prep" },
   { name: "Driveways & Pads", href: "/services#driveways" },
+  { name: "Drainage & Erosion Control", href: "/services#drainage" },
 ]
 
 const serviceAreas = [
@@ -17,7 +18,9 @@ const serviceAreas = [
   "Silverdale",
   "Poulsbo",
   "Port Orchard",
+  "Bainbridge Island",
   "Seabeck",
+  "Kingston",
 ]
 
 export function Footer() {
@@ -37,7 +40,7 @@ export function Footer() {
               />
             </Link>
             <p className="text-sm text-background/70 leading-relaxed mb-4 max-w-xs">
-              Professional groundworks and land clearing services for Kitsap County, WA.
+              Professional land clearing, excavation, building demolition, and site preparation services for Kitsap County, WA.
             </p>
             <div className="flex flex-col gap-2 text-sm text-background/70">
               <a href="tel:+13603557006" className="flex items-center gap-2 hover:text-background transition-colors active:text-background">
@@ -119,7 +122,7 @@ export function Footer() {
         {/* Bottom Bar */}
         <div className="mt-10 sm:mt-12 pt-6 sm:pt-8 border-t border-background/10">
           <p className="text-center text-xs text-background/50 leading-relaxed">
-            {new Date().getFullYear()} JDM Groundworks. All rights reserved. Proudly serving Kitsap County, Washington.
+            {new Date().getFullYear()} JDM Groundworks. All rights reserved. Professional land clearing, excavation, building demolition, and site preparation services proudly serving Bremerton, Silverdale, Poulsbo, Port Orchard, Bainbridge Island, and all of Kitsap County, Washington.
           </p>
         </div>
       </div>

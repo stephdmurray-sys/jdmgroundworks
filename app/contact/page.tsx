@@ -3,18 +3,25 @@ import { ContactForm } from "@/components/contact-form"
 import { Phone, Mail, MapPin, Clock } from "lucide-react"
 
 export const metadata: Metadata = {
-  title: "Contact Us - Free Estimates for Excavation & Land Clearing",
-  description: "Get a free site evaluation and quote for excavation, land clearing, or site preparation in Kitsap County, WA. Call (360) 355-7006 or request a quote online. Serving Bremerton, Silverdale, Poulsbo & Port Orchard.",
+  title: "Contact Us - Free Estimates for Excavation, Demolition & Land Clearing",
+  description: "Get a free site evaluation and quote for excavation, land clearing, building demolition, or site preparation in Kitsap County, WA. Call (360) 355-7006 or request a quote online. Serving Bremerton, Silverdale, Poulsbo, Port Orchard, Bainbridge Island & Seabeck.",
   keywords: [
     "free excavation estimate Kitsap County",
     "land clearing quote Bremerton",
+    "demolition estimate Kitsap WA",
+    "building demolition quote Bremerton",
     "excavation contractor contact",
     "site evaluation Kitsap WA",
-    "request excavation quote"
+    "request excavation quote",
+    "free demolition estimate Silverdale",
+    "land clearing quote Poulsbo",
+    "excavation estimate Port Orchard",
+    "groundworks quote Bainbridge Island",
+    "tree removal estimate Kitsap County"
   ],
   openGraph: {
-    title: "Contact JDM Groundworks | Free Site Evaluation & Estimates",
-    description: "Request a free site evaluation and quote for excavation and land clearing services in Kitsap County.",
+    title: "Contact JDM Groundworks | Free Estimates for Excavation, Demolition & Land Clearing",
+    description: "Request a free site evaluation and quote for excavation, land clearing, and building demolition services in Kitsap County, WA.",
     url: "https://jdmgroundworks.com/contact",
   },
   alternates: {
@@ -151,12 +158,12 @@ export default function ContactPage() {
               Serving All of Kitsap County
             </h2>
             <p className="mt-3 sm:mt-4 text-sm sm:text-base text-muted-foreground leading-relaxed">
-              We provide land clearing, excavation, and groundworks services throughout 
-              Kitsap County including Bremerton, Silverdale, Poulsbo, Port Orchard, 
-              Seabeck, and surrounding areas.
+              We provide land clearing, excavation, building demolition, and groundworks 
+              services throughout Kitsap County including Bremerton, Silverdale, Poulsbo, 
+              Port Orchard, Bainbridge Island, Seabeck, and surrounding areas.
             </p>
             <div className="mt-6 sm:mt-8 flex flex-wrap justify-center gap-2 sm:gap-3">
-              {["Bremerton", "Silverdale", "Poulsbo", "Port Orchard", "Seabeck"].map((area) => (
+              {["Bremerton", "Silverdale", "Poulsbo", "Port Orchard", "Bainbridge Island", "Seabeck"].map((area) => (
                 <span key={area} className="px-3 sm:px-4 py-1.5 sm:py-2 bg-card border border-border rounded-full text-xs sm:text-sm text-muted-foreground">
                   {area}
                 </span>

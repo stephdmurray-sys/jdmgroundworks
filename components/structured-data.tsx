@@ -4,13 +4,18 @@ export function StructuredData() {
     "@type": "LocalBusiness",
     "@id": "https://jdmgroundworks.com",
     "name": "JDM Groundworks",
+    "alternateName": "JDM Groundworks LLC",
+    "description": "Professional land clearing, excavation, building demolition, tree removal, and site preparation services in Kitsap County, Washington. Licensed and insured contractors serving Bremerton, Silverdale, Poulsbo, Port Orchard, Bainbridge Island, and all surrounding areas.",
     "image": "https://jdmgroundworks.com/images/hero-excavator.jpg",
+    "logo": "https://jdmgroundworks.com/images/jdm-groundworks-logo.png",
     "url": "https://jdmgroundworks.com",
     "telephone": "(360) 355-7006",
+    "email": "info@jdmgroundworks.com",
     "priceRange": "$$",
+    "paymentAccepted": "Cash, Check, Credit Card",
+    "currenciesAccepted": "USD",
     "address": {
       "@type": "PostalAddress",
-      "streetAddress": "Kitsap County",
       "addressLocality": "Bremerton",
       "addressRegion": "WA",
       "postalCode": "98310",
@@ -21,62 +26,92 @@ export function StructuredData() {
       "latitude": 47.5673,
       "longitude": -122.6265
     },
-    "openingHoursSpecification": {
-      "@type": "OpeningHoursSpecification",
-      "dayOfWeek": [
-        "Monday",
-        "Tuesday",
-        "Wednesday",
-        "Thursday",
-        "Friday"
-      ],
-      "opens": "07:00",
-      "closes": "18:00"
-    },
+    "openingHoursSpecification": [
+      {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+        "opens": "07:00",
+        "closes": "18:00"
+      },
+      {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": "Saturday",
+        "opens": "08:00",
+        "closes": "16:00"
+      }
+    ],
     "sameAs": [
       "https://www.facebook.com/jdmgroundworks",
       "https://www.instagram.com/jdmgroundworks"
     ],
     "areaServed": [
       {
-        "@type": "City",
-        "name": "Bremerton",
+        "@type": "County",
+        "name": "Kitsap County",
         "containedIn": {
           "@type": "State",
           "name": "Washington"
         }
+      },
+      {
+        "@type": "City",
+        "name": "Bremerton",
+        "containedIn": { "@type": "State", "name": "Washington" }
       },
       {
         "@type": "City",
         "name": "Silverdale",
-        "containedIn": {
-          "@type": "State",
-          "name": "Washington"
-        }
+        "containedIn": { "@type": "State", "name": "Washington" }
       },
       {
         "@type": "City",
         "name": "Poulsbo",
-        "containedIn": {
-          "@type": "State",
-          "name": "Washington"
-        }
+        "containedIn": { "@type": "State", "name": "Washington" }
       },
       {
         "@type": "City",
         "name": "Port Orchard",
-        "containedIn": {
-          "@type": "State",
-          "name": "Washington"
-        }
+        "containedIn": { "@type": "State", "name": "Washington" }
+      },
+      {
+        "@type": "City",
+        "name": "Bainbridge Island",
+        "containedIn": { "@type": "State", "name": "Washington" }
       },
       {
         "@type": "City",
         "name": "Seabeck",
-        "containedIn": {
-          "@type": "State",
-          "name": "Washington"
-        }
+        "containedIn": { "@type": "State", "name": "Washington" }
+      },
+      {
+        "@type": "City",
+        "name": "Kingston",
+        "containedIn": { "@type": "State", "name": "Washington" }
+      },
+      {
+        "@type": "City",
+        "name": "Suquamish",
+        "containedIn": { "@type": "State", "name": "Washington" }
+      },
+      {
+        "@type": "City",
+        "name": "Indianola",
+        "containedIn": { "@type": "State", "name": "Washington" }
+      },
+      {
+        "@type": "City",
+        "name": "Gorst",
+        "containedIn": { "@type": "State", "name": "Washington" }
+      },
+      {
+        "@type": "City",
+        "name": "Olalla",
+        "containedIn": { "@type": "State", "name": "Washington" }
+      },
+      {
+        "@type": "City",
+        "name": "Manchester",
+        "containedIn": { "@type": "State", "name": "Washington" }
       }
     ],
     "hasOfferCatalog": {
